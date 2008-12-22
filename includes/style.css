@@ -1,0 +1,27 @@
+div {
+  padding-left: 8px;
+}
+h1 {
+  font: bold 20px sans-serif;
+}
+h2 {
+  margin: 0;
+  padding: 4px;
+  background: #00CC00;
+  font: bold 16px sans-serif;
+  color: white;
+}
+p {
+  margin: 4px 0;
+  padding: 4px 20px;
+  border-left: 6px solid #00CC00;
+  border-bottom: 1px solid #00CC00;
+  background: #CCFF99;
+  font: bold 16px sans-serif;
+  color: #00CC00;
+}
+p.fail {
+  background: #FFCCCC;
+  color: #CC0000;
+  border-color: #CC0000;
+}
