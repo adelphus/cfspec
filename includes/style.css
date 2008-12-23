@@ -5,11 +5,17 @@ h1 {
   font: bold 20px sans-serif;
 }
 h2 {
-  margin: 0;
+  margin: 4px 0;
   padding: 4px;
-  background: #00CC00;
+  background: #006699;
   font: bold 16px sans-serif;
   color: white;
+}
+h3 {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  background: red;
 }
 p {
   margin: 4px 0;
@@ -20,8 +26,21 @@ p {
   font: bold 16px sans-serif;
   color: #00CC00;
 }
+p.pend {
+  background: #FFFF99;
+  color: #CCCC00;
+  border-color: #CCCC00;
+}
 p.fail {
   background: #FFCCCC;
   color: #CC0000;
   border-color: #CC0000;
+}
+p.error {
+  background: #FF99FF;
+  color: #990099;
+  border-color: #990099;
+}
+pre {
+  font: 9pt/4pt monospace;
 }

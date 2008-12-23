@@ -4,13 +4,13 @@
     <cfargument name="obj" type="any" required="true">
     <cfset variables.obj = arguments.obj>
     <cfif isSimpleValue(obj)>
-      <cfset variables.matcher = createObject("component", "cfspec.matchers.SimpleMatcher").init(obj)>
+      <cfset variables.matcher = createObject("component", "cfspec.lib.matchers.SimpleMatcher").init(obj)>
     <cfelseif isObject(obj)>
-      <cfset variables.matcher = createObject("component", "cfspec.matchers.ObjectMatcher").init(obj)>
+      <cfset variables.matcher = createObject("component", "cfspec.lib.matchers.ObjectMatcher").init(obj)>
     <cfelseif isArray(obj)>
-      <cfset variables.matcher = createObject("component", "cfspec.matchers.ArrayMatcher").init(obj)>
+      <cfset variables.matcher = createObject("component", "cfspec.lib.matchers.ArrayMatcher").init(obj)>
     <cfelseif isStruct(obj)>
-      <cfset variables.matcher = createObject("component", "cfspec.matchers.StructMatcher").init(obj)>
+      <cfset variables.matcher = createObject("component", "cfspec.lib.matchers.StructMatcher").init(obj)>
     </cfif>
     <cfreturn this>
   </cffunction>
@@ -30,7 +30,7 @@
     <cfset value = match(mid(missingMethodName, md.pos[3], md.len[3]), missingMethodArguments)>
     <cfif md.len[2] eq 3><cfset value = not value></cfif>
     <cfif not value>
-      <cfthrow type="cfspec" message="DID NOT MEET EXPECTATION">
+      <cfthrow type="cfspec.fail" message="--DID NOT MEET EXPECTATION--">
     </cfif>
   </cffunction>
 
@@ -47,7 +47,12 @@
   <cffunction name="match" returntype="boolean" output="false">
     <cfargument name="expectation" type="any" required="true">
     <cfargument name="args" type="any" required="true">
-    <cfreturn evaluate("variables.matcher.match#expectation#(argumentCollection=args)")>
+    <cfset var flatArgs = "">
+    <cfset var i = "">
+    <cfloop index="i" from="1" to="#arrayLen(args)#">
+      <cfset flatArgs = listAppend(flatArgs, "args[#i#]")>
+    </cfloop>
+    <cfreturn evaluate("variables.matcher.match#expectation#(#flatArgs#)")>
   </cffunction>
 
 </cfcomponent>
