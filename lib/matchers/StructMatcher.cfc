@@ -6,7 +6,7 @@
     <cfset var args = "">
     <cfif isStruct(expected) and listSort(ucase(structKeyList(obj)), "textnocase") eq listSort(ucase(structKeyList(expected)), "textnocase")>
       <cfloop collection="#obj#" item="key">
-        <cfset args = { expected = expected[key] }>
+        <cfset args = [ expected[key] ]>
         <cfif not createObject("component", "cfspec.lib.Expectations").init(obj[key]).match("equal", args)>
           <cfreturn false>
         </cfif>
@@ -22,7 +22,7 @@
     <cfset var args = "">
     <cfif isStruct(expected) and listSort(ucase(structKeyList(obj)), "textnocase") eq listSort(ucase(structKeyList(expected)), "textnocase")>
       <cfloop collection="#obj#" item="key">
-        <cfset args = { expected = expected[key] }>
+        <cfset args = [ expected[key] ]>
         <cfif not createObject("component", "cfspec.lib.Expectations").init(obj[key]).match("equalNoCase", args)>
           <cfreturn false>
         </cfif>
