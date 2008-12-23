@@ -6,8 +6,8 @@
     <cfset var args = "">
     <cfif isArray(expected) and arrayLen(obj) eq arrayLen(expected)>
       <cfloop index="i" from="1" to="#arrayLen(obj)#">
-        <cfset args = { expected = expected[i] }>
-        <cfif not createObject("component", "cfspec.Expectations").init(obj[i]).match("equal", args)>
+        <cfset args = [ expected[i] ]>
+        <cfif not createObject("component", "cfspec.lib.Expectations").init(obj[i]).match("equal", args)>
           <cfreturn false>
         </cfif>
       </cfloop>
@@ -22,8 +22,8 @@
     <cfset var args = "">
     <cfif isArray(expected) and arrayLen(obj) eq arrayLen(expected)>
       <cfloop index="i" from="1" to="#arrayLen(obj)#">
-        <cfset args = { expected = expected[i] }>
-        <cfif not createObject("component", "cfspec.Expectations").init(obj[i]).match("equalNoCase", args)>
+        <cfset args = [ expected[i] ]>
+        <cfif not createObject("component", "cfspec.lib.Expectations").init(obj[i]).match("equalNoCase", args)>
           <cfreturn false>
         </cfif>
       </cfloop>
