@@ -21,6 +21,25 @@
 
   </describe>
 
+  <describe hint="exceptions">
+  
+	  <it should="throw an exception">
+      <cfset o = createObject("component", "cfspec.spec.assets.Sample")>
+	    <cfset $(o).unsupportedOp().shouldThrow()>
+	  </it>
+
+	  <it should="not throw an exception">
+      <cfset o = createObject("component", "cfspec.spec.assets.Sample")>
+	    <cfset $(o).isFoo().shouldNotThrow()>
+	  </it>
+
+	  <it should="throw an exception (not caught)">
+      <cfset o = createObject("component", "cfspec.spec.assets.Sample")>
+	    <cfset $(o).unsupportedOp()>
+	  </it>
+
+  </describe>
+
   <describe hint="custom predicate">
 
 	  <it should="be foo">

@@ -74,7 +74,7 @@
 
 	  <it should="be close to a number within the specified delta">
 	    <cfset $(10).shouldBeCloseTo(9.9, 0.2)>
-	    <cfset $(10).shouldBeCloseTo(11, 1)>
+	    <cfset $(10).shouldBeCloseTo(10.9, 1)>
 	  </it>
   
 	  <it should="not be close to a number outside of the specified delta">
