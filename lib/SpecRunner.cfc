@@ -8,7 +8,9 @@
 
   <cffunction name="run" output="false">
     <cfset var result = "">
-    <cfset var target = 1>
+    <cfset var target = 0>
+    <cfset cfspec.context = arrayNew(1)>
+    <cfset cfspec.scope = "">
     <cfsavecontent variable="result">
       <html>
         <head>
@@ -48,10 +50,18 @@
   <cffunction name="runTarget">
     <cfargument name="target">
     <cfset var backup = saveVariables()>
+    <cfset var key = "">
+    <cfset var i = "">
     <cftry>
       <cfset cfspec.current = 0>
       <cfset cfspec.target = target>
       <cfset cfspec.exception = "">
+      <cfset cfspec.saveContext = false>
+      <cfif arrayLen(cfspec.context)>
+        <cfloop index="i" from="#arrayLen(cfspec.context)#" to="1" step="-1">
+          <cfset structAppend(variables, cfspec.context[i])>
+        </cfloop>
+      </cfif>
       <cfinclude template="#specFile#">
       <cfif not isSimpleValue(cfspec.exception)>
         <cfthrow type="#cfspec.exception.type#" message="#cfspec.exception.message#">
@@ -61,6 +71,19 @@
       </cfcatch>
       <cfcatch type="any"><cfset formatException()></cfcatch>
     </cftry>
+    <cfif arrayLen(cfspec.context)>
+      <cfloop index="i" from="1" to="#arrayLen(cfspec.context)#">
+        <cfloop collection="#cfspec.context[i]#" item="key">
+          <cfif isDefined(key)>
+            <cfset cfspec.context[i][key] = variables[key]>
+            <cfset structDelete(variables, key)>
+          </cfif>
+        </cfloop>      
+      </cfloop>
+      <cfif cfspec.saveContext>
+        <cfset structAppend(cfspec.context[1], saveVariables())>
+      </cfif>
+    </cfif>
     <cfif cfspec.current lt cfspec.target><cfreturn false></cfif>
     <cfset restoreVariables(backup)>
     <cfreturn true>
