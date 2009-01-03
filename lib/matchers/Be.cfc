@@ -22,6 +22,11 @@
 		case "False":
 			return $actual eq false;
 			
+		case "Empty":
+		  if (isSimpleValue($actual)) return trim($actual) == "";
+      if (isQuery($actual)) return $actual.recordCount == 0;
+  		return $actual.isEmpty();
+			
 	  case "AnInstanceOf":
   		$actual = getMetaData($actual).name;
 	    return isInstanceOf(actual, $args[1]);
@@ -48,6 +53,7 @@
 		switch ($predicate) {
   		case "True":         return iif(negative, de('not '), de('')) & "to be true";
   		case "False":        return iif(negative, de('not '), de('')) & "to be false";
+  		case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
   		case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
   		default: 
   		  return "is#$predicate#(#reReplace(inspect($args), '^\[(.*)\]$', '\1')#) to be "

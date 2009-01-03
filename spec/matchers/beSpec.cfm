@@ -50,6 +50,77 @@
 
 </describe>
 
+<describe hint="Be Empty">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Empty"))>
+  </before>
+
+  <it should="match when target is a string of whitespace characters">
+    <cfset $matcher.isMatch("#chr(9)#  #chr(10)##chr(13)#").shouldBeTrue()>
+  </it>
+
+  <it should="not match when target is a string with non-whitespace characters">
+    <cfset $matcher.isMatch("  x  ").shouldBeFalse()>
+  </it>
+  
+  <it should="match when actual is an object with isEmpty() == true">
+    <cfset target = createObject("component", "cfspec.spec.assets.IsEmpty")>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is an object with isEmpty() == false">
+    <cfset target = createObject("component", "cfspec.spec.assets.IsFull")>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
+  </it>
+  
+  <it should="match when actual is a struct with no keys">
+    <cfset target = {}>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is a struct with 1+ keys">
+    <cfset target = {foo=1}>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
+  </it>
+
+  <it should="match when actual is an array with no elements">
+    <cfset target = []>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is an array with 1+ elements">
+    <cfset target = [1]>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
+  </it>
+
+  <it should="match when actual is a query with no records">
+    <cfset target = queryNew("foo")>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is a query with 1+ records">
+    <cfset target = queryNew("")>
+    <cfset queryAddColumn(target, "foo", listToArray("1"))>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+  	<cfset $matcher.isMatch("abc")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be empty, got 'abc'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+  	<cfset $matcher.isMatch("   ")>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be empty, got '   '")>
+  </it>
+
+  <it should="describe itself">
+  	<cfset $matcher.getDescription().shouldEqual("be empty")>
+  </it>
+
+</describe>
+
 <describe hint="Be AnInstanceOf">
 
   <before>
