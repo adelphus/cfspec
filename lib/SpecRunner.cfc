@@ -2,7 +2,25 @@
 
   <cffunction name="init" output="false">
     <cfargument name="spec">
-    <cfset variables.specFile = right(spec, len(spec) - len(expandPath('/')) + 1)>
+    <cfset var webroot = expandPath('/') />
+    <cfset var searching = true />
+    <cfset var specPath = spec />
+    <cfif len(spec) lte len(webroot) or left(spec,len(webroot)) is not webroot>
+      <!--- not under webroot - need to deduce location --->
+      <cfset specPath = replace(spec,'\','/','all') />
+      <cfset searching = spec is not expandPath(specPath) />
+      <cfloop condition="searching">
+        <cfset specPath = "/" & listRest(specPath,"/") />
+        <cfset searching = specPath is not "/" and spec is not expandPath(specPath)>
+      </cfloop>
+      <cfif specPath is "/">
+        <cfthrow message="Unable to figure out the relative path for #spec#" />
+      <cfelse>
+        <cfset variables.specFile = specPath />
+      </cfif>
+    <cfelse>
+      <cfset variables.specFile = right(spec, len(spec) - len(expandPath('/')) + 1)>
+    </cfif>
     <cfreturn this>
   </cffunction>
 
