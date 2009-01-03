@@ -1,5 +1,9 @@
 <cfcomponent output="false"><cfscript>
 
+	function isDelayed() {
+		return false;
+	}
+
 	function inspect(value) {
 		var keys = "";
 		var data = "";
@@ -7,24 +11,29 @@
 		var s = "";
 		var i = "";
 		var j = "";
+
 		if (isSimpleValue(value)) {
 			if (isNumeric(value)) return value;
 			if (isDate(value)) return dateFormat(value, "yyyy-mm-dd") & " " & timeFormat(value, "hh:mm tt");
 			if (listFindNoCase("true,false,yes,no", value)) return iif(value, 'true', 'false');
 			return "'#replace(replace(value, '\', '\\', 'all'), "'", "\'", 'all')#'";
+
 		} else if (isObject(value)) {
 			return value.inspect();
+
 		} else if (isStruct(value)) {
 			keys = listToArray(listSort(structKeyList(value), "textnocase"));
 			for (i = 1; i <= arrayLen(keys); i++) {
 				s = listAppend(s, "#keys[i]#=#inspect(value[keys[i]])#");
 			}
 			return "{#s#}";
+
 		} else if (isArray(value)) {
 			for (i = 1; i <= arrayLen(value); i++) {
 				s = listAppend(s, inspect(value[i]));
 			}
 			return "[#s#]";
+
 		} else if (isQuery(value)) {
 			keys = listToArray(listSort(value.columnList, "textnocase"));
 			for (i = 1; i <= arrayLen(keys); i++) {
@@ -38,12 +47,9 @@
 				data = listAppend(data, "[#row#]");
 			}
 			return "{COLUMNS=[#s#],DATA=[#data#]}";
+
 		}
 		return serializeJson(value);
-	}
-
-	function isDelayed() {
-		return false;
 	}
 
 </cfscript>
