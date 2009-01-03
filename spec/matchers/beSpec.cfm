@@ -50,6 +50,45 @@
 
 </describe>
 
+<describe hint="Be AnInstanceOf">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("AnInstanceOf", "cfspec.spec.assets.Widget"))>
+  </before>
+  
+  <it should="match if target is an instance of the expected class">
+    <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
+  </it>
+
+  <it should="match if target is an instance of a decendant class">
+    <cfset target = createObject("component", "cfspec.spec.assets.SpecialWidget")>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
+  </it>
+
+  <it should="not match if target is not an instance of the expected class">
+    <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+  	<cfset $matcher.isMatch(target)>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be an instance of 'cfspec.spec.assets.Widget', got 'cfspec.spec.assets.HappyGuy'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
+  	<cfset $matcher.isMatch(target)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be an instance of 'cfspec.spec.assets.Widget', got 'cfspec.spec.assets.Widget'")>
+  </it>
+
+  <it should="describe itself">
+  	<cfset $matcher.getDescription().shouldEqual("be an instance of 'cfspec.spec.assets.Widget'")>
+  </it>
+
+</describe>
+
 <describe hint="Be ArbitraryPredicate">
 
   <before>

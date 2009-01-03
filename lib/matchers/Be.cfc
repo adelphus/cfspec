@@ -21,6 +21,10 @@
 
 		case "False":
 			return $actual eq false;
+			
+	  case "AnInstanceOf":
+  		$actual = getMetaData($actual).name;
+	    return isInstanceOf(actual, $args[1]);
 
 		default:
   		$actual = evaluate("$actual.is#$predicate#(#$flatArgs#)");
@@ -42,9 +46,12 @@
 
   function predicateExpectation(negative) {
 		switch ($predicate) {
-  		case "True":  return iif(negative, de('not '), de('')) & "to be true";
-  		case "False": return iif(negative, de('not '), de('')) & "to be false";
-  		default:      return "is#$predicate#(#reReplace(inspect($args), '^\[(.*)\]$', '\1')#) to be " & iif(negative, de('false'), de('true'));
+  		case "True":         return iif(negative, de('not '), de('')) & "to be true";
+  		case "False":        return iif(negative, de('not '), de('')) & "to be false";
+  		case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
+  		default: 
+  		  return "is#$predicate#(#reReplace(inspect($args), '^\[(.*)\]$', '\1')#) to be "
+  		          & iif(negative, de('false'), de('true'));
 		}
   }
 
