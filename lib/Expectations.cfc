@@ -2,6 +2,11 @@
 
 	$matchers = [
 		"Equal(Number|Date|Boolean|String|Object|Struct|Array|Query)?(NoCase)?/Equal",
+		"BeCloseTo/BeCloseTo",
+		"Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)/BeComparison",
+		"Have/Have",
+		"Match(NoCase)?/Match",
+		"Contain/Contain",
 		"Be(.+)/Be"
 	];
 
@@ -60,7 +65,12 @@
 		}
 
 		if (isObject($target)) {
-			result = evaluate("$target.#missingMethodName#(argumentCollection=arguments.missingMethodArguments)");
+			args = [];
+			for (i = 1; i <= arrayLen(missingMethodArguments); i++) {
+				arrayAppend(args, missingMethodArguments[i]);
+				flatArgs = listAppend(flatArgs, "args[#i#]");
+			}
+			result = evaluate("$target.#missingMethodName#(#flatArgs#)");
 			return $runner.$(result);
 		}
 

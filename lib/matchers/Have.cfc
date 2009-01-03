@@ -38,8 +38,8 @@
 		}
 
 		switch ($relativity) {
-			case "atLeast":	return $given >= $expected;
-			case "atMost":	return $given <= $expected;
+			case "AtLeast":	return $given >= $expected;
+			case "AtMost":	return $given <= $expected;
 			default:				return $given == $expected;
 		}
 	}
@@ -64,8 +64,8 @@
 	function relativeExpectation() {
 		var n = inspect($expected);
 		switch ($relativity) {
-			case "atLeast":	return "at least #n#";
-			case "atMost":	return "at most #n#";
+			case "AtLeast":	return "at least #n#";
+			case "AtMost":	return "at most #n#";
 			default:				return n;
 		}
 	}

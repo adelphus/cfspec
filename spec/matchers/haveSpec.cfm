@@ -3,7 +3,7 @@
 <describe hint="HaveExactly(n).items()">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init(3, "exactly").items())>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("Exactly", 3).items())>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -113,7 +113,7 @@
 <describe hint="HaveAtLeast(n).items()">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init(3, "atLeast").items())>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtLeast", 3).items())>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -223,7 +223,7 @@
 <describe hint="HaveAtMost(n).items()">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init(3, "atMost").items())>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtMost", 3).items())>
   </before>
 
   <it should="match when target is a string with n characters">
