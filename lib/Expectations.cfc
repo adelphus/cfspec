@@ -1,10 +1,10 @@
 <cfcomponent output="false"><cfscript>
 
 	$matchers = [
-		"Equal(Number|Date|Boolean|String|Object|Struct|Array|Query)?(NoCase)?/Equal",
+		"Equal(Numeric|Date|Boolean|String|Object|Struct|Array|Query)?(NoCase)?/Equal",
 		"BeCloseTo/BeCloseTo",
 		"Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)/BeComparison",
-		"Have/Have",
+		"Have(AtLeast|AtMost|Exactly)?/Have",
 		"Match(NoCase)?/Match",
 		"Contain/Contain",
 		"Be(.+)/Be"
