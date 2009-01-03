@@ -1,8 +1,8 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-	function init(expected, relativity) {
-		$expected = expected;
+	function init(relativity, expected) {
 		$relativity = relativity;
+		$expected = expected;
 		return this;
 	}
 
@@ -54,7 +54,8 @@
 
 	function onMissingMethod(missingMethodName, missingMethodArguments) {
 		$collectionName = missingMethodName;
-		return this;
+    if (isDefined("$expectations"))	$expectations.resumeDelayedMatcher(this, $negateExpectations);
+    return this;
 	}
 
 	function isDelayed() {
@@ -68,6 +69,11 @@
 			case "AtMost":	return "at most #n#";
 			default:				return n;
 		}
+	}
+	
+	function setExpectations(expectations, negate) {
+	  $expectations = expectations;
+	  $negateExpectations = negate;
 	}
 
 </cfscript></cfcomponent>

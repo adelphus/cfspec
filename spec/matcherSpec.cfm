@@ -73,22 +73,22 @@
   <describe hint="throw">
 
     <it should="be able to throw an exception">
-      <cfset $matcher.throw().shouldThrow("Application")>
+      <cfset $($matcher).throw().shouldThrow("Application")>
     </it>
 
     <it should="be able to throw an exception with type specified">
-      <cfset $matcher.throw("SpecialException").shouldThrow("SpecialException")>
+      <cfset $($matcher).throw("SpecialException").shouldThrow("SpecialException")>
     </it>
 
     <it should="be able to throw an exception with type specified and a message">
-      <cfset $matcher.throw("SpecialException", "It didn't work!").shouldThrow("SpecialException", "It didn't work!")>
+      <cfset $($matcher).throw("SpecialException", "It didn't work!").shouldThrow("SpecialException", "It didn't work!")>
     </it>
 
     <it should="be able to rethrow an exception">
       <cftry>
         <cfthrow message="Rethrown Exception">
         <cfcatch>
-          <cfset $matcher.rethrow(cfcatch).shouldThrow("Application", "Rethrown Exception")>
+          <cfset $($matcher).rethrow(cfcatch).shouldThrow("Application", "Rethrown Exception")>
         </cfcatch>
       </cftry>
     </it>

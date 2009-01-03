@@ -10,7 +10,7 @@
 
 <cfelse>
   <cfif isSimpleValue(caller.cfspec.exception)>
-    <cfoutput><p class="pass">should #attributes.should#</p></cfoutput>
+    <cfoutput><p class="pass">should #attributes.should#</p></cfoutput>  
   </cfif>
 
 </cfif>

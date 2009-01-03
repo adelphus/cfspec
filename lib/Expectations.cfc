@@ -7,7 +7,8 @@
 		"Have(AtLeast|AtMost|Exactly)?/Have",
 		"Match(NoCase)?/Match",
 		"Contain/Contain",
-		"Be(.+)/Be"
+		"Be(.+)/Be",
+		"Throw/Throw"
 	];
 
 	function init(runner, target) {
@@ -15,17 +16,43 @@
 		$target = target;
 		return this;
 	}
+	
+	function getExpectedException() {
+		return $runner.getExpectedException();
+	}
 
+  function resumeDelayedMatcher(matcher, negate) {
+		var result = matcher.isMatch($target);
+
+		if (result eqv negate) {
+			if (negate) {
+				return $runner.fail(matcher.getNegativeFailureMessage());
+			} else {
+				return $runner.fail(matcher.getFailureMessage());
+			}
+		}
+		return true;
+  }
+	
 	function onMissingMethod(missingMethodName, missingMethodArguments) {
 		var regexp = "";
 		var matchData = "";
 		var matcher = "";
 		var args = "";
 		var flatArgs = "";
-		var result = "";
+		var result = "";		
 		var i = "";
 		var j = "";
 		var k = "";
+
+    result = $runner.getExpectedException();
+    if (!isSimpleValue(result)) {
+      if (listFindNoCase("shouldThrow,shouldNotThrow", missingMethodName)) {
+      	$runner.setExpectedException(result);
+      } else {
+      	createObject("component", "cfspec.lib.Matcher").rethrow(result);
+      }
+    }
 
 		for (i = 1; i <= arrayLen($matchers); i++) {
 			regexp = $matchers[i];
@@ -48,9 +75,11 @@
 				matcher = createObject("component", "cfspec.lib.matchers.#listLast(regexp, '/')#");
 				evaluate("matcher.init(#flatArgs#)");
 
-				if (matcher.isDelayed()) return matcher;
-
 				negate = matchData.len[2];
+				if (matcher.isDelayed()) {
+					matcher.setExpectations(this, negate);
+					return matcher;
+				}
 				result = matcher.isMatch($target);
 
 				if (result eqv negate) {
@@ -70,69 +99,16 @@
 				arrayAppend(args, missingMethodArguments[i]);
 				flatArgs = listAppend(flatArgs, "args[#i#]");
 			}
-			result = evaluate("$target.#missingMethodName#(#flatArgs#)");
+			try {
+  			result = evaluate("$target.#missingMethodName#(#flatArgs#)");
+			} catch (Any e) {
+				$runner.setExpectedException(e);
+				return $runner.$(this);
+			}
 			return $runner.$(result);
+		} else {
+    	createObject("component", "cfspec.lib.Matcher").throw("Application", "The method #missingMethodName# was not found.");
 		}
-
-		$runner.fail("Missing Method: #missingMethodName#");
 	}
 
 </cfscript></cfcomponent>
-
-<!---
-
-  <cfset matchers = []>
-  <cfdirectory action="list" directory="#expandPath('/cfspec/lib/matchers')#" filter="*.cfm" name="dir">
-  <cfloop query="dir">
-    <cfinclude template="matchers/#name#">
-  </cfloop>
-
-  <cffunction name="init" returntype="Expectations" output="false">
-    <cfargument name="runner" type="any" required="true">
-    <cfargument name="actual" type="any" required="true">
-    <cfset variables.runner = arguments.runner>
-    <cfset variables.actual = arguments.actual>
-    <cfreturn this>
-  </cffunction>
-
-  <cffunction name="onMissingMethod" returntype="any" output="false">
-    <cfargument name="missingMethodName" type="string" required="true">
-    <cfargument name="missingMethodArguments" type="any" required="true">
-    <cfset var matcher = "">
-    <cfset var matchData = "">
-    <cfset var flatArgs = "">
-    <cfset var args = []>
-    <cfset var i = "">
-    <cfset var result = "">
-
-    <cfloop array="#matchers#" index="matcher">
-      <cfset matchData = reFindNoCase(listFirst(matcher, "/"), missingMethodName, 1, true)>
-      <cfif matchData.len[1]>
-        <cfloop index="i" from="2" to="#arrayLen(matchData.len)#">
-          <cfset arrayAppend(args, mid(missingMethodName, matchData.pos[i], matchData.len[i]))>
-          <cfset flatArgs = listAppend(flatArgs, "args[#(i-1)#]")>
-        </cfloop>
-        <cfset flatArgs = listAppend(flatArgs, "arguments.missingMethodArguments")>
-        <cfset evaluate("#listRest(matcher, '/')#(#flatArgs#)")>
-        <cfreturn true>
-      </cfif>
-    </cfloop>
-
-    <cfif isObject(actual)>
-      <cftry>
-        <cfset result = evaluate("actual.#missingMethodName#(argumentCollection=arguments.missingMethodArguments)")>
-        <cfreturn runner.$(result)>
-        <cfcatch type="any">
-          <cfset runner.setException(cfcatch)>
-          <cfreturn createObject("component", "ExceptionExpectations").init(runner, cfcatch)>
-        </cfcatch>
-      </cftry>
-    </cfif>
-
-    <cfthrow message="Missing method: #missingMethodName#">
-  </cffunction>
-
-  <cffunction name="shouldNotThrow" output="false">
-  </cffunction>
-
---->
