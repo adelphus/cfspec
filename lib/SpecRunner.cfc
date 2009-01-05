@@ -47,7 +47,7 @@
     <cfset var backup = {}>
     <cfset var key = "">
     <cfloop collection="#variables#" item="key">
-      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,INIT,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXCEPTION,THIS", key)>
+      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,INIT,MOCK,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXCEPTION,STUB,THIS", key)>
         <cfset backup[key] = variables[key]>
       </cfif>
     </cfloop>
@@ -58,7 +58,7 @@
     <cfargument name="backup">
     <cfset var key = "">
     <cfloop collection="#variables#" item="key">
-      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,INIT,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXCEPTION,THIS", key)>
+      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,INIT,MOCK,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXCEPTION,STUB,THIS", key)>
         <cfset structDelete(variables, key)>
       </cfif>
     </cfloop>
@@ -131,6 +131,14 @@
   <cffunction name="$" returntype="Expectations" output="false">
     <cfargument name="obj" type="any" required="true">
     <cfreturn createObject("component", "Expectations").init(this, arguments.obj)>
+  </cffunction>
+
+  <cffunction name="stub" output="false">
+    <cfreturn createObject("component", "Stub")>
+  </cffunction>
+
+  <cffunction name="mock" output="false">
+    <cfreturn createObject("component", "Stub")>
   </cffunction>
 
   <cffunction name="fail" output="false">
