@@ -1,12 +1,12 @@
 <cfcomponent output="false"><cfscript>
-
-	function init(size) {
-		$size = size;
-		return this;
-	}
-
-	function size() {
-		return $size;
-	}
-
+ 
+  function init(size) {
+    $size = size;
+    return this;
+  }
+ 
+  function size() {
+    return $size;
+  }
+ 
 </cfscript></cfcomponent>

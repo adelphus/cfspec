@@ -7,7 +7,7 @@
 
   function onMissingMethod(missingMethodName, missingMethodArguments) {
   	if (structKeyExists($methods, missingMethodName)) return $methods[missingMethodName];
-  	return createObject("component", "Stub");
+  	return createObject("component", "Stub").init();
   }
 
 </cfscript></cfcomponent>

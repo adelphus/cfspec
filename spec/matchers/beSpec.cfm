@@ -65,12 +65,12 @@
   </it>
   
   <it should="match when actual is an object with isEmpty() == true">
-    <cfset target = createObject("component", "cfspec.spec.assets.IsEmpty")>
+    <cfset target = stub(isEmpty=true)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="not match when actual is an object with isEmpty() == false">
-    <cfset target = createObject("component", "cfspec.spec.assets.IsFull")>
+    <cfset target = stub(isEmpty=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
   

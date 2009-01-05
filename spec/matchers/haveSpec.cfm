@@ -12,7 +12,7 @@
   </it>
 
   <it should="match when target is an object with n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(3)>
+    <cfset target = stub(getItems="abc")>
   	<cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -43,7 +43,7 @@
   </it>
 
   <it should="not match when target is an object with > n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(4)>
+    <cfset target = stub(getItems="abcd")>
   	<cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -74,7 +74,7 @@
   </it>
 
   <it should="not match when target is an object with < n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(2)>
+    <cfset target = stub(getItems="ab")>
   	<cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -122,7 +122,7 @@
   </it>
 
   <it should="match when target is an object with n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(3)>
+    <cfset target = stub(getItems="abc")>
   	<cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -153,7 +153,7 @@
   </it>
 
   <it should="match when target is an object with > n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(4)>
+    <cfset target = stub(getItems="abcd")>
   	<cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -184,7 +184,7 @@
   </it>
 
   <it should="not match when target is an object with < n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(2)>
+    <cfset target = stub(getItems="ab")>
   	<cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -232,7 +232,7 @@
   </it>
 
   <it should="match when target is an object with n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(3)>
+    <cfset target = stub(getItems="abc")>
   	<cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -263,7 +263,7 @@
   </it>
 
   <it should="not match when target is an object with > n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(4)>
+    <cfset target = stub(getItems="abcd")>
   	<cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -294,7 +294,7 @@
   </it>
 
   <it should="match when target is an object with < n items">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasItems").init(2)>
+    <cfset target = stub(getItems="ab")>
   	<cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
