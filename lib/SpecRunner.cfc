@@ -134,7 +134,7 @@
   </cffunction>
 
   <cffunction name="stub" output="false">
-    <cfreturn createObject("component", "Stub")>
+    <cfreturn createObject("component", "Stub").init(argumentCollection=arguments)>
   </cffunction>
 
   <cffunction name="mock" output="false">

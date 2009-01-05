@@ -138,14 +138,14 @@
   </it>
 
   <it should="not match if target is not an instance of the expected class">
-    <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+    <cfset target = stub()>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="provide a useful failure message">
-    <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+    <cfset target = stub()>
   	<cfset $matcher.isMatch(target)>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected to be an instance of 'cfspec.spec.assets.Widget', got 'cfspec.spec.assets.HappyGuy'")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be an instance of 'cfspec.spec.assets.Widget', got 'cfspec.lib.Stub'")>
   </it>
 
   <it should="provide a useful negative failure message">
@@ -167,23 +167,23 @@
   </before>
 
   <it should="match when actual.isHappy() returns true">
-    <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+    <cfset target = stub(isHappy=true)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="not match when actual.isHappy() returns false">
-    <cfset target = createObject("component", "cfspec.spec.assets.SadGuy")>
+    <cfset target = stub(isHappy=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="provide a useful failure message">
-    <cfset target = createObject("component", "cfspec.spec.assets.SadGuy")>
+    <cfset target = stub(isHappy=false)>
   	<cfset $matcher.isMatch(target)>
     <cfset $matcher.getFailureMessage().shouldEqual("expected isHappy() to be true, got false")>
   </it>
 
   <it should="provide a useful negative failure message">
-    <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+    <cfset target = stub(isHappy=true)>
   	<cfset $matcher.isMatch(target)>
     <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected isHappy() to be false, got true")>
   </it>

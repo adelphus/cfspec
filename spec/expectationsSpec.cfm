@@ -22,7 +22,7 @@
     </it>
 
     <it should="expect shouldBeArbitraryPredicate to return true">
-      <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
+      <cfset target = stub(isHappy=true)>
       <cfset $(target).shouldBeHappy()>
     </it>
 
