@@ -25,7 +25,8 @@
 		case "Empty":
 		  if (isSimpleValue($actual)) return trim($actual) == "";
       if (isQuery($actual)) return $actual.recordCount == 0;
-  		return $actual.isEmpty();
+      $actual = actual.isEmpty();
+  		return $actual;
 			
 	  case "AnInstanceOf":
   		$actual = getMetaData($actual).name;
