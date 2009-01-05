@@ -17,7 +17,7 @@
   </it>
 
   <it should="match when target is an object with size == n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(3)>
+    <cfset target = stub(size=3, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -48,7 +48,7 @@
   </it>
 
   <it should="not match when target is an object with size > n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(4)>
+    <cfset target = stub(size=4, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -79,7 +79,7 @@
   </it>
 
   <it should="not match when target is an object with size < n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(2)>
+    <cfset target = stub(size=2, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -127,7 +127,7 @@
   </it>
 
   <it should="match when target is an object with size == n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(3)>
+    <cfset target = stub(size=3, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -158,7 +158,7 @@
   </it>
 
   <it should="match when target is an object with size > n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(4)>
+    <cfset target = stub(size=4, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -189,7 +189,7 @@
   </it>
 
   <it should="not match when target is an object with size < n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(2)>
+    <cfset target = stub(size=2, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -237,7 +237,7 @@
   </it>
 
   <it should="match when target is an object with size == n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(3)>
+    <cfset target = stub(size=3, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
@@ -268,7 +268,7 @@
   </it>
 
   <it should="not match when target is an object with size > n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(4)>
+    <cfset target = stub(size=4, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
@@ -299,7 +299,7 @@
   </it>
 
   <it should="match when target is an object with size < n">
-    <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(2)>
+    <cfset target = stub(size=2, stubMissingMethod=false)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
