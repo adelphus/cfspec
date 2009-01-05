@@ -71,9 +71,4 @@
 		}
 	}
 	
-	function setExpectations(expectations, negate) {
-	  $expectations = expectations;
-	  $negateExpectations = negate;
-	}
-
 </cfscript></cfcomponent>

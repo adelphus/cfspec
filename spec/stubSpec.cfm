@@ -16,4 +16,13 @@
     <cfset $stub.shouldBeMale()>
   </it>
   
+  <describe hint="stubMissingMethod=false">
+
+    <it should="throw an exception on an unspecified method call">
+      <cfset $stub = $(createObject("component", "cfspec.lib.Stub").init(getName="John Doe", stubMissingMethod=false))>
+      <cfset $stub.anyOldMethod().shouldThrow()>
+    </it>
+    
+  </describe>
+  
 </describe>

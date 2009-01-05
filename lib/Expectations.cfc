@@ -16,7 +16,7 @@
 		$target = target;
 		return this;
 	}
-	
+
 	function getExpectedException() {
 		return $runner.getExpectedException();
 	}
@@ -76,10 +76,8 @@
 				evaluate("matcher.init(#flatArgs#)");
 
 				negate = matchData.len[2];
-				if (matcher.isDelayed()) {
-					matcher.setExpectations(this, negate);
-					return matcher;
-				}
+				matcher.setExpectations(this, negate);
+				if (matcher.isDelayed()) return matcher;
 				result = matcher.isMatch($target);
 
 				if (result eqv negate) {

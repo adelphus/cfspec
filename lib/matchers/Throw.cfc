@@ -9,8 +9,9 @@
 	}
 
 	function isMatch(actual) {
+		$actual = "";
     try {
-  		$actual = actual.getExpectedException();
+  		$actual = $expectations.getExpectedException();
     } catch (Any e) {
     	return false;
     }
@@ -39,8 +40,9 @@
 	}
 	
 	function inspectException(e) {
-		var description = e.type;
+		var description = "";
 		var params = "";
+		if (isDefined("e.type")) description = e.type;
 		if (isDefined("e.message")) params = listAppend(params, "message=" & inspect(e.message));
 		if (isDefined("e.detail")) params = listAppend(params, "detail=" & inspect(e.detail));
     if (params != "") description &= " (#params#)";

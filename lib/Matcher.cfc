@@ -4,6 +4,11 @@
 		return false;
 	}
 
+	function setExpectations(expectations, negate) {
+	  $expectations = expectations;
+	  $negateExpectations = negate;
+	}
+
 	function inspect(value) {
 		var keys = "";
 		var data = "";
