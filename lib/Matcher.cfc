@@ -19,7 +19,11 @@
 			return "'#replace(replace(value, '\', '\\', 'all'), "'", "\'", 'all')#'";
 
 		} else if (isObject(value)) {
-			return value.inspect();
+			try {
+				value = value.inspect();
+				if (isSimpleValue(value)) return value;
+			} catch (Any e) {}
+			return "&lt;#getMetaData(value).name#:???&gt;";
 
 		} else if (isStruct(value)) {
 			keys = listToArray(listSort(structKeyList(value), "textnocase"));
