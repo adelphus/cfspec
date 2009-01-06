@@ -21,12 +21,12 @@
     </it>
 
     <it should="provide a useful failure message">
-    	<cfset $matcher.isMatch(6)>
+      <cfset $matcher.isMatch(6)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected to be < 5, got 6")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("be < 5")>
+      <cfset $matcher.getDescription().shouldEqual("be < 5")>
     </it>
 
   </describe>  
@@ -50,12 +50,12 @@
     </it>
 
     <it should="provide a useful failure message">
-    	<cfset $matcher.isMatch(6)>
+      <cfset $matcher.isMatch(6)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected to be <= 5, got 6")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("be <= 5")>
+      <cfset $matcher.getDescription().shouldEqual("be <= 5")>
     </it>
 
   </describe>  
@@ -79,12 +79,12 @@
     </it>
 
     <it should="provide a useful failure message">
-    	<cfset $matcher.isMatch(4)>
+      <cfset $matcher.isMatch(4)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected to be >= 5, got 4")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("be >= 5")>
+      <cfset $matcher.getDescription().shouldEqual("be >= 5")>
     </it>
 
   </describe>  
@@ -108,12 +108,12 @@
     </it>
 
     <it should="provide a useful failure message">
-    	<cfset $matcher.isMatch(4)>
+      <cfset $matcher.isMatch(4)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected to be > 5, got 4")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("be > 5")>
+      <cfset $matcher.getDescription().shouldEqual("be > 5")>
     </it>
 
   </describe>  

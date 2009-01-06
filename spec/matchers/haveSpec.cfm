@@ -8,12 +8,12 @@
 
   <it should="match when target is a string with n characters">
     <cfset target = "abc">
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with n items">
     <cfset target = stub(getItems="abc")>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with size == n">
@@ -23,28 +23,28 @@
 
   <it should="match when target is a struct with n keys">
     <cfset target = {a="foo", b="bar", c="baz"}>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an array with n elements">
     <cfset target = ["a", "b", "c"]>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is a query with n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b,c"))>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="not match when target is a string with > n characters">
     <cfset target = "abcd">
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with > n items">
     <cfset target = stub(getItems="abcd")>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with size > n">
@@ -54,28 +54,28 @@
 
   <it should="not match when target is a struct with > n keys">
     <cfset target = {a="foo", b="bar", c="baz", d="bat"}>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an array with > n elements">
     <cfset target = ["a", "b", "c", "d"]>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is a query with > n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b,c,d"))>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is a string with < n characters">
     <cfset target = "ab">
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with < n items">
     <cfset target = stub(getItems="ab")>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with size < n">
@@ -85,27 +85,27 @@
 
   <it should="not match when target is a struct with < n keys">
     <cfset target = {a="foo", b="bar"}>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an array with < n elements">
     <cfset target = ["a", "b"]>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is a query with < n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b"))>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch("abcde")>
+    <cfset $matcher.isMatch("abcde")>
     <cfset $matcher.getFailureMessage().shouldEqual("expected 3 items, got 5")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("have 3 items")>
+    <cfset $matcher.getDescription().shouldEqual("have 3 items")>
   </it>
 
 </describe>
@@ -118,12 +118,12 @@
 
   <it should="match when target is a string with n characters">
     <cfset target = "abc">
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with n items">
     <cfset target = stub(getItems="abc")>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with size == n">
@@ -133,28 +133,28 @@
 
   <it should="match when target is a struct with n keys">
     <cfset target = {a="foo", b="bar", c="baz"}>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an array with n elements">
     <cfset target = ["a", "b", "c"]>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is a query with n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b,c"))>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is a string with > n characters">
     <cfset target = "abcd">
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with > n items">
     <cfset target = stub(getItems="abcd")>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with size > n">
@@ -164,28 +164,28 @@
 
   <it should="match when target is a struct with > n keys">
     <cfset target = {a="foo", b="bar", c="baz", d="bat"}>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an array with > n elements">
     <cfset target = ["a", "b", "c", "d"]>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is a query with > n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b,c,d"))>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="not match when target is a string with < n characters">
     <cfset target = "ab">
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with < n items">
     <cfset target = stub(getItems="ab")>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with size < n">
@@ -195,27 +195,27 @@
 
   <it should="not match when target is a struct with < n keys">
     <cfset target = {a="foo", b="bar"}>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an array with < n elements">
     <cfset target = ["a", "b"]>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is a query with < n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b"))>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch("ab")>
+    <cfset $matcher.isMatch("ab")>
     <cfset $matcher.getFailureMessage().shouldEqual("expected at least 3 items, got 2")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("have at least 3 items")>
+    <cfset $matcher.getDescription().shouldEqual("have at least 3 items")>
   </it>
 
 </describe>
@@ -228,12 +228,12 @@
 
   <it should="match when target is a string with n characters">
     <cfset target = "abc">
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with n items">
     <cfset target = stub(getItems="abc")>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with size == n">
@@ -243,28 +243,28 @@
 
   <it should="match when target is a struct with n keys">
     <cfset target = {a="foo", b="bar", c="baz"}>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an array with n elements">
     <cfset target = ["a", "b", "c"]>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is a query with n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b,c"))>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="not match when target is a string with > n characters">
     <cfset target = "abcd">
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with > n items">
     <cfset target = stub(getItems="abcd")>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an object with size > n">
@@ -274,28 +274,28 @@
 
   <it should="not match when target is a struct with > n keys">
     <cfset target = {a="foo", b="bar", c="baz", d="bat"}>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is an array with > n elements">
     <cfset target = ["a", "b", "c", "d"]>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="not match when target is a query with > n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b,c,d"))>
-  	<cfset $matcher.isMatch(target).shouldBeFalse()>
+    <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
 
   <it should="match when target is a string with < n characters">
     <cfset target = "ab">
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with < n items">
     <cfset target = stub(getItems="ab")>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an object with size < n">
@@ -305,27 +305,27 @@
 
   <it should="match when target is a struct with < n keys">
     <cfset target = {a="foo", b="bar"}>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is an array with < n elements">
     <cfset target = ["a", "b"]>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="match when target is a query with < n records">
     <cfset target = queryNew("")>
     <cfset queryAddColumn(target, "foo", listToArray("a,b"))>
-  	<cfset $matcher.isMatch(target).shouldBeTrue()>
+    <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch("abcde")>
+    <cfset $matcher.isMatch("abcde")>
     <cfset $matcher.getFailureMessage().shouldEqual("expected at most 3 items, got 5")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("have at most 3 items")>
+    <cfset $matcher.getDescription().shouldEqual("have at most 3 items")>
   </it>
 
 </describe>

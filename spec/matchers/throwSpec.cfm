@@ -14,19 +14,19 @@
   <it should="not match when target does not throw an exception">
     <cfset $target.getName().shouldNotThrow()>
   </it>
-	
+  
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch($target.getName())>
-	  <cfset $matcher.getFailureMessage().shouldEqual("expected to throw Any, got no exception")>
-	</it>
-	
-	<it should="provide a useful negative failure message">
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to throw Any, got no exception")>
+  </it>
+  
+  <it should="provide a useful negative failure message">
     <cfset $matcher.isMatch($target.getName())>
-	  <cfset $matcher.getNegativeFailureMessage().shouldMatch("expected not to throw Any, got no exception")>
-	</it>
+    <cfset $matcher.getNegativeFailureMessage().shouldMatch("expected not to throw Any, got no exception")>
+  </it>
   
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("throw Any")>
+    <cfset $matcher.getDescription().shouldEqual("throw Any")>
   </it>  
   
 </describe>

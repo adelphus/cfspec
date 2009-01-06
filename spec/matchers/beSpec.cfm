@@ -15,12 +15,12 @@
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch(false)>
+    <cfset $matcher.isMatch(false)>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be true, got false")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("be true")>
+    <cfset $matcher.getDescription().shouldEqual("be true")>
   </it>
 
 </describe>
@@ -40,12 +40,12 @@
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch(true)>
+    <cfset $matcher.isMatch(true)>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be false, got true")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("be false")>
+    <cfset $matcher.getDescription().shouldEqual("be false")>
   </it>
 
 </describe>
@@ -63,7 +63,7 @@
   <it should="not match when target is a string with non-whitespace characters">
     <cfset $matcher.isMatch("  x  ").shouldBeFalse()>
   </it>
-  
+
   <it should="match when actual is an object with isEmpty() == true">
     <cfset target = stub(isEmpty=true)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
@@ -73,7 +73,7 @@
     <cfset target = stub(isEmpty=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
-  
+
   <it should="match when actual is a struct with no keys">
     <cfset target = {}>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
@@ -106,17 +106,17 @@
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch("abc")>
+    <cfset $matcher.isMatch("abc")>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be empty, got 'abc'")>
   </it>
 
   <it should="provide a useful negative failure message">
-  	<cfset $matcher.isMatch("   ")>
+    <cfset $matcher.isMatch("   ")>
     <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be empty, got '   '")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("be empty")>
+    <cfset $matcher.getDescription().shouldEqual("be empty")>
   </it>
 
 </describe>
@@ -126,7 +126,7 @@
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("AnInstanceOf", "cfspec.spec.assets.Widget"))>
   </before>
-  
+
   <it should="match if target is an instance of the expected class">
     <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
@@ -144,18 +144,18 @@
 
   <it should="provide a useful failure message">
     <cfset target = stub()>
-  	<cfset $matcher.isMatch(target)>
+    <cfset $matcher.isMatch(target)>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be an instance of 'cfspec.spec.assets.Widget', got 'cfspec.lib.Stub'")>
   </it>
 
   <it should="provide a useful negative failure message">
     <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
-  	<cfset $matcher.isMatch(target)>
+    <cfset $matcher.isMatch(target)>
     <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be an instance of 'cfspec.spec.assets.Widget', got 'cfspec.spec.assets.Widget'")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("be an instance of 'cfspec.spec.assets.Widget'")>
+    <cfset $matcher.getDescription().shouldEqual("be an instance of 'cfspec.spec.assets.Widget'")>
   </it>
 
 </describe>
@@ -178,18 +178,18 @@
 
   <it should="provide a useful failure message">
     <cfset target = stub(isHappy=false)>
-  	<cfset $matcher.isMatch(target)>
+    <cfset $matcher.isMatch(target)>
     <cfset $matcher.getFailureMessage().shouldEqual("expected isHappy() to be true, got false")>
   </it>
 
   <it should="provide a useful negative failure message">
     <cfset target = stub(isHappy=true)>
-  	<cfset $matcher.isMatch(target)>
+    <cfset $matcher.isMatch(target)>
     <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected isHappy() to be false, got true")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("isHappy() to be true")>
+    <cfset $matcher.getDescription().shouldEqual("isHappy() to be true")>
   </it>
 
   <describe hint="with arguments">
@@ -210,18 +210,18 @@
 
     <it should="provide a useful failure message">
       <cfset target = createObject("component", "cfspec.spec.assets.SadGuy")>
-  	  <cfset $matcher.isMatch(target)>
+      <cfset $matcher.isMatch(target)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected isInMood('happy',42) to be true, got false")>
     </it>
 
     <it should="provide a useful negative failure message">
       <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
-  	  <cfset $matcher.isMatch(target)>
+      <cfset $matcher.isMatch(target)>
       <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected isInMood('happy',42) to be false, got true")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("isInMood('happy',42) to be true")>
+      <cfset $matcher.getDescription().shouldEqual("isInMood('happy',42) to be true")>
     </it>
 
   </describe>

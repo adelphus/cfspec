@@ -17,17 +17,17 @@
     </it>
 
     <it should="provide a useful failure message">
-  	  <cfset $matcher.isMatch(6)>
+      <cfset $matcher.isMatch(6)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected 5, got 6")>
     </it>
 
     <it should="provide a useful negative failure message">
-  	  <cfset $matcher.isMatch(5)>
+      <cfset $matcher.isMatch(5)>
       <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to equal 5, got 5")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal 5")>
+      <cfset $matcher.getDescription().shouldEqual("equal 5")>
     </it>
 
   </describe>
@@ -47,17 +47,17 @@
     </it>
 
     <it should="provide a useful failure message">
-  	  <cfset $matcher.isMatch(createDate(2001, 9, 12))>
+      <cfset $matcher.isMatch(createDate(2001, 9, 12))>
       <cfset $matcher.getFailureMessage().shouldEqual("expected 2001-09-11 12:00 AM, got 2001-09-12 12:00 AM")>
     </it>
 
     <it should="provide a useful negative failure message">
-  	  <cfset $matcher.isMatch(createDate(2001, 9, 11))>
+      <cfset $matcher.isMatch(createDate(2001, 9, 11))>
       <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to equal 2001-09-11 12:00 AM, got 2001-09-11 12:00 AM")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal 2001-09-11 12:00 AM")>
+      <cfset $matcher.getDescription().shouldEqual("equal 2001-09-11 12:00 AM")>
     </it>
 
   </describe>
@@ -77,17 +77,17 @@
     </it>
 
     <it should="provide a useful failure message">
-  	  <cfset $matcher.isMatch(false)>
+      <cfset $matcher.isMatch(false)>
       <cfset $matcher.getFailureMessage().shouldEqual("expected true, got false")>
     </it>
 
     <it should="provide a useful negative failure message">
-  	  <cfset $matcher.isMatch(true)>
+      <cfset $matcher.isMatch(true)>
       <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to equal true, got true")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal true")>
+      <cfset $matcher.getDescription().shouldEqual("equal true")>
     </it>
 
   </describe>
@@ -107,17 +107,17 @@
     </it>
 
     <it should="provide a useful failure message">
-  	  <cfset $matcher.isMatch("WHO IS JOHN GALT?")>
+      <cfset $matcher.isMatch("WHO IS JOHN GALT?")>
       <cfset $matcher.getFailureMessage().shouldEqual("expected 'Who is John Galt?', got 'WHO IS JOHN GALT?'")>
     </it>
 
     <it should="provide a useful negative failure message">
-  	  <cfset $matcher.isMatch("Who is John Galt?")>
+      <cfset $matcher.isMatch("Who is John Galt?")>
       <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to equal 'Who is John Galt?', got 'Who is John Galt?'")>
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal 'Who is John Galt?'")>
+      <cfset $matcher.getDescription().shouldEqual("equal 'Who is John Galt?'")>
     </it>
 
   </describe>
@@ -152,7 +152,7 @@
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal &lt;SupportsEquals:4C2A904BAFBA06591225113AD17B5CEC&gt;")>
+      <cfset $matcher.getDescription().shouldEqual("equal &lt;SupportsEquals:4C2A904BAFBA06591225113AD17B5CEC&gt;")>
     </it>
 
   </describe>
@@ -187,7 +187,7 @@
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal {A='foo',B='bar',C='baz'}")>
+      <cfset $matcher.getDescription().shouldEqual("equal {A='foo',B='bar',C='baz'}")>
     </it>
 
   </describe>
@@ -221,7 +221,7 @@
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal ['a','b','c']")>
+      <cfset $matcher.getDescription().shouldEqual("equal ['a','b','c']")>
     </it>
 
   </describe>
@@ -271,7 +271,7 @@
     </it>
 
     <it should="describe itself">
-    	<cfset $matcher.getDescription().shouldEqual("equal {COLUMNS=['BAR','BAZ','FOO'],DATA=[['b','c','a'],['e','f','d'],['h','i','g']]}")>
+      <cfset $matcher.getDescription().shouldEqual("equal {COLUMNS=['BAR','BAZ','FOO'],DATA=[['b','c','a'],['e','f','d'],['h','i','g']]}")>
     </it>
 
   </describe>

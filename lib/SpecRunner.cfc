@@ -82,7 +82,7 @@
       </cfif>
       <cfinclude template="#specFile#">
       <cfif not isSimpleValue(cfspec.exception)>
-      	<cfset createObject("component", "cfspec.lib.Matcher").rethrow(cfspec.exception)>
+        <cfset createObject("component", "cfspec.lib.Matcher").rethrow(cfspec.exception)>
       </cfif>
       <cfcatch type="cfspec">
         <cfoutput><p class="#listLast(cfcatch.type, '.')#">should #cfcatch.message#</p></cfoutput>

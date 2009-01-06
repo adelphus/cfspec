@@ -15,17 +15,17 @@
   </it>
 
   <it should="provide a useful failure message">
-  	<cfset $matcher.isMatch("Interest")>
+    <cfset $matcher.isMatch("Interest")>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to contain 'in', got 'Interest'")>
   </it>
 
   <it should="provide a useful negative failure message">
-  	<cfset $matcher.isMatch("splinter")>
+    <cfset $matcher.isMatch("splinter")>
     <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to contain 'in', got 'splinter'")>
   </it>
 
   <it should="describe itself">
-  	<cfset $matcher.getDescription().shouldEqual("contain 'in'")>
+    <cfset $matcher.getDescription().shouldEqual("contain 'in'")>
   </it>
 
   <describe hint="NoCase">

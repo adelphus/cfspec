@@ -1,7 +1,7 @@
 <cfcomponent output="false"><cfscript>
   
   function getName() {
-  	return "Widget";
+    return "Widget";
   }
   
 </cfscript></cfcomponent>

@@ -70,20 +70,20 @@
       <cfset level1BeforeVar++>
     </before>
 
-	  <it should="see variables from 'beforeAll' and 'before' (level 1 & 2)">
-	    <cfset $(isDefined("level1BeforeAllVar")).shouldBeTrue()>
-	    <cfset $(isDefined("level1BeforeVar")).shouldBeTrue()>
-	    <cfset $(isDefined("level2BeforeAllVar")).shouldBeTrue()>
-	    <cfset $(isDefined("level2BeforeVar")).shouldBeTrue()>
-	  </it>
+    <it should="see variables from 'beforeAll' and 'before' (level 1 & 2)">
+      <cfset $(isDefined("level1BeforeAllVar")).shouldBeTrue()>
+      <cfset $(isDefined("level1BeforeVar")).shouldBeTrue()>
+      <cfset $(isDefined("level2BeforeAllVar")).shouldBeTrue()>
+      <cfset $(isDefined("level2BeforeVar")).shouldBeTrue()>
+    </it>
 
-	  <it should="see updates to variables from level 1 that were made in 'before' (level 1)">
+    <it should="see updates to variables from level 1 that were made in 'before' (level 1)">
       <cfset $(level1BeforeAllVar).shouldEqual(500+1+1)>
-	  </it>
+    </it>
 
-	  <it should="see updates to variables from level 1 that were made in 'before' (level 2)">
+    <it should="see updates to variables from level 1 that were made in 'before' (level 2)">
       <cfset $(level1BeforeVar).shouldEqual(1+1)>
-	  </it>
+    </it>
 
     <afterAll>
       <cfset level1BeforeAllVar = 1001>
@@ -110,8 +110,8 @@
         <describe hint="nested">
 
           <it should="not see variables from a previous nested 'descibe'">
-	          <cfset $(isDefined("level2BeforeAllVar")).shouldBeFalse()>
-      	    <cfset $(isDefined("level2BeforeVar")).shouldBeFalse()>
+            <cfset $(isDefined("level2BeforeAllVar")).shouldBeFalse()>
+            <cfset $(isDefined("level2BeforeVar")).shouldBeFalse()>
           </it>
 
         </describe>
