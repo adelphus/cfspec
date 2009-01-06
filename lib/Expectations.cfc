@@ -33,14 +33,14 @@
     }
     return true;
   }
-  
+
   function onMissingMethod(missingMethodName, missingMethodArguments) {
     var regexp = "";
     var matchData = "";
     var matcher = "";
     var args = "";
     var flatArgs = "";
-    var result = "";    
+    var result = "";
     var i = "";
     var j = "";
     var k = "";
@@ -103,6 +103,7 @@
         $runner.setExpectedException(e);
         return $runner.$(this);
       }
+      if (!isDefined("result")) result = false;
       return $runner.$(result);
     } else {
       createObject("component", "cfspec.lib.Matcher").throw("Application", "The method #missingMethodName# was not found.");
