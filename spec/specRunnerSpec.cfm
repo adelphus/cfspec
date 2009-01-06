@@ -119,8 +119,8 @@
     </describe>
   </describe>
 
-  <it should="see updates made by through the previous nested 'describe'">
-    <cfset $(level1BeforeAllVar).shouldEqual(5)>
+  <it should="see updates made through the previous nested 'describe'">
+    <cfset $(level1BeforeAllVar).shouldEqual(5+1)>
   </it>
 
   <after>
