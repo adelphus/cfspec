@@ -56,6 +56,18 @@
 
   </describe>
 
+  <describe hint="Contain">
+
+    <it should="expect shouldContain to return true">
+      <cfset $("life").shouldContain("if")>
+    </it>
+
+    <it should="expect shouldContainNoCase to return true">
+      <cfset $("life").shouldContainNoCase("IF")>
+    </it>
+
+  </describe>
+
   <describe hint="Equal">
 
     <it should="expect shouldEqual to return true">

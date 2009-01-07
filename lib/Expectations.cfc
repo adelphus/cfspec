@@ -6,7 +6,7 @@
     "Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)/BeComparison",
     "Have(AtLeast|AtMost|Exactly)?/Have",
     "Match(NoCase)?/Match",
-    "Contain/Contain",
+    "Contain(NoCase)?/Contain",
     "Be(.+)/Be",
     "Throw/Throw"
   ];
