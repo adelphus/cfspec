@@ -18,12 +18,12 @@
 
     case "True":
       if (arrayLen($args) != 0) throw("Application", "The BeTrue matcher expected 0 arguments, got #arrayLen($args)#.");
-    	if (not isBoolean($actual)) throw("cfspec.fail", "BeTrue expected a boolean, got #inspect($actual)#");
+      if (not isBoolean($actual)) throw("cfspec.fail", "BeTrue expected a boolean, got #inspect($actual)#");
       return $actual eq true;
 
     case "False":
       if (arrayLen($args) != 0) throw("Application", "The BeFalse matcher expected 0 arguments, got #arrayLen($args)#.");
-    	if (not isBoolean($actual)) throw("cfspec.fail", "BeFalse expected a boolean, got #inspect($actual)#");
+      if (not isBoolean($actual)) throw("cfspec.fail", "BeFalse expected a boolean, got #inspect($actual)#");
       return $actual eq false;
 
     case "SimpleValue":
@@ -41,6 +41,22 @@
     case "Boolean":
       if (arrayLen($args) != 0) throw("Application", "The BeBoolean matcher expected 0 arguments, got #arrayLen($args)#.");
       return isBoolean($actual);
+
+    case "Object":
+      if (arrayLen($args) != 0) throw("Application", "The BeObject matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isObject($actual);
+
+    case "Struct":
+      if (arrayLen($args) != 0) throw("Application", "The BeStruct matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isStruct($actual);
+
+    case "Array":
+      if (arrayLen($args) != 0) throw("Application", "The BeArray matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isArray($actual);
+
+    case "Query":
+      if (arrayLen($args) != 0) throw("Application", "The BeQuery matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isQuery($actual);
 
     case "Empty":
       if (arrayLen($args) != 0) throw("Application", "The BeEmpty matcher expected 0 arguments, got #arrayLen($args)#.");
@@ -97,6 +113,10 @@
       case "Numeric":      return iif(negative, de('not '), de('')) & "to be numeric";
       case "Date":         return iif(negative, de('not '), de('')) & "to be a date";
       case "Boolean":      return iif(negative, de('not '), de('')) & "to be a boolean";
+      case "Object":       return iif(negative, de('not '), de('')) & "to be an object";
+      case "Struct":       return iif(negative, de('not '), de('')) & "to be a struct";
+      case "Array":        return iif(negative, de('not '), de('')) & "to be an array";
+      case "Query":        return iif(negative, de('not '), de('')) & "to be a query";
       case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
       case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
       default:

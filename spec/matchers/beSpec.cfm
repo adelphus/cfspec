@@ -196,6 +196,136 @@
 
 </describe>
 
+<describe hint="Be Object">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Object"))>
+  </before>
+
+  <it should="match when actual is an object">
+    <cfset $matcher.isMatch(stub()).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not an object">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be an object, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(stub())>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be an object, got &lt;cfspec.lib.Stub:???&gt;")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be an object")>
+  </it>
+
+</describe>
+
+<describe hint="Be Struct">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Struct"))>
+  </before>
+
+  <it should="match when actual is a struct">
+    <cfset s = {foo=1, bar=2}>
+    <cfset $matcher.isMatch(s).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a struct">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a struct, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset s = {foo=1, bar=2}>
+    <cfset $matcher.isMatch(s)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a struct, got {BAR=2,FOO=1}")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a struct")>
+  </it>
+
+</describe>
+
+<describe hint="Be Array">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Array"))>
+  </before>
+
+  <it should="match when actual is an array">
+    <cfset a = [1, 2, 3]>
+    <cfset $matcher.isMatch(a).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not an array">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be an array, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset a = [1, 2, 3]>
+    <cfset $matcher.isMatch(a)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be an array, got [1,2,3]")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be an array")>
+  </it>
+
+</describe>
+
+<describe hint="Be Query">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Query"))>
+  </before>
+
+  <it should="match when actual is a query">
+    <cfset q = queryNew("")>
+    <cfset queryAddColumn(q, "foo", listToArray("1,2"))>
+    <cfset queryAddColumn(q, "bar", listToArray("3,4"))>
+    <cfset $matcher.isMatch(q).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a query">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a query, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset q = queryNew("")>
+    <cfset queryAddColumn(q, "foo", listToArray("1,2"))>
+    <cfset queryAddColumn(q, "bar", listToArray("3,4"))>
+    <cfset $matcher.isMatch(q)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a query, got {COLUMNS=['BAR','FOO'],DATA=[[3,1],[4,2]]}")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a query")>
+  </it>
+
+</describe>
+
 <describe hint="Be Empty">
 
   <before>

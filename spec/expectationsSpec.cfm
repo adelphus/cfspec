@@ -12,6 +12,43 @@
       <cfset $(false).shouldBeFalse()>
     </it>
 
+    <it should="expect shouldBeSimpleValue to return true">
+      <cfset $("foo").shouldBeSimpleValue()>
+    </it>
+
+    <it should="expect shouldBeNumeric to return true">
+      <cfset $(42).shouldBeNumeric()>
+    </it>
+
+    <it should="expect shouldBeDate to return true">
+      <cfset $(now()).shouldBeDate()>
+    </it>
+
+    <it should="expect shouldBeBoolean to return true">
+      <cfset $(false).shouldBeBoolean()>
+    </it>
+
+    <it should="expect shouldBeObject to return true">
+      <cfset $(stub()).shouldBeObject()>
+    </it>
+
+    <it should="expect shouldBeStruct to return true">
+      <cfset s = {foo=1, bar=2}>
+      <cfset $(s).shouldBeStruct()>
+    </it>
+
+    <it should="expect shouldBeArray to return true">
+      <cfset a = [1, 2, 3]>
+      <cfset $(a).shouldBeArray()>
+    </it>
+
+    <it should="expect shouldBeQuery to return true">
+      <cfset q = queryNew("")>
+      <cfset queryAddColumn(q, "foo", listToArray("1,2"))>
+      <cfset queryAddColumn(q, "bar", listToArray("3,4"))>
+      <cfset $(q).shouldBeQuery()>
+    </it>
+
     <it should="expect shouldBeEmpty to return true">
       <cfset $("").shouldBeEmpty()>
     </it>
