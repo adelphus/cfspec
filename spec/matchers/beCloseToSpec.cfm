@@ -39,8 +39,21 @@
     <cfset $matcher.getFailureMessage().shouldEqual("expected 5 +/- (< 0.5), got 5.51")>
   </it>
 
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(5)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected 5 +/- (>= 0.5), got 5")>
+  </it>
+
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("be close to 5 (within +/- 0.5)")>
   </it>
+
+  <describe hint="bad types">
+    
+    <it should="provide a useful failure message if actual is non-numeric">
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeCloseTo expected a number, got")>
+    </it>
+
+  </describe>
 
 </describe>
