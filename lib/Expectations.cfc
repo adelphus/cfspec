@@ -21,6 +21,10 @@
     return $runner.getExpectedException();
   }
 
+  function setExpectedException(e) {
+    return $runner.setExpectedException(e);
+  }
+
   function resumeDelayedMatcher(matcher, negate) {
     var result = matcher.isMatch($target);
 
@@ -87,7 +91,7 @@
             return $runner.fail(matcher.getFailureMessage());
           }
         }
-        return true;
+        return this;
       }
     }
 

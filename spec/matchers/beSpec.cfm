@@ -265,11 +265,11 @@
     <describe hint="bad types">
     
       <it should="provide a useful failure message if actual.isPredicate() returns a non-boolean">
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected actual.isHappy('happy',42) to return a boolean, got")>
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected actual.isInMood('happy',42) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if actual doesn't implement isPredicate">
-        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeInMood expected actual.isHappy('happy', 42) to return a boolean, but the method was not found.")>
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeInMood expected actual.isInMood('happy',42) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>

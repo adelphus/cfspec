@@ -485,13 +485,13 @@
       <it should="provide a useful failure message if actual.isEqualTo() returns a non-boolean">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
         <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, got")>
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Equal expected actual.isEqualTo(expected) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if actual.isEqualTo() is not implemented">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
         <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
-        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "Equal expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>

@@ -67,7 +67,7 @@
     </it>
 
     <it should="expect shouldEqualNumeric to return true">
-      <cfset $(123).shouldEqualNumeric("123foo")>
+      <cfset $(123).shouldEqualNumeric("123.0")>
     </it>
 
     <it should="expect shouldEqualDate to return true">
