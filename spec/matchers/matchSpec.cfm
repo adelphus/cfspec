@@ -40,4 +40,12 @@
 
   </describe>  
 
+  <describe hint="bad types">
+    
+    <it should="provide a useful failure message if actual is not a simple type">
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Match expected a simple value, got")>
+    </it>
+
+  </describe>
+
 </describe>

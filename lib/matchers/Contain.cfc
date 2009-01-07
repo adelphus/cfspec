@@ -4,7 +4,7 @@
     $noCase = len(noCase);
     if (arrayLen(arguments) != 2) throw("Application", "The Contain matcher expected 1 argument, got 0.");
     $expected = arguments[2];
-    if (not isSimpleValue($expected)) throw("Application", "The EXPECTED parameter to the BeCloseTo matcher must be a simple value.");
+    if (not isSimpleValue($expected)) throw("Application", "The EXPECTED parameter to the Contain matcher must be a simple value.");
     return this;
   }
 
