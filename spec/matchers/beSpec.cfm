@@ -29,7 +29,7 @@
   </it>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual is non-boolean">
       <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeTrue expected a boolean, got")>
     </it>
@@ -67,12 +67,132 @@
   </it>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual is non-boolean">
       <cfset $matcher.isMatch("").shouldThrow("cfspec.fail", "BeFalse expected a boolean, got")>
     </it>
 
   </describe>
+
+</describe>
+
+<describe hint="Be SimpleValue">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("SimpleValue"))>
+  </before>
+
+  <it should="match when actual is a simple value">
+    <cfset $matcher.isMatch("foo").shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a simple value">
+    <cfset $matcher.isMatch(stub()).shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch(stub())>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a simple value, got &lt;cfspec.lib.Stub:???&gt;")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a simple value, got 'foo'")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a simple value")>
+  </it>
+
+</describe>
+
+<describe hint="Be Numeric">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Numeric"))>
+  </before>
+
+  <it should="match when actual is numeric">
+    <cfset $matcher.isMatch(42).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not numeric">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be numeric, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(42)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be numeric, got 42")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be numeric")>
+  </it>
+
+</describe>
+
+<describe hint="Be Date">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Date"))>
+  </before>
+
+  <it should="match when actual is a date">
+    <cfset $matcher.isMatch(now()).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a date">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a date, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(createDate(2009, 1, 6))>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a date, got 2009-01-06 12:00 AM")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a date")>
+  </it>
+
+</describe>
+
+<describe hint="Be Boolean">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Boolean"))>
+  </before>
+
+  <it should="match when actual is a boolean">
+    <cfset $matcher.isMatch(true).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a boolean">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a boolean, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(false)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a boolean, got false")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a boolean")>
+  </it>
 
 </describe>
 
@@ -146,7 +266,7 @@
   </it>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual.isEmpty() returns a non-boolean">
       <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got")>
     </it>
@@ -263,7 +383,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual.isPredicate() returns a non-boolean">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected actual.isInMood('happy',42) to return a boolean, got")>
       </it>

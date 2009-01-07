@@ -18,13 +18,29 @@
 
     case "True":
       if (arrayLen($args) != 0) throw("Application", "The BeTrue matcher expected 0 arguments, got #arrayLen($args)#.");
-    	if (not isBoolean($actual)) throw("cfspec.fail", "BeTrue expected a boolean, got #inspect($actual)#");    
+    	if (not isBoolean($actual)) throw("cfspec.fail", "BeTrue expected a boolean, got #inspect($actual)#");
       return $actual eq true;
 
     case "False":
       if (arrayLen($args) != 0) throw("Application", "The BeFalse matcher expected 0 arguments, got #arrayLen($args)#.");
-    	if (not isBoolean($actual)) throw("cfspec.fail", "BeFalse expected a boolean, got #inspect($actual)#");    
+    	if (not isBoolean($actual)) throw("cfspec.fail", "BeFalse expected a boolean, got #inspect($actual)#");
       return $actual eq false;
+
+    case "SimpleValue":
+      if (arrayLen($args) != 0) throw("Application", "The BeSimpleValue matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isSimpleValue($actual);
+
+    case "Numeric":
+      if (arrayLen($args) != 0) throw("Application", "The BeNumeric matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isNumeric($actual);
+
+    case "Date":
+      if (arrayLen($args) != 0) throw("Application", "The BeDate matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isDate($actual);
+
+    case "Boolean":
+      if (arrayLen($args) != 0) throw("Application", "The BeBoolean matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isBoolean($actual);
 
     case "Empty":
       if (arrayLen($args) != 0) throw("Application", "The BeEmpty matcher expected 0 arguments, got #arrayLen($args)#.");
@@ -36,7 +52,7 @@
         if (e.message != "The method isEmpty was not found.") rethrow(e);
         throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, but the method was not found.");
       }
-    	if (not isBoolean($actual)) throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got #inspect($actual)#");
+      if (not isBoolean($actual)) throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got #inspect($actual)#");
       return $actual;
 
     case "AnInstanceOf":
@@ -45,7 +61,7 @@
       try {
         $actual = getMetaData($actual).name;
       } catch (Any e) {
-      	$actual = "???";
+        $actual = "???";
       }
       return isInstanceOf(actual, $args[1]);
 
@@ -56,7 +72,7 @@
         if (e.message != "The method is#$predicate# was not found.") rethrow(e);
         throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, but the method was not found.");
       }
-    	if (not isBoolean($actual)) throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, got #inspect($actual)#");
+      if (not isBoolean($actual)) throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, got #inspect($actual)#");
       return $actual;
     }
   }
@@ -77,6 +93,10 @@
     switch ($predicate) {
       case "True":         return iif(negative, de('not '), de('')) & "to be true";
       case "False":        return iif(negative, de('not '), de('')) & "to be false";
+      case "SimpleValue":  return iif(negative, de('not '), de('')) & "to be a simple value";
+      case "Numeric":      return iif(negative, de('not '), de('')) & "to be numeric";
+      case "Date":         return iif(negative, de('not '), de('')) & "to be a date";
+      case "Boolean":      return iif(negative, de('not '), de('')) & "to be a boolean";
       case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
       case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
       default:
