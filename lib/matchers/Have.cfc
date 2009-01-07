@@ -1,8 +1,10 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init(relativity, expected) {
+  function init(relativity) {
     $relativity = relativity;
-    $expected = expected;
+    if (arrayLen(arguments) != 2) throw("Application", "The Have#$relativity# matcher expected 1 argument, got 0.");
+    $expected = arguments[2];
+    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Have#$relativity# matcher must be numeric.");
     return this;
   }
 
@@ -24,7 +26,13 @@
       $given = len(collection);
 
     } else if (isObject(collection)) {
-      $given = collection.size();
+      try {
+        $given = collection.size();
+      } catch (Application e) {
+        if (e.message != "The method size was not found.") rethrow(e);
+        throw("cfspec.fail", "Have#$relativity# expected actual.size() to return a number, but the method was not found.");
+      }
+      if (not isNumeric($given)) throw("cfspec.fail", "Have#$relativity# expected actual.size() to return a number, got #inspect($given)#");
 
     } else if (isStruct(collection)) {
       $given = structCount(collection);

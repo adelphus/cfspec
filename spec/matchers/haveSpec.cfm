@@ -108,6 +108,18 @@
     <cfset $matcher.getDescription().shouldEqual("have 3 items")>
   </it>
 
+  <describe hint="bad types">
+    
+    <it should="provide a useful failure message if actual.size() returns a non-numeric">
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "HaveExactly expected actual.size() to return a number, got")>
+    </it>
+
+    <it should="provide a useful failure message if actual doesn't implement size">
+      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "HaveExactly expected actual.size() to return a number, but the method was not found.")>
+    </it>
+
+  </describe>
+
 </describe>
 
 <describe hint="HaveAtLeast(n).items()">
