@@ -19,9 +19,22 @@
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be true, got false")>
   </it>
 
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(true)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be true, got true")>
+  </it>
+
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("be true")>
   </it>
+
+  <describe hint="bad types">
+    
+    <it should="provide a useful failure message if actual is non-boolean">
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeTrue expected a boolean, got")>
+    </it>
+
+  </describe>
 
 </describe>
 
@@ -44,9 +57,22 @@
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be false, got true")>
   </it>
 
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(false)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be false, got false")>
+  </it>
+
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("be false")>
   </it>
+
+  <describe hint="bad types">
+    
+    <it should="provide a useful failure message if actual is non-boolean">
+      <cfset $matcher.isMatch("").shouldThrow("cfspec.fail", "BeFalse expected a boolean, got")>
+    </it>
+
+  </describe>
 
 </describe>
 
@@ -118,6 +144,18 @@
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("be empty")>
   </it>
+
+  <describe hint="bad types">
+    
+    <it should="provide a useful failure message if actual.isEmpty() returns a non-boolean">
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got")>
+    </it>
+
+    <it should="provide a useful failure message if actual doesn't implement isEmpty">
+      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, but the method was not found.")>
+    </it>
+
+  </describe>
 
 </describe>
 
@@ -223,6 +261,18 @@
     <it should="describe itself">
       <cfset $matcher.getDescription().shouldEqual("isInMood('happy',42) to be true")>
     </it>
+
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual.isPredicate() returns a non-boolean">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected actual.isHappy('happy',42) to return a boolean, got")>
+      </it>
+
+      <it should="provide a useful failure message if actual doesn't implement isPredicate">
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeInMood expected actual.isHappy('happy', 42) to return a boolean, but the method was not found.")>
+      </it>
+
+    </describe>
 
   </describe>
 

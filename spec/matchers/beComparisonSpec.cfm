@@ -34,10 +34,6 @@
       <cfset $matcher.getDescription().shouldEqual("be < 5")>
     </it>
 
-    <it should="???">
-      <cfset $matcher.getDescription().shouldEqual("be < 5")>
-    </it>
-
   </describe>  
 
   <describe hint="less than or equal to">

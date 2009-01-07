@@ -17,23 +17,46 @@
     switch ($predicate) {
 
     case "True":
+      if (arrayLen($args) != 0) throw("Application", "The BeTrue matcher expected 0 arguments, got #arrayLen($args)#.");
+    	if (not isBoolean($actual)) throw("cfspec.fail", "BeTrue expected a boolean, got #inspect($actual)#");    
       return $actual eq true;
 
     case "False":
+      if (arrayLen($args) != 0) throw("Application", "The BeFalse matcher expected 0 arguments, got #arrayLen($args)#.");
+    	if (not isBoolean($actual)) throw("cfspec.fail", "BeFalse expected a boolean, got #inspect($actual)#");    
       return $actual eq false;
 
     case "Empty":
+      if (arrayLen($args) != 0) throw("Application", "The BeEmpty matcher expected 0 arguments, got #arrayLen($args)#.");
       if (isSimpleValue($actual)) return trim($actual) == "";
       if (isQuery($actual)) return $actual.recordCount == 0;
-      $actual = actual.isEmpty();
+      try {
+        $actual = actual.isEmpty();
+      } catch (Application e) {
+        if (e.message != "The method isEmpty was not found.") rethrow(e);
+        throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, but the method was not found.");
+      }
+    	if (not isBoolean($actual)) throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got #inspect($actual)#");
       return $actual;
 
     case "AnInstanceOf":
-      $actual = getMetaData($actual).name;
+      if (arrayLen($args) != 1) throw("Application", "The BeEmpty matcher expected 1 argument, got #arrayLen($args)#.");
+      if (not isSimpleValue($args[1])) throw("Application", "The CLASSNAME parameter to the BeEmpty matcher must be a string.");
+      try {
+        $actual = getMetaData($actual).name;
+      } catch (Any e) {
+      	$actual = "???";
+      }
       return isInstanceOf(actual, $args[1]);
 
     default:
-      $actual = evaluate("$actual.is#$predicate#(#$flatArgs#)");
+      try {
+        $actual = evaluate("$actual.is#$predicate#(#$flatArgs#)");
+      } catch (Application e) {
+        if (e.message != "The method is#$predicate# was not found.") rethrow(e);
+        throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, but the method was not found.");
+      }
+    	if (not isBoolean($actual)) throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, got #inspect($actual)#");
       return $actual;
     }
   }
@@ -57,9 +80,12 @@
       case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
       case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
       default:
-        return "is#$predicate#(#reReplace(inspect($args), '^\[(.*)\]$', '\1')#) to be "
-                & iif(negative, de('false'), de('true'));
+        return "#predicateMethod()# to be " & iif(negative, de('false'), de('true'));
     }
+  }
+
+  function predicateMethod() {
+    return "is#$predicate#(#reReplace(inspect($args), '^\[(.*)\]$', '\1')#)";
   }
 
 </cfscript></cfcomponent>
