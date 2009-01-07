@@ -47,18 +47,18 @@
     <cfset var backup = {}>
     <cfset var key = "">
     <cfloop collection="#variables#" item="key">
-      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,INIT,MOCK,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXCEPTION,STUB,THIS", key)>
+      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,GETEXPECTEDEXCEPTION,GETINFLECTOR,INIT,MOCK,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXPECTEDEXCEPTION,STUB,THIS", key)>
         <cfset backup[key] = variables[key]>
       </cfif>
     </cfloop>
     <cfreturn backup>
   </cffunction>
-  
+
   <cffunction name="restoreVariables" output="false">
     <cfargument name="backup">
     <cfset var key = "">
     <cfloop collection="#variables#" item="key">
-      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,INIT,MOCK,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXCEPTION,STUB,THIS", key)>
+      <cfif not listFind("$,CFSPEC,FAIL,FORMATEXCEPTION,GETEXPECTEDEXCEPTION,GETINFLECTOR,INIT,MOCK,PEND,RESTOREVARIABLES,RUN,RUNTARGET,SAVEVARIABLES,SETEXPECTEDEXCEPTION,STUB,THIS", key)>
         <cfset structDelete(variables, key)>
       </cfif>
     </cfloop>
@@ -96,7 +96,7 @@
             <cfset cfspec.context[i][key] = variables[key]>
             <cfset structDelete(variables, key)>
           </cfif>
-        </cfloop>      
+        </cfloop>
       </cfloop>
       <cfif cfspec.saveContext>
         <cfset structAppend(cfspec.context[1], saveVariables())>
@@ -114,7 +114,7 @@
     <cfloop array="#cfcatch.tagContext#" index="context">
       <cfoutput><pre>   #iif(isDefined('context.id'), 'context.id', de('???'))# at #context.template#(#context.line#,#context.column#)</pre></cfoutput>
     </cfloop>
-    <cfoutput></small></p></cfoutput>  
+    <cfoutput></small></p></cfoutput>
   </cffunction>
 
   <cffunction name="setExpectedException" output="false">
@@ -126,6 +126,13 @@
     <cfset var exception = cfspec.exception>
     <cfset cfspec.exception = "">
     <cfreturn exception>
+  </cffunction>
+
+  <cffunction name="getInflector">
+    <cfif not isDefined("cfspec.inflector")>
+      <cfset cfspec.inflector = createObject("component", "cfspec.util.Inflector").init()>
+    </cfif>
+    <cfreturn cfspec.inflector>
   </cffunction>
 
   <cffunction name="$" returntype="Expectations" output="false">

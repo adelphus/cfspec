@@ -25,6 +25,10 @@
     return $runner.setExpectedException(e);
   }
 
+  function getInflector() {
+    return $runner.getInflector();
+  }
+
   function resumeDelayedMatcher(matcher, negate) {
     var result = matcher.isMatch($target);
 

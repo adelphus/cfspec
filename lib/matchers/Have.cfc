@@ -9,6 +9,7 @@
   }
 
   function isMatch(collectionOwner) {
+    var pluralCollectionName = "";
     var collection = "";
 
     if (isObject(collectionOwner)) {
@@ -16,7 +17,17 @@
         collection = evaluate("collectionOwner.get#$collectionName#()");
       } catch(Application e) {
         if (!reFindNoCase("the method get#$collectionName# was not found", e.message)) rethrow(e);
-        collection = collectionOwner;
+        try {
+          pluralCollectionName = $expectations.getInflector().pluralize($collectionName);
+          if (pluralCollectionName != $collectionName) {
+            collection = evaluate("collectionOwner.get#pluralCollectionName#()");
+          } else {
+            collection = collectionOwner;
+          }
+        } catch(Application e) {
+          if (!reFindNoCase("the method get#pluralCollectionName# was not found", e.message)) rethrow(e);
+          collection = collectionOwner;
+        }
       }
     } else {
       collection = collectionOwner;
@@ -78,5 +89,5 @@
       default:        return n;
     }
   }
-  
+
 </cfscript></cfcomponent>

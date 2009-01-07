@@ -4,6 +4,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("Exactly", 3).items())>
+    <cfset $matcher.setExpectations($(0), false)>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -109,7 +110,7 @@
   </it>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual.size() returns a non-numeric">
       <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "HaveExactly expected actual.size() to return a number, got")>
     </it>
@@ -126,6 +127,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtLeast", 3).items())>
+    <cfset $matcher.setExpectations($(0), false)>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -236,6 +238,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtMost", 3).items())>
+    <cfset $matcher.setExpectations($(0), false)>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -338,6 +341,15 @@
 
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("have at most 3 items")>
+  </it>
+
+</describe>
+
+<describe hint="HaveExactly(n).item() -- should pluralize to getItems()">
+
+  <it should="match when target is an object with n items">
+    <cfset target = stub(getItems="a", stubMissingMethod=false)>
+    <cfset $(target).shouldHave(1).item()>
   </it>
 
 </describe>
