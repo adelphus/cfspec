@@ -1,13 +1,16 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init(comparison, expected) {
-    $comparison = comparison;
-    $expected = expected;
+  function init() {
+    $comparison = arguments[1];
+    if (arrayLen(arguments) != 2) throw("Application", "The Be#$comparison# matcher expected 1 argument, got #arrayLen(arguments)-1#.");
+    $expected = arguments[2];
+    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Be#$comparison# matcher must be numeric.");
     return this;
   }
 
   function isMatch(actual) {
     $actual = actual;
+  	if (not isNumeric($actual)) throw("cfspec.fail", "Be#$comparison# expected a number, got #inspect($actual)#");
     switch ($comparison) {
       case "LessThan":             return $actual < $expected;
       case "LessThanOrEqualTo":    return $actual <= $expected;
@@ -19,6 +22,10 @@
 
   function getFailureMessage() {
     return "expected to be #comparisonOperator()# #inspect($expected)#, got #inspect($actual)#";
+  }
+
+  function getNegativeFailureMessage() {
+    return "expected not to be #comparisonOperator()# #inspect($expected)#, got #inspect($actual)#";
   }
 
   function getDescription() {
@@ -33,5 +40,5 @@
       case "GreaterThan":          return ">";
     }
   }
-
+  
 </cfscript></cfcomponent>
