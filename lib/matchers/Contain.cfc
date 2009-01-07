@@ -1,13 +1,16 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init(noCase, expected) {
+  function init(noCase) {
     $noCase = len(noCase);
-    $expected = expected;
+    if (arrayLen(arguments) != 2) throw("Application", "The Contain matcher expected 1 argument, got 0.");
+    $expected = arguments[2];
+    if (not isSimpleValue($expected)) throw("Application", "The EXPECTED parameter to the BeCloseTo matcher must be a simple value.");
     return this;
   }
 
   function isMatch(actual) {
     $actual = actual;
+  	if (not isSimpleValue($actual)) throw("cfspec.fail", "Contain expected a simple value, got #inspect($actual)#");
     if ($noCase) {
       return reFindNoCase($expected, actual) > 0;
     } else {
