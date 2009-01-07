@@ -2,7 +2,7 @@
 
   function init(relativity) {
     $relativity = relativity;
-    if (arrayLen(arguments) != 2) throw("Application", "The Have#$relativity# matcher expected 1 argument, got 0.");
+    if (arrayLen(arguments) != 2) throw("Application", "The Have#$relativity# matcher expected 1 argument, got #arrayLen(arguments)-1#.");
     $expected = arguments[2];
     if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Have#$relativity# matcher must be numeric.");
     return this;

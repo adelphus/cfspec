@@ -1,24 +1,67 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init(type, noCase, expected) {
+  function init(type, noCase) {
     $type = type;
     $noCase = len(noCase);
-    $expected = expected;
+    if (arrayLen(arguments) != 3) throw("Application", "The Equal#$type# matcher expected 1 argument, got #arrayLen(arguments)-2#.");
+  	$expected = arguments[3];
     return this;
   }
 
   function isMatch(actual) {
+  	var result = "";
     $actual = actual;
     switch ($type) {
-      case "Numeric": return isEqualNumeric($actual, $expected);
-      case "Date":    return isEqualDate($actual, $expected);
-      case "Boolean": return isEqualBoolean($actual, $expected);
-      case "String":  return isEqualString($actual, $expected);
-      case "Object":  return isEqualObject($actual, $expected);
-      case "Struct":  return isEqualStruct($actual, $expected);
-      case "Array":    return isEqualArray($actual, $expected);
-      case "Query":    return isEqualQuery($actual, $expected);
-      default:        return isEqual($actual, $expected);
+
+      case "Numeric":
+        if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a number.");
+        if (not isNumeric($actual)) throw("cfspec.fail", "Equal#$type# expected a number, got #inspect($actual)#");   
+        return isEqualNumeric($actual, $expected);
+
+      case "Date":
+        if (not isDate($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a date.");
+        if (not isDate($actual)) throw("cfspec.fail", "Equal#$type# expected a date, got #inspect($actual)#");
+        return isEqualDate($actual, $expected);
+
+      case "Boolean":
+        if (not isBoolean($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a boolean.");
+        if (not isBoolean($actual)) throw("cfspec.fail", "Equal#$type# expected a boolean, got #inspect($actual)#");
+        return isEqualBoolean($actual, $expected);
+
+      case "String":
+        if (not isSimpleValue($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a string.");
+        if (not isSimpleValue($actual)) throw("cfspec.fail", "Equal#$type# expected a string, got #inspect($actual)#");
+        return isEqualString($actual, $expected);
+
+      case "Object":
+        if (not isObject($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be an object.");
+        if (not isObject($actual)) throw("cfspec.fail", "Equal#$type# expected an object, got #inspect($actual)#");
+        try {
+          result = isEqualObject($actual, $expected);
+        } catch (Application e) {
+          if (e.message != "The method isEqualTo was not found.") rethrow(e);
+          throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, but the method was not found.");
+        }
+        if (not isBoolean(result)) throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, got #inspect(result)#");
+        return result;
+
+      case "Struct":
+        if (not isStruct($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a struct.");
+        if (not isStruct($actual)) throw("cfspec.fail", "Equal#$type# expected a struct, got #inspect($actual)#");
+        return isEqualStruct($actual, $expected);
+
+      case "Array":
+        if (not isArray($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be an array.");
+        if (not isArray($actual)) throw("cfspec.fail", "Equal#$type# expected an array, got #inspect($actual)#");
+        return isEqualArray($actual, $expected);
+
+      case "Query":
+        if (not isQuery($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a query.");
+        if (not isQuery($actual)) throw("cfspec.fail", "Equal#$type# expected a query, got #inspect($actual)#");
+        return isEqualQuery($actual, $expected);
+
+      default:
+        return isEqual($actual, $expected);
     }
   }
 
@@ -82,13 +125,21 @@
   }
 
   function isEqual(a, b) {
+    var result = "";
     if (isSimpleValue(a) && isSimpleValue(b)) {
       if (isNumeric(a) && isNumeric(b)) return isEqualNumeric(a, b);
       if (isDate(a) && isDate(b))       return isEqualDate(a, b);
       if (listFindNoCase("true,false,yes,no", a) && listFindNoCase("true,false,yes,no", b)) return isEqualBoolean(a, b);
       return isEqualString(a, b);
     } else if (isObject(a) && isObject(b)) {
-      return isEqualObject(a, b);
+      try {
+        result = isEqualObject(a, b);
+      } catch (Application e) {
+        if (e.message != "The method isEqualTo was not found.") rethrow(e);
+        throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, but the method was not found.");
+      }
+      if (not isBoolean(result)) throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, got #inspect(result)#");
+      return result;
     } else if (isStruct(a) && isStruct(b)) {
       return isEqualStruct(a, b);
     } else if (isArray(a) && isArray(b)) {

@@ -30,6 +30,14 @@
       <cfset $matcher.getDescription().shouldEqual("equal 5")>
     </it>
 
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is non-numeric">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualNumeric expected a number, got")>
+      </it>
+
+    </describe>
+
   </describe>
 
   <describe hint="Date">
@@ -59,6 +67,14 @@
     <it should="describe itself">
       <cfset $matcher.getDescription().shouldEqual("equal 2001-09-11 12:00 AM")>
     </it>
+
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not a date">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualDate expected a date, got")>
+      </it>
+
+    </describe>
 
   </describe>
 
@@ -90,6 +106,14 @@
       <cfset $matcher.getDescription().shouldEqual("equal true")>
     </it>
 
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not a boolean">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualBoolean expected a boolean, got")>
+      </it>
+
+    </describe>
+
   </describe>
 
   <describe hint="String">
@@ -119,6 +143,14 @@
     <it should="describe itself">
       <cfset $matcher.getDescription().shouldEqual("equal 'Who is John Galt?'")>
     </it>
+
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not a string">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualString expected a string, got")>
+      </it>
+
+    </describe>
 
   </describe>
 
@@ -155,6 +187,22 @@
       <cfset $matcher.getDescription().shouldEqual("equal &lt;SupportsEquals:4C2A904BAFBA06591225113AD17B5CEC&gt;")>
     </it>
 
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not an object">
+        <cfset $matcher.isMatch("foo").shouldThrow("cfspec.fail", "EqualObject expected an object, got")>
+      </it>
+
+      <it should="provide a useful failure message if actual.isEqualTo() returns a non-boolean">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, got")>
+      </it>
+
+      <it should="provide a useful failure message if actual.isEqualTo() is not implemented">
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
+      </it>
+
+    </describe>
+
   </describe>
 
   <describe hint="Struct">
@@ -190,6 +238,14 @@
       <cfset $matcher.getDescription().shouldEqual("equal {A='foo',B='bar',C='baz'}")>
     </it>
 
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not a struct">
+        <cfset $matcher.isMatch("foo").shouldThrow("cfspec.fail", "EqualStruct expected a struct, got")>
+      </it>
+
+    </describe>
+
   </describe>
 
   <describe hint="Array">
@@ -223,6 +279,14 @@
     <it should="describe itself">
       <cfset $matcher.getDescription().shouldEqual("equal ['a','b','c']")>
     </it>
+
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not an array">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualArray expected an array, got")>
+      </it>
+
+    </describe>
 
   </describe>
 
@@ -274,13 +338,21 @@
       <cfset $matcher.getDescription().shouldEqual("equal {COLUMNS=['BAR','BAZ','FOO'],DATA=[['b','c','a'],['e','f','d'],['h','i','g']]}")>
     </it>
 
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual is not a query">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualQuery expected a query, got")>
+      </it>
+
+    </describe>
+
   </describe>
 
   <describe hint="Mixed Simple Types">
 
     <it should="convert arguments to numbers when Numeric is specified">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Numeric", "", "123abc"))>
-      <cfset $matcher.isMatch("123xyz").shouldBeTrue()>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Numeric", "", "123"))>
+      <cfset $matcher.isMatch("123.0").shouldBeTrue()>
     </it>
 
     <it should="convert arguments to dates when Date is specified">
@@ -407,6 +479,22 @@
       <cfset queryAddColumn(target, "baz", listToArray("c,f,i"))>
       <cfset $matcher.isMatch(target).shouldBeFalse()>
     </it>
+
+    <describe hint="bad types">
+    
+      <it should="provide a useful failure message if actual.isEqualTo() returns a non-boolean">
+        <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
+        <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, got")>
+      </it>
+
+      <it should="provide a useful failure message if actual.isEqualTo() is not implemented">
+        <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
+        <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
+      </it>
+
+    </describe>
 
   </describe>
 
