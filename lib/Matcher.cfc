@@ -4,9 +4,10 @@
     return false;
   }
 
-  function setExpectations(expectations, negate) {
+  function setExpectations(expectations, negate, context) {
     $expectations = expectations;
     $negateExpectations = negate;
+    $context = context;
   }
 
   function inspect(value) {

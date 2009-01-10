@@ -11,22 +11,11 @@
     "Throw/Throw"
   ];
 
-  function init(runner, target) {
+  function init(runner, context, target) {
     $runner = runner;
+    $context = context;
     $target = target;
     return this;
-  }
-
-  function getExpectedException() {
-    return $runner.getExpectedException();
-  }
-
-  function setExpectedException(e) {
-    return $runner.setExpectedException(e);
-  }
-
-  function getInflector() {
-    return $runner.getInflector();
   }
 
   function resumeDelayedMatcher(matcher, negate) {
@@ -53,12 +42,9 @@
     var j = "";
     var k = "";
 
-    result = $runner.getExpectedException();
-    if (!isSimpleValue(result)) {
-      if (listFindNoCase("shouldThrow,shouldNotThrow", missingMethodName)) {
-        $runner.setExpectedException(result);
-      } else {
-        createObject("component", "cfspec.lib.Matcher").rethrow(result);
+    if ($context.hasExpectedException()) {
+      if (not listFindNoCase("shouldThrow,shouldNotThrow", missingMethodName)) {
+        createObject("component", "cfspec.lib.Matcher").rethrow($context.getExpectedException());
       }
     }
 
@@ -84,7 +70,7 @@
         evaluate("matcher.init(#flatArgs#)");
 
         negate = matchData.len[2];
-        matcher.setExpectations(this, negate);
+        matcher.setExpectations(this, negate, $context);
         if (matcher.isDelayed()) return matcher;
         result = matcher.isMatch($target);
 
@@ -108,7 +94,7 @@
       try {
         result = evaluate("$target.#missingMethodName#(#flatArgs#)");
       } catch (Any e) {
-        $runner.setExpectedException(e);
+        $context.setExpectedException(e);
         return $runner.$(this);
       }
       if (!isDefined("result")) result = false;

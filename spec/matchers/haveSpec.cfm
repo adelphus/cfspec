@@ -4,7 +4,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("Exactly", 3).items())>
-    <cfset $matcher.setExpectations($(0), false)>
+    <cfset $matcher.setExpectations($(0), false, $cfspec)>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -127,7 +127,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtLeast", 3).items())>
-    <cfset $matcher.setExpectations($(0), false)>
+    <cfset $matcher.setExpectations($(0), false, $cfspec)>
   </before>
 
   <it should="match when target is a string with n characters">
@@ -238,7 +238,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtMost", 3).items())>
-    <cfset $matcher.setExpectations($(0), false)>
+    <cfset $matcher.setExpectations($(0), false, $cfspec)>
   </before>
 
   <it should="match when target is a string with n characters">

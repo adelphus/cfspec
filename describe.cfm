@@ -1,34 +1,35 @@
 <cfsetting enableCfoutputOnly="true">
 
-<cfif not isDefined("caller.cfspec.target")>
-  <cfset specRunner = createObject("component", "cfspec.lib.SpecRunner").init(getBaseTemplatePath())>
-  <cfoutput>#specRunner.run()#</cfoutput>
+<cfif not isDefined("caller.$cfspec")>
+  <cfset createObject("component", "cfspec.lib.SpecRunner").runSpec(getBaseTemplatePath())>
   <cfabort>
 </cfif>
 
-<cfset caller.cfspec.current++>
-<cfif caller.cfspec.target eq 0>
-  <cfif thisTag.executionMode eq "start">
-    <cfset caller.cfspec.scope = listAppend(caller.cfspec.scope, caller.cfspec.current & "[")>
-  <cfelseif thisTag.executionMode eq "end">
-    <cfset caller.cfspec.scope = listAppend(caller.cfspec.scope, caller.cfspec.current & "]")>
-  </cfif>
-</cfif>
-<cfif caller.cfspec.target neq caller.cfspec.current>
-  <cfexit method="exitTemplate">
-</cfif>
-
 <cfif thisTag.executionMode eq "start">
-  <cfset arrayPrepend(caller.cfspec.context, structNew())>
-  <cfoutput>
-    <h2>#attributes.hint#</h2>
-    <div>
-  </cfoutput>
+  <cfset caller.$cfspec.pushCurrent()>
+  
+  <cfif caller.$cfspec.isTrial()>
+    <cfexit method="exitTemplate">
+  </cfif>
 
-<cfelseif thisTag.executionMode eq "end">
-  <cfset arrayDeleteAt(caller.cfspec.context, 1)>
-  <cfoutput>
-    </div>
-  </cfoutput>
+  <cfif not caller.$cfspec.isDescribeInsideRunnable()>
+    <cfset caller.$cfspec.popCurrent()>
+    <cfexit method="exitTag">
+  </cfif>
 
+  <cfif caller.$cfspec.isDescribeStartRunnable()>
+    <cfset caller.$cfspec.pushContext()>    
+    <cfset caller.$cfspec.appendOutput("<h2>#attributes.hint#</h2><div>")>
+  </cfif>
+
+  <cfexit method="exitTemplate">
+<cfelse>
+  <cfset caller.$cfspec.popCurrent()>
+  
+  <cfif caller.$cfspec.isTrial() or not caller.$cfspec.isDescribeEndRunnable()>
+    <cfexit method="exitTag">
+  </cfif>  
+
+  <cfset caller.$cfspec.popContext()>
+  <cfset caller.$cfspec.appendOutput("</div>")>
 </cfif>

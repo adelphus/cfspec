@@ -18,7 +18,7 @@
       } catch(Application e) {
         if (!reFindNoCase("the method get#$collectionName# was not found", e.message)) rethrow(e);
         try {
-          pluralCollectionName = $expectations.getInflector().pluralize($collectionName);
+          pluralCollectionName = $context.getInflector().pluralize($collectionName);
           if (pluralCollectionName != $collectionName) {
             collection = evaluate("collectionOwner.get#pluralCollectionName#()");
           } else {
