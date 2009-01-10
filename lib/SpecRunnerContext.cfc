@@ -24,7 +24,7 @@
         specPath = "/" & listRest(specPath, "/");
       }
       if (specPath == "/") {
-        //throw("Application", "Unable to determine the relative path for '#spec#'.")
+      	createObject("component", "cfspec.lib.Matcher").throw("Application", "Unable to determine the relative path for '#spec#'.");
       } else {
         $specFile = specPath;
       }
