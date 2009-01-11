@@ -21,6 +21,8 @@
   
   function determineSpecFile(spec) {
     var webroot = expandPath("/");
+    spec = replace(spec,"\","/","all");
+    spec = replace(spec,"//","/","all");
     if (len(spec) > len(webroot) and left(spec, len(webroot)) == webroot) {
       $specFile = right(spec, len(spec) - len(webroot) + 1);
     } else {
