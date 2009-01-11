@@ -63,7 +63,7 @@
     var params = "";
     if (isDefined("$message")) params = listAppend(params, "message=" & inspect($message));
     if (isDefined("$detail")) params = listAppend(params, "detail=" & inspect($detail));
-    if (params != "") description = description & " (#params#)";
+    if (params != "") description &= " (#params#)";
     return description;
   }
   
@@ -73,7 +73,7 @@
     if (isDefined("e.type")) description = e.type;
     if (isDefined("e.message")) params = listAppend(params, "message=" & inspect(e.message));
     if (isDefined("e.detail")) params = listAppend(params, "detail=" & inspect(e.detail));
-    if (params != "") description = description & " (#params#)";
+    if (params != "") description &= " (#params#)";
     return description;
   }
 

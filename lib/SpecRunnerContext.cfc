@@ -1,4 +1,4 @@
-<cfcomponent output="false"><cfscript>
+<cfcomponent extends="Base" output="false"><cfscript>
   
   function init(spec) {
     determineSpecFile(spec);
@@ -16,6 +16,7 @@
     $exampleCount = 0;
     $passCount = 0;
     $pendCount = 0;
+    $suiteNumber = 0;
     return this;
   }
   
@@ -31,7 +32,7 @@
         specPath = "/" & listRest(specPath, "/");
       }
       if (specPath == "/") {
-        createObject("component", "cfspec.lib.Matcher").throw("Application", "Unable to determine the relative path for '#spec#'.");
+        throw("Application", "Unable to determine the relative path for '#spec#'.");
       } else {
         $specFile = specPath;
       }
@@ -44,6 +45,7 @@
 
   function nextInSuite(spec) {
     determineSpecFile(spec);
+    $suiteNumber++;
     $current = "0";
     $context = [];
     $contextStatus = [];
@@ -54,6 +56,10 @@
     $hint = "";
   }
 
+  function getSuiteNumber() {
+    return $suiteNumber;
+  }
+
   function stepCurrent() {
     var n = val(listLast($current)) + 1;
     popCurrent();
@@ -62,7 +68,7 @@
 
   function pushCurrent() {
     stepCurrent();
-    $current = $current & ",0";
+    $current &= ",0";
   }
   
   function popCurrent() {
@@ -210,19 +216,19 @@
   }
   
   function appendOutput(data) {
-    $output = $output & data;
+    $output &= data;
   }
   
   function getOutput() {
     var failCount = $exampleCount - $passCount - $pendCount;
     var summary = "#$exampleCount# example";
     var class = "pass";
-    if ($exampleCount != 1) summary = summary & "s";
+    if ($exampleCount != 1) summary &= "s";
     if ($pendCount) class = "pend";
     if (failCount) class = "fail";
-     summary = summary & ", #failCount# failure";
-     if (failCount != 1) summary = summary & "s";
-    summary = summary & ", #$pendCount# pending";
+     summary &= ", #failCount# failure";
+     if (failCount != 1) summary &= "s";
+    summary &= ", #$pendCount# pending";
     return "<div class='header #class#'>" &
            "<div class='summary'>#summary#</div>" &
            "<div class='timer'>Finished in <strong>#((getTickCount() - $startTime)/1000)# seconds</strong></div>" &
@@ -245,7 +251,7 @@
 
   function rethrowExpectedException() {
     if (!isSimpleValue($exception)) {
-      createObject("component", "cfspec.lib.Matcher").rethrow(getExpectedException());
+      rethrow(getExpectedException());
     }
   }
 
@@ -274,14 +280,14 @@
     var context = "";
     var i = "";
     var result = "<p class='fail'>should #getHint()#<br /><br /><small><u>#e.type#</u><br />";
-    result = result & "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:";
+    result &= "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:";
     for (i = 1; i <= arrayLen(e.tagContext); i++) {
       context = e.tagContext[i];
-      result = result & "<pre>  ";
-      if (isDefined("context.id")) result = result & context.id; else result = result & "???";
-      result = result & " at #context.template#(#context.line#,#context.column#)</pre>";
+      result &= "<pre>  ";
+      if (isDefined("context.id")) result &= context.id; else result &= "???";
+      result &= " at #context.template#(#context.line#,#context.column#)</pre>";
     }    
-    result = result & "</small></p>";
+    result &= "</small></p>";
     return result;
   }
 
