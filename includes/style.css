@@ -1,14 +1,46 @@
+body {
+  margin: 8px;
+}
 div {
   padding-left: 8px;
+}
+div.header {
+  margin: -8px -8px 0px;
+  padding: 8px 12px;
+  height: 40px;
+  font: bold 26px sans-serif;
+}
+div.pass {
+  background: #00CC00;
+  color: white;
+}
+div.pend {
+  background: #FFFF00;
+  color: black;
+}
+div.fail {
+  background: #CC0000;
+  color: white;
+}
+
+div.summary {
+  font: bold 16px sans-serif;
+  float: right;
+  clear: both;
+}
+div.timer {
+  font: 12px sans-serif;
+  float: right;
+  clear: both;
 }
 h1 {
   font: bold 20px sans-serif;
 }
 h2 {
-  margin: 4px 0;
+  margin: 16px 0 4px;
   padding: 4px;
-  background: #006699;
   font: bold 16px sans-serif;
+  background: #CC0000;
   color: white;
 }
 h3 {
@@ -28,18 +60,13 @@ p {
 }
 p.pend {
   background: #FFFF99;
-  color: #CCCC00;
-  border-color: #CCCC00;
+  color: black;
+  border-color: #FFFF00;
 }
 p.fail {
   background: #FFCCCC;
   color: #CC0000;
   border-color: #CC0000;
-}
-p.error {
-  background: #FF99FF;
-  color: #990099;
-  border-color: #990099;
 }
 pre {
   font: 9pt/4pt monospace;

@@ -1,7 +1,7 @@
 <cfsetting enableCfoutputOnly="true">
 
 <cfif not isDefined("caller.$cfspec")>
-  <cfset createObject("component", "cfspec.lib.SpecRunner").runSpec(getBaseTemplatePath())>
+  <cfset createObject("component", "cfspec.lib.SpecRunner").runSpecFile(getBaseTemplatePath())>
   <cfabort>
 </cfif>
 
@@ -19,7 +19,7 @@
 
   <cfif caller.$cfspec.isDescribeStartRunnable()>
     <cfset caller.$cfspec.pushContext()>    
-    <cfset caller.$cfspec.appendOutput("<h2>#attributes.hint#</h2><div>")>
+    <cfset caller.$cfspec.appendOutput("<h2 id='desc_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#'>#attributes.hint#</h2><div>")>
   </cfif>
 
   <cfexit method="exitTemplate">
@@ -30,6 +30,15 @@
     <cfexit method="exitTag">
   </cfif>  
 
+  <cfif caller.$cfspec.getContextStatus() eq "fail">
+    <cfset css = "background:##CC0000">
+  <cfelseif caller.$cfspec.getContextStatus() eq "pend">
+    <cfset css = "background:##FFFF00;color:black">
+  <cfelse>
+    <cfset css = "background:##00CC00">
+  </cfif>
+
   <cfset caller.$cfspec.popContext()>
+  <cfset caller.$cfspec.appendOutput("<style>##desc_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#_0{#css#}</style></div>")>
   <cfset caller.$cfspec.appendOutput("</div>")>
 </cfif>

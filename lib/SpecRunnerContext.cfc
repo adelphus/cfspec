@@ -2,15 +2,20 @@
   
   function init(spec) {
     determineSpecFile(spec);
-    $keywords = "RUNSPEC,$,STUB,MOCK,FAIL,PEND,THIS,$CFSPEC";
+    $keywords = "RUNSPEC,RUNSPECFILE,RUNSPECSUITE,$,STUB,MOCK,FAIL,PEND,THIS,$CFSPEC";
     $current = "0";
     $context = [];
+    $contextStatus = [];
     $targets = [];
     $target = "";
     $output = "";
     $currentTag = "?";
     $exception = "";
     $hint = "";
+    $startTime = getTickCount();    
+    $exampleCount = 0;
+    $passCount = 0;
+    $pendCount = 0;
     return this;
   }
   
@@ -24,7 +29,7 @@
         specPath = "/" & listRest(specPath, "/");
       }
       if (specPath == "/") {
-      	createObject("component", "cfspec.lib.Matcher").throw("Application", "Unable to determine the relative path for '#spec#'.");
+        createObject("component", "cfspec.lib.Matcher").throw("Application", "Unable to determine the relative path for '#spec#'.");
       } else {
         $specFile = specPath;
       }
@@ -33,6 +38,18 @@
 
   function getSpecFile() {
     return $specFile;
+  }
+
+  function nextInSuite(spec) {
+    determineSpecFile(spec);
+    $current = "0";
+    $context = [];
+    $contextStatus = [];
+    $targets = [];
+    $target = "";
+    $currentTag = "?";
+    $exception = "";
+    $hint = "";
   }
 
   function stepCurrent() {
@@ -55,6 +72,7 @@
   }
 
   function makeTarget() {
+    $exampleCount++;
     arrayAppend($targets, $current);
   }
 
@@ -112,13 +130,31 @@
   function getHint() {
     return $hint;
   }
+
+  function incrementPassCount() {
+    $passCount++;
+  }
+
+  function incrementPendCount() {
+    $pendCount++;
+    if ($contextStatus[1] == "pass") $contextStatus[1] = "pend";
+  }
   
   function pushContext() {
     arrayPrepend($context, structNew());
+    arrayPrepend($contextStatus, "pass");
   }
   
   function popContext() {
+    var status = $contextStatus[1];
     arrayDeleteAt($context, 1);    
+    arrayDeleteAt($contextStatus, 1);
+    if (arrayLen($contextStatus)) {
+      switch ($contextStatus[1]) {
+        case "pass": $contextStatus[1] = status; break;
+        case "pend": if (status != "pass") $contextStatus[1] = status; break;
+      }
+    }
   }
   
   function getContext() {
@@ -163,12 +199,32 @@
     }
   }
   
+  function getContextStatus() {
+    return $contextStatus[1];
+  }
+  
+  function getCurrent() {
+    return $current;
+  }
+  
   function appendOutput(data) {
     $output &= data;
   }
   
   function getOutput() {
-    return $output;
+    var failCount = $exampleCount - $passCount - $pendCount;
+    var summary = "#$exampleCount# example";
+    var class = "pass";
+    if ($exampleCount != 1) summary &= "s";
+    if ($pendCount) class = "pend";
+    if (failCount) class = "fail";
+     summary &= ", #failCount# failure";
+     if (failCount != 1) summary &= "s";
+    summary &= ", #$pendCount# pending";
+    return "<div class='header #class#'>" &
+           "<div class='summary'>#summary#</div>" &
+           "<div class='timer'>Finished in <strong>#((getTickCount() - $startTime)/1000)# seconds</strong></div>" &
+           "cfSpec Results</div>" & $output;
   }
 
   function hasExpectedException() {
@@ -191,7 +247,7 @@
     }
   }
 
-  function recoverFromException() {
+  function recoverFromException(status) {
     var target = "";
     var i = 0;    
     if (listFind("beforeAll,before,after,afterAll", $currentTag)) {
@@ -204,7 +260,9 @@
            (listLen(target) gt i) and 
            (listGetAt($current, i+1) == listGetAt(target, i+1))) i++;
     i = listLen($current) - i - 1;
+    if ($contextStatus[1] != "fail") $contextStatus[1] = status;
     while (i > 0) {
+      popContext();
       appendOutput("</div>");
       i--;
     }
@@ -213,7 +271,7 @@
   function formatException(e) {
     var context = "";
     var i = "";
-    var result = "<p class='error'>should #getHint()#<br /><br /><small><u>#e.type#</u><br />";
+    var result = "<p class='fail'>should #getHint()#<br /><br /><small><u>#e.type#</u><br />";
     result &= "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:";
     for (i = 1; i <= arrayLen(e.tagContext); i++) {
       context = e.tagContext[i];
