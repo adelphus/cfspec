@@ -40,5 +40,4 @@
 
   <cfset caller.$cfspec.popContext()>
   <cfset caller.$cfspec.appendOutput("<style>##desc_#caller.$cfspec.getSuiteNumber()#_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#_0{#css#}</style></div>")>
-  <cfset caller.$cfspec.appendOutput("</div>")>
 </cfif>
