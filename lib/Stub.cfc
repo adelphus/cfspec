@@ -10,7 +10,7 @@
     if (not structKeyExists($methods, "stubMissingMethod") or $methods.stubMissingMethod) {
       return createObject("component", "Stub").init();
     } else {
-      createObject("component", "cfspec.lib.Matcher").throw("Application", "The method #missingMethodName# was not found.");
+      createObject("component", "cfspec.lib.Base").throw("Application", "The method #missingMethodName# was not found.");
     }
   }
 

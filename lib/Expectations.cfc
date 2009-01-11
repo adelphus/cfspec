@@ -44,7 +44,7 @@
 
     if ($context.hasExpectedException()) {
       if (not listFindNoCase("shouldThrow,shouldNotThrow", missingMethodName)) {
-        createObject("component", "cfspec.lib.Matcher").rethrow($context.getExpectedException());
+        $context.rethrow($context.getExpectedException());
       }
     }
 
@@ -100,7 +100,7 @@
       if (!isDefined("result")) result = false;
       return $runner.$(result);
     } else {
-      createObject("component", "cfspec.lib.Matcher").throw("Application", "The method #missingMethodName# was not found.");
+      $context.throw("Application", "The method #missingMethodName# was not found.");
     }
   }
 

@@ -19,7 +19,7 @@
 
   <cfif caller.$cfspec.isDescribeStartRunnable()>
     <cfset caller.$cfspec.pushContext()>    
-    <cfset caller.$cfspec.appendOutput("<h2 id='desc_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#'>#attributes.hint#</h2><div>")>
+    <cfset caller.$cfspec.appendOutput("<h2 id='desc_#caller.$cfspec.getSuiteNumber()#_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#'>#attributes.hint#</h2><div>")>
   </cfif>
 
   <cfexit method="exitTemplate">
@@ -39,6 +39,6 @@
   </cfif>
 
   <cfset caller.$cfspec.popContext()>
-  <cfset caller.$cfspec.appendOutput("<style>##desc_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#_0{#css#}</style></div>")>
+  <cfset caller.$cfspec.appendOutput("<style>##desc_#caller.$cfspec.getSuiteNumber()#_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#_0{#css#}</style></div>")>
   <cfset caller.$cfspec.appendOutput("</div>")>
 </cfif>

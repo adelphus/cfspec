@@ -2,7 +2,7 @@ body {
   margin: 8px;
 }
 div {
-  padding-left: 8px;
+  padding-left: 16px;
 }
 div.header {
   margin: -8px -8px 0px;
@@ -37,7 +37,7 @@ h1 {
   font: bold 20px sans-serif;
 }
 h2 {
-  margin: 16px 0 4px;
+  margin: 4px 0;
   padding: 4px;
   font: bold 16px sans-serif;
   background: #CC0000;

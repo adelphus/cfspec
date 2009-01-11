@@ -1,4 +1,4 @@
-<cfcomponent output="false"><cfscript>
+<cfcomponent extends="Base" output="false"><cfscript>
   
   function init(spec) {
     determineSpecFile(spec);
@@ -16,6 +16,7 @@
     $exampleCount = 0;
     $passCount = 0;
     $pendCount = 0;
+    $suiteNumber = 0;
     return this;
   }
   
@@ -29,7 +30,7 @@
         specPath = "/" & listRest(specPath, "/");
       }
       if (specPath == "/") {
-        createObject("component", "cfspec.lib.Matcher").throw("Application", "Unable to determine the relative path for '#spec#'.");
+        throw("Application", "Unable to determine the relative path for '#spec#'.");
       } else {
         $specFile = specPath;
       }
@@ -42,6 +43,7 @@
 
   function nextInSuite(spec) {
     determineSpecFile(spec);
+    $suiteNumber++;
     $current = "0";
     $context = [];
     $contextStatus = [];
@@ -50,6 +52,10 @@
     $currentTag = "?";
     $exception = "";
     $hint = "";
+  }
+
+  function getSuiteNumber() {
+    return $suiteNumber;
   }
 
   function stepCurrent() {
@@ -243,7 +249,7 @@
 
   function rethrowExpectedException() {
     if (!isSimpleValue($exception)) {
-      createObject("component", "cfspec.lib.Matcher").rethrow(getExpectedException());
+      rethrow(getExpectedException());
     }
   }
 

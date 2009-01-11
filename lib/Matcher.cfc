@@ -1,4 +1,4 @@
-<cfcomponent output="false"><cfscript>
+<cfcomponent extends="Base" output="false"><cfscript>
 
   function isDelayed() {
     return false;
@@ -62,18 +62,4 @@
     return serializeJson(value);
   }
 
-</cfscript>
-
-  <cffunction name="throw">
-    <cfargument name="type" default="Application">
-    <cfargument name="message" default="">
-    <cfargument name="detail" default="">
-    <cfthrow type="#type#" message="#message#" detail="#detail#">
-  </cffunction>
-
-  <cffunction name="rethrow">
-    <cfargument name="object">
-    <cfthrow object="#object#">
-  </cffunction>
-
-</cfcomponent>
+</cfscript></cfcomponent>
