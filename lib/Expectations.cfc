@@ -3,6 +3,7 @@
   $matchers = [
     "Equal(Numeric|Date|Boolean|String|Object|Struct|Array|Query)?(NoCase)?/Equal",
     "BeCloseTo/BeCloseTo",
+    "Be/BeSame",
     "Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)/BeComparison",
     "Have(AtLeast|AtMost|Exactly)?/Have",
     "Match(NoCase)?/Match",

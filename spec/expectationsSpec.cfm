@@ -93,6 +93,15 @@
 
   </describe>
 
+  <describe hint="BeSame">
+
+    <it should="expect shouldBe to return true">
+      <cfset s = { foo=1, bar=2, baz=3 }>
+      <cfset $(s).shouldBe(s)>
+    </it>
+
+  </describe>
+
   <describe hint="Contain">
 
     <it should="expect shouldContain to return true">
