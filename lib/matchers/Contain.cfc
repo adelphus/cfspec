@@ -126,10 +126,10 @@
     var l = arrayLen(e);
     var i = "";
     for (i = 2; i < l; i++) {
-      s &= ", " & inspect(e[i]);
+      s = s & ", " & inspect(e[i]);
     }
     if (l > 1) {
-      s &= " and " & inspect(e[l]);
+      s = s & " and " & inspect(e[l]);
     }
     return s;
   }

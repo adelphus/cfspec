@@ -22,6 +22,10 @@
   
   function determineSpecFile(spec) {
     var webroot = expandPath("/");
+    webroot = replace(webroot, "\", "/", "all");
+    webroot = replace(webroot, "//", "/", "all");
+    spec = replace(spec, "\", "/", "all");
+    spec = replace(spec, "//", "/", "all");
     if (len(spec) > len(webroot) and left(spec, len(webroot)) == webroot) {
       $specFile = right(spec, len(spec) - len(webroot) + 1);
     } else {
@@ -66,7 +70,7 @@
 
   function pushCurrent() {
     stepCurrent();
-    $current &= ",0";
+    $current = $current & ",0";
   }
   
   function popCurrent() {
@@ -214,19 +218,19 @@
   }
   
   function appendOutput(data) {
-    $output &= data;
+    $output = $output & data;
   }
   
   function getOutput() {
     var failCount = $exampleCount - $passCount - $pendCount;
     var summary = "#$exampleCount# example";
     var class = "pass";
-    if ($exampleCount != 1) summary &= "s";
+    if ($exampleCount != 1) summary = summary & "s";
     if ($pendCount) class = "pend";
     if (failCount) class = "fail";
-     summary &= ", #failCount# failure";
-     if (failCount != 1) summary &= "s";
-    summary &= ", #$pendCount# pending";
+     summary = summary & ", #failCount# failure";
+     if (failCount != 1) summary = summary & "s";
+    summary = summary & ", #$pendCount# pending";
     return "<div class='header #class#'>" &
            "<div class='summary'>#summary#</div>" &
            "<div class='timer'>Finished in <strong>#((getTickCount() - $startTime)/1000)# seconds</strong></div>" &
@@ -278,14 +282,14 @@
     var context = "";
     var i = "";
     var result = "<p class='fail'>should #getHint()#<br /><br /><small><u>#e.type#</u><br />";
-    result &= "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:";
+    result = result & "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:";
     for (i = 1; i <= arrayLen(e.tagContext); i++) {
       context = e.tagContext[i];
-      result &= "<pre>  ";
-      if (isDefined("context.id")) result &= context.id; else result &= "???";
-      result &= " at #context.template#(#context.line#,#context.column#)</pre>";
+      result = result & "<pre>  ";
+      if (isDefined("context.id")) result = result & context.id; else result = result & "???";
+      result = result & " at #context.template#(#context.line#,#context.column#)</pre>";
     }    
-    result &= "</small></p>";
+    result = result & "</small></p>";
     return result;
   }
 
