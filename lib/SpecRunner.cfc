@@ -53,7 +53,7 @@
         <cfinclude template="#$cfspec.getSpecFile()#">
         <cfset $cfspec.rethrowExpectedException()>
         <cfcatch type="cfspec">
-          <cfset $cfspec.appendOutput("<p class='#listLast(cfcatch.type, '.')#'>should #cfcatch.message#</p>")>
+          <cfset $cfspec.appendOutput("<div class='it #listLast(cfcatch.type, '.')#'>should #cfcatch.message#</div>")>
           <cfset $cfspec.recoverFromException(listLast(cfcatch.type, "."))>
         </cfcatch>
         <cfcatch type="any">

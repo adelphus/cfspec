@@ -43,13 +43,7 @@ h2 {
   background: #CC0000;
   color: white;
 }
-h3 {
-  position: absolute;
-  top: 0;
-  margin: 0;
-  background: red;
-}
-p {
+div.it {
   margin: 4px 0;
   padding: 4px 20px;
   border-left: 6px solid #00CC00;
@@ -58,12 +52,12 @@ p {
   font: bold 16px sans-serif;
   color: #00CC00;
 }
-p.pend {
+div.it.pend {
   background: #FFFF99;
   color: black;
   border-color: #FFFF00;
 }
-p.fail {
+div.it.fail {
   background: #FFCCCC;
   color: #CC0000;
   border-color: #CC0000;

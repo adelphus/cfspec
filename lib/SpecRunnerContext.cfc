@@ -281,7 +281,7 @@
   function formatException(e) {
     var context = "";
     var i = "";
-    var result = "<p class='fail'>should #getHint()#<br /><br /><small><u>#e.type#</u><br />";
+    var result = "<div class='it fail'>should #getHint()#<br /><br /><small><u>#e.type#</u><br />";
     result = result & "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:";
     for (i = 1; i <= arrayLen(e.tagContext); i++) {
       context = e.tagContext[i];
@@ -289,7 +289,7 @@
       if (isDefined("context.id")) result = result & context.id; else result = result & "???";
       result = result & " at #context.template#(#context.line#,#context.column#)</pre>";
     }    
-    result = result & "</small></p>";
+    result = result & "</small></div>";
     return result;
   }
 

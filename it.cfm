@@ -15,7 +15,7 @@
   <cfset caller.$cfspec.setHint(attributes.should)>
 <cfelse>
   <cfif not caller.$cfspec.hasExpectedException()>
-    <cfset caller.$cfspec.appendOutput("<p class='pass'>should #attributes.should#</p>")>
+    <cfset caller.$cfspec.appendOutput("<div class='it pass'>should #attributes.should#</div>")>
     <cfset caller.$cfspec.incrementPassCount()>
   </cfif>
 </cfif>
