@@ -1,6 +1,7 @@
 <cfcomponent extends="Base" output="false"><cfscript>
 
   function isDelayed() {
+    if (isDefined("$context")) $context.inDelayedMatcher(false);
     return false;
   }
 

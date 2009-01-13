@@ -15,7 +15,12 @@
   <cfset caller.$cfspec.setHint(attributes.should)>
 <cfelse>
   <cfif not caller.$cfspec.hasExpectedException()>
-    <cfset caller.$cfspec.appendOutput("<div class='it pass'>should #attributes.should#</div>")>
-    <cfset caller.$cfspec.incrementPassCount()>
+    <cfset caller.$cfspec.throwOnDelayedMatcher()>
+    <cfif caller.$cfspec.hadAnExpectation()>
+      <cfset caller.$cfspec.appendOutput("<div class='it pass'>should #attributes.should#</div>")>
+      <cfset caller.$cfspec.incrementPassCount()>
+    <cfelse>
+      <cfset caller.this.pend("There were no expectations.")>
+    </cfif>
   </cfif>
 </cfif>

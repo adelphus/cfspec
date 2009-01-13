@@ -52,6 +52,7 @@
       <cftry>
         <cfinclude template="#$cfspec.getSpecFile()#">
         <cfset $cfspec.rethrowExpectedException()>
+        <cfset $cfspec.throwOnDelayedMatcher()>
         <cfcatch type="cfspec">
           <cfset $cfspec.appendOutput("<div class='it #listLast(cfcatch.type, '.')#'>should #cfcatch.message#</div>")>
           <cfset $cfspec.recoverFromException(listLast(cfcatch.type, "."))>

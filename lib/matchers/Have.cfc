@@ -78,7 +78,9 @@
   }
 
   function isDelayed() {
-    return not isDefined("$collectionName");
+    var delayed = not isDefined("$collectionName");
+    $context.inDelayedMatcher(delayed);
+    return delayed;
   }
 
   function relativeExpectation() {

@@ -20,7 +20,9 @@
   }
 
   function resumeDelayedMatcher(matcher, negate) {
-    var result = matcher.isMatch($target);
+    var result = "";    
+    if (matcher.isDelayed()) return matcher;
+    result = matcher.isMatch($target);
 
     if (result eqv negate) {
       if (negate) {
@@ -29,7 +31,7 @@
         return $runner.fail(matcher.getFailureMessage());
       }
     }
-    return true;
+    return this;
   }
 
   function onMissingMethod(missingMethodName, missingMethodArguments) {
@@ -48,6 +50,7 @@
         $context.rethrow($context.getExpectedException());
       }
     }
+    $context.throwOnDelayedMatcher();
 
     for (i = 1; i <= arrayLen($matchers); i++) {
       regexp = $matchers[i];
@@ -72,17 +75,9 @@
 
         negate = matchData.len[2];
         matcher.setExpectations(this, negate, $context);
-        if (matcher.isDelayed()) return matcher;
-        result = matcher.isMatch($target);
+        $context.expectationEncountered();
 
-        if (result eqv negate) {
-          if (negate) {
-            return $runner.fail(matcher.getNegativeFailureMessage());
-          } else {
-            return $runner.fail(matcher.getFailureMessage());
-          }
-        }
-        return this;
+        return resumeDelayedMatcher(matcher, negate);
       }
     }
 

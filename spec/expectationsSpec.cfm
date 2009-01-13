@@ -240,6 +240,19 @@
 
   </describe>
 
+  <describe hint="Pending">
+  
+    <it should="pend explicitly">
+      <cfset pend("This test is not yet implemented ;-)")>
+    </it>
+
+    <it should="pend because there are no expectations">
+      <cfset x = 1>
+      <cfset y = 2>
+    </it>
+
+  </describe>
+
   <describe hint="Failures">
 
     <it should="expect shouldEqual to fail">
@@ -254,6 +267,10 @@
       <cfset $(listToArray("a,b,c")).shouldHave(4).items()>
     </it>
 
+    <it should="fail because there is a delayed matcher without completion">
+      <cfset $(stub()).shouldHave(4)>
+    </it>
+  
   </describe>
 
   <describe hint="Exceptions">

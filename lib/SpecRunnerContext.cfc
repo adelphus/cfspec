@@ -90,6 +90,7 @@
     if (arrayIsEmpty($targets)) return false;
     $current = "0";
     $target = $targets[1];
+    $inDelayedMatcher = false;
     arrayDeleteAt($targets, 1);
     return true;
   }
@@ -114,7 +115,11 @@
 
   function isItRunnable() {
     $currentTag = "it";
-    return $target == $current;
+    if ($target == $current) {
+      $expectationEncountered = false;
+      return true;
+    }
+    return false;
   }
 
   function isAfterRunnable() {
@@ -291,6 +296,22 @@
     }    
     result = result & "</small></div>";
     return result;
+  }
+
+  function expectationEncountered() {
+    $expectationEncountered = true;
+  }
+
+  function hadAnExpectation() {
+    return $expectationEncountered;
+  }
+  
+  function inDelayedMatcher(flag) {
+    $inDelayedMatcher = flag;
+  }
+
+  function throwOnDelayedMatcher() {
+    if ($inDelayedMatcher) throw("cfspec.fail", "#getHint()#: Encountered an incomplete expectation.");
   }
 
   function getInflector() {
