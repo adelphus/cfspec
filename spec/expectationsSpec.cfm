@@ -53,6 +53,11 @@
       <cfset $("").shouldBeEmpty()>
     </it>
 
+    <it should="expect shouldBeDefined to return true">
+      <cfset foo = 1>
+      <cfset $("foo").shouldBeDefined()>
+    </it>
+
     <it should="expect shouldBeAnInstanceOf to return true">
       <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
       <cfset $(target).shouldBeAnInstanceOf("cfspec.spec.assets.Widget")>

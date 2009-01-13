@@ -71,6 +71,11 @@
       if (not isBoolean($actual)) throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got #inspect($actual)#");
       return $actual;
 
+    case "Defined":
+      if (arrayLen($args) != 0) throw("Application", "The BeDefined matcher expected 0 arguments, got #arrayLen($args)#.");
+      $actual = structKeyExists($runner.cfspecBindings(), actual);
+      return $actual;
+
     case "AnInstanceOf":
       if (arrayLen($args) != 1) throw("Application", "The BeEmpty matcher expected 1 argument, got #arrayLen($args)#.");
       if (not isSimpleValue($args[1])) throw("Application", "The CLASSNAME parameter to the BeEmpty matcher must be a string.");
@@ -118,6 +123,7 @@
       case "Array":        return iif(negative, de('not '), de('')) & "to be an array";
       case "Query":        return iif(negative, de('not '), de('')) & "to be a query";
       case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
+      case "Defined":      return iif(negative, de('not '), de('')) & "to be defined";
       case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
       default:
         return "#predicateMethod()# to be " & iif(negative, de('false'), de('true'));

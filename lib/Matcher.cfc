@@ -5,9 +5,10 @@
     return false;
   }
 
-  function setExpectations(expectations, negate, context) {
+  function setExpectations(expectations, negate, runner, context) {
     $expectations = expectations;
     $negateExpectations = negate;
+    $runner = runner;
     $context = context;
   }
 

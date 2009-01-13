@@ -2,7 +2,7 @@
   
   function init(spec) {
     determineSpecFile(spec);
-    $keywords = "RUNSPEC,RUNSPECFILE,RUNSPECSUITE,$,STUB,MOCK,FAIL,PEND,THIS,$CFSPEC";
+    $keywords = "RUNSPEC,RUNSPECFILE,RUNSPECSUITE,$,STUB,MOCK,FAIL,PEND,THIS,$CFSPEC,CFSPECBINDINGS";
     $current = "0";
     $context = [];
     $contextStatus = [];

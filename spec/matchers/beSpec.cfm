@@ -409,6 +409,39 @@
 
 </describe>
 
+<describe hint="Be Defined">
+  
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Defined"))>
+    <cfset $matcher.setExpectations(stub(), false, this, $cfspec)>
+  </before>
+
+  <it should="match if target is a defined variable name">
+    <cfset foo = 1>
+    <cfset $matcher.isMatch("foo").shouldBeTrue()>
+  </it>
+
+  <it should="not match if target is not a defined variable name">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+  
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be defined, got false")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset foo = 1>
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be defined, got true")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be defined")>
+  </it>
+
+</describe>
+
 <describe hint="Be AnInstanceOf">
 
   <before>

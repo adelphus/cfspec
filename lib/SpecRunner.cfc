@@ -101,4 +101,8 @@
     <cfthrow type="cfspec.pend" message="#msg#">
   </cffunction>
 
+  <cffunction name="cfSpecBindings">
+    <cfreturn variables>
+  </cffunction>
+
 </cfcomponent>

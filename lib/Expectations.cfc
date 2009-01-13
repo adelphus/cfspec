@@ -74,7 +74,7 @@
         evaluate("matcher.init(#flatArgs#)");
 
         negate = matchData.len[2];
-        matcher.setExpectations(this, negate, $context);
+        matcher.setExpectations(this, negate, $runner, $context);
         $context.expectationEncountered();
 
         return resumeDelayedMatcher(matcher, negate);
