@@ -264,6 +264,7 @@
 
   function recoverFromException(status) {
     var target = "";
+    var css = "";
     var i = 0;    
     if (listFind("beforeAll,before,after,afterAll", $currentTag)) {
       while (arrayLen($targets) and find(reReplace($current, "\d+$", ""), $targets[1]) == 1) {
@@ -277,8 +278,11 @@
     i = listLen($current) - i - 1;
     if ($contextStatus[1] != "fail") $contextStatus[1] = status;
     while (i > 0) {
+      css = "";
+      if (getContextStatus() eq "pend") css = "background:##FFFF00;color:black";
       popContext();
-      appendOutput("</div>");
+      $current = reReplace($current, ",\d+$", "");
+      appendOutput("<style>##desc_#getSuiteNumber()#_#replace(getCurrent(), ',', '_', 'all')#_0{#css#}</style></div>");
       i--;
     }
   }
