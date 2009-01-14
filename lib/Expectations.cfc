@@ -24,9 +24,9 @@
   function registerCustomMatchers() {
     var matchers = $context.getCustomMatchers();
     var i = "";
-    $builtinMatcherCount = arrayLen($matchers);
-    for (i = 1; i <= arrayLen(matchers); i++) {
-      arrayAppend($matchers, matchers[i]);
+    $customMatcherCount = arrayLen(matchers);
+    for (i = 1; i <= $customMatcherCount; i++) {
+      arrayPrepend($matchers, matchers[i]);
     }
   }
 
@@ -81,7 +81,7 @@
           k++;
         }
 
-        if (i > $builtinMatcherCount) {
+        if (i <= $customMatcherCount) {
           matcher = createObject("component", listLast(regexp, "/"));
         } else {
           matcher = createObject("component", "cfspec.lib.matchers.#listLast(regexp, '/')#");

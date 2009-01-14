@@ -326,6 +326,17 @@
     return $inflector;
   }
 
+  function simpleMatcher(pattern, expression) {
+    if (!isDefined("$customMatchers")) $customMatchers = [];
+    if (!isDefined("$simpleMatchers")) $simpleMatchers = {};
+    arrayAppend($customMatchers, "(#pattern#)/cfspec.lib.matchers.Simple");
+    $simpleMatchers[pattern] = expression;
+  }
+
+  function getSimpleMatcher(name) {
+    return $simpleMatchers[name];
+  }
+
   function registerMatcher(pattern, type) {
     if (!isDefined("$customMatchers")) $customMatchers = [];
     arrayAppend($customMatchers, "#pattern#/#type#");

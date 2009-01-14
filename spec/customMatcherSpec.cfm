@@ -4,6 +4,8 @@
 
   <beforeAll>
     <cfset $cfspec.registerMatcher("Say", "cfspec.spec.assets.SimonSaysMatcher")>
+    <cfset $cfspec.simpleMatcher("BeEven", "target mod 2 eq 0")>
+    <cfset $cfspec.simpleMatcher("BeOdd", "target mod 2 eq 1")>
   </beforeAll>
 
   <before>
@@ -16,6 +18,14 @@
 
   <it should="not do what simon doesn't say">
     <cfset $simon.shouldNotSay("Goodbye!")>
+  </it>
+
+  <it should="be even, not odd">
+    <cfset $(2).shouldBeEven().shouldNotBeOdd()>
+  </it>
+
+  <it should="be odd, not even">
+    <cfset $(3).shouldBeOdd().shouldNotBeEven()>
   </it>
 
 </describe>
