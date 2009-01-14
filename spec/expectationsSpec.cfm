@@ -276,6 +276,14 @@
 
   </describe>
 
+  <describe hint="RespondTo">
+
+    <it should="expect shouldRespondTo to return true">
+      <cfset $(stub()).shouldRespondTo("onMissingMethod")>
+    </it>
+
+  </describe>
+
   <describe hint="Negated Expectations (one example should be sufficient)">
 
     <it should="expect shouldNotEqual to return true">
@@ -285,7 +293,7 @@
   </describe>
 
   <describe hint="Pending">
-  
+
     <it should="pend explicitly">
       <cfset pend("This test is not yet implemented ;-)")>
     </it>
@@ -314,7 +322,7 @@
     <it should="fail because there is a delayed matcher without completion">
       <cfset $(stub()).shouldHave(4)>
     </it>
-  
+
   </describe>
 
   <describe hint="Exceptions">

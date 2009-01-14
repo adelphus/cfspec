@@ -9,6 +9,7 @@
     "Match(NoCase)?/Match",
     "Contain(NoCase)?/Contain",
     "Be(.+)/Be",
+    "RespondTo/RespondTo",
     "Throw/Throw"
   ];
 
@@ -20,7 +21,7 @@
   }
 
   function resumeDelayedMatcher(matcher, negate) {
-    var result = "";    
+    var result = "";
     if (matcher.isDelayed()) return matcher;
     result = matcher.isMatch($target);
     if (result eqv negate) {
