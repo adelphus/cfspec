@@ -13,20 +13,21 @@
     var collection = "";
 
     if (isObject(collectionOwner)) {
-      try {
+      if (hasMethod(collectionOwner, "get#$collectionName#")) {
         collection = evaluate("collectionOwner.get#$collectionName#()");
-      } catch(Application e) {
-        if (!reFindNoCase("the method get#$collectionName# was not found", e.message)) rethrow(e);
-        try {
-          pluralCollectionName = $context.getInflector().pluralize($collectionName);
-          if (pluralCollectionName != $collectionName) {
-            collection = evaluate("collectionOwner.get#pluralCollectionName#()");
-          } else {
+      } else {
+        pluralCollectionName = $context.getInflector().pluralize($collectionName);
+        if (pluralCollectionName != $collectionName and hasMethod(collectionOwner, "get#pluralCollectionName#")) {
+          collection = evaluate("collectionOwner.get#pluralCollectionName#()");
+        } else if (hasMethod(collectionOwner, "length") || hasMethod(collectionOwner, "size")) {
+          collection = collectionOwner;
+        } else {
+          try {
+            collection = evaluate("collectionOwner.get#$collectionName#()");
+          } catch (Application e) {
+            if (e.message != "The method get#$collectionName# was not found.") rethrow(e);
             collection = collectionOwner;
           }
-        } catch(Application e) {
-          if (!reFindNoCase("the method get#pluralCollectionName# was not found", e.message)) rethrow(e);
-          collection = collectionOwner;
         }
       }
     } else {
@@ -37,13 +38,14 @@
       $given = len(collection);
 
     } else if (isObject(collection)) {
-      try {
+      if (hasMethod(collection, "length")) {
+        $given = collection.length();
+      } else if (hasMethod(collection, "size")) {
         $given = collection.size();
-      } catch (Application e) {
-        if (e.message != "The method size was not found.") rethrow(e);
-        throw("cfspec.fail", "Have#$relativity# expected actual.size() to return a number, but the method was not found.");
+      } else {
+        throw("cfspec.fail", "Have#$relativity# expected actual.size() or actual.length() to return a number, but the method was not found.");
       }
-      if (not isNumeric($given)) throw("cfspec.fail", "Have#$relativity# expected actual.size() to return a number, got #inspect($given)#");
+      if (not isNumeric($given)) throw("cfspec.fail", "Have#$relativity# expected actual.size() or actual.length() to return a number, got #inspect($given)#");
 
     } else if (isStruct(collection)) {
       $given = structCount(collection);
