@@ -139,6 +139,11 @@
       <cfset $eval("foo = 'baz'").shouldChange("foo").from("bar").to("baz")>
     </it>
 
+    <it should="expect shouldChange multiple to return true">
+      <cfset foo = "bar">
+      <cfset $eval("foo = 'batz'").shouldChange("foo", "len(foo)")>
+    </it>
+
   </describe>
 
   <describe hint="Contain">
