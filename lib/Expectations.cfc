@@ -23,7 +23,6 @@
     var result = "";    
     if (matcher.isDelayed()) return matcher;
     result = matcher.isMatch($target);
-
     if (result eqv negate) {
       if (negate) {
         return $runner.fail(matcher.getNegativeFailureMessage());
@@ -31,6 +30,7 @@
         return $runner.fail(matcher.getFailureMessage());
       }
     }
+    if (matcher.isChained()) return matcher;
     return this;
   }
 

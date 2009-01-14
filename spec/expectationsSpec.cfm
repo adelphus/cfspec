@@ -119,6 +119,26 @@
       <cfset $eval("foo = foo & foo").shouldChangeNoCase("foo")>
     </it>
 
+    <it should="expect shouldChange.by(3) to return true">
+      <cfset foo = 42>
+      <cfset $eval("foo = 45").shouldChange("foo").by(3)>
+    </it>
+
+    <it should="expect shouldChange.byAtLeast(2) to return true">
+      <cfset foo = 42>
+      <cfset $eval("foo = 45").shouldChange("foo").byAtLeast(2)>
+    </it>
+
+    <it should="expect shouldChange.byAtMost(4) to return true">
+      <cfset foo = 42>
+      <cfset $eval("foo = 45").shouldChange("foo").byAtMost(4)>
+    </it>
+
+    <it should="expect shouldChange.from('bar').to('baz') to return true">
+      <cfset foo = "bar">
+      <cfset $eval("foo = 'baz'").shouldChange("foo").from("bar").to("baz")>
+    </it>
+
   </describe>
 
   <describe hint="Contain">

@@ -4,6 +4,10 @@
     if (isDefined("$context")) $context.inDelayedMatcher(false);
     return false;
   }
+  
+  function isChained() {
+    return false;
+  }
 
   function setExpectations(expectations, negate, runner, context) {
     $expectations = expectations;
