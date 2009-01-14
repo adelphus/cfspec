@@ -107,6 +107,20 @@
 
   </describe>
 
+  <describe hint="Change">
+
+    <it should="expect shouldChange to return true">
+      <cfset foo = "bar">
+      <cfset $eval("foo = 'BAR'").shouldChange("foo")>
+    </it>
+
+    <it should="expect shouldChangeNoCase to return true">
+      <cfset foo = "bar">
+      <cfset $eval("foo = foo & foo").shouldChangeNoCase("foo")>
+    </it>
+
+  </describe>
+
   <describe hint="Contain">
 
     <it should="expect shouldContain to return true">

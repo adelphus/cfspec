@@ -72,6 +72,11 @@
     <cfreturn createObject("component", "Expectations").init(this, $cfspec, obj)>
   </cffunction>
 
+  <cffunction name="$eval" output="false">
+    <cfargument name="obj">
+    <cfreturn createObject("component", "EvalExpectations").init(this, $cfspec, obj)>
+  </cffunction>
+
   <cffunction name="stub" output="false">
     <cfreturn createObject("component", "Stub").init(argumentCollection=arguments)>
   </cffunction>
