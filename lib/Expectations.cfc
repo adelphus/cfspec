@@ -17,7 +17,17 @@
     $runner = runner;
     $context = context;
     $target = target;
+    registerCustomMatchers();
     return this;
+  }
+
+  function registerCustomMatchers() {
+    var matchers = $context.getCustomMatchers();
+    var i = "";
+    $builtinMatcherCount = arrayLen($matchers);
+    for (i = 1; i <= arrayLen(matchers); i++) {
+      arrayAppend($matchers, matchers[i]);
+    }
   }
 
   function resumeDelayedMatcher(matcher, negate) {
@@ -71,7 +81,11 @@
           k++;
         }
 
-        matcher = createObject("component", "cfspec.lib.matchers.#listLast(regexp, '/')#");
+        if (i > $builtinMatcherCount) {
+          matcher = createObject("component", listLast(regexp, "/"));
+        } else {
+          matcher = createObject("component", "cfspec.lib.matchers.#listLast(regexp, '/')#");
+        }
         evaluate("matcher.init(#flatArgs#)");
 
         negate = matchData.len[2];

@@ -4,10 +4,10 @@
     var i = "";
     $noCase = len(noCase);
     if (arrayLen(arguments) < 2) throw("Application", "The Contain matcher expected at least 1 argument, got #arrayLen(arguments)-1#.");
-		$expected = [];
-		for (i = 2; i <= arrayLen(arguments); i++) {
-			arrayAppend($expected, arguments[i]);
-		}
+    $expected = [];
+    for (i = 2; i <= arrayLen(arguments); i++) {
+      arrayAppend($expected, arguments[i]);
+    }
     return this;
   }
 

@@ -10,7 +10,7 @@
 
   function isMatch(actual) {
     $actual = actual;
-  	if (not isSimpleValue($actual)) throw("cfspec.fail", "Match expected a simple value, got #inspect($actual)#");
+    if (not isSimpleValue($actual)) throw("cfspec.fail", "Match expected a simple value, got #inspect($actual)#");
     if ($noCase) {
       return reFindNoCase($expected, $actual) > 0;
     } else {
@@ -21,7 +21,7 @@
   function getFailureMessage() {
     return "expected to match #inspect($expected)#, got #inspect($actual)#";
   }
-  
+
   function getNegativeFailureMessage() {
     return "expected not to match #inspect($expected)#, got #inspect($actual)#";
   }

@@ -4,18 +4,18 @@
     $type = type;
     $noCase = len(noCase);
     if (arrayLen(arguments) != 3) throw("Application", "The Equal#$type# matcher expected 1 argument, got #arrayLen(arguments)-2#.");
-  	$expected = arguments[3];
+    $expected = arguments[3];
     return this;
   }
 
   function isMatch(actual) {
-  	var result = "";
+    var result = "";
     $actual = actual;
     switch ($type) {
 
       case "Numeric":
         if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a number.");
-        if (not isNumeric($actual)) throw("cfspec.fail", "Equal#$type# expected a number, got #inspect($actual)#");   
+        if (not isNumeric($actual)) throw("cfspec.fail", "Equal#$type# expected a number, got #inspect($actual)#");
         return isEqualNumeric($actual, $expected);
 
       case "Date":

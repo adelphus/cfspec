@@ -1,5 +1,5 @@
 <cfcomponent extends="Base" output="false"><cfscript>
-  
+
   function init(spec) {
     determineSpecFile(spec);
     $keywords = "RUNSPEC,RUNSPECFILE,RUNSPECSUITE,$,$EVAL,STUB,MOCK,FAIL,PEND,THIS,$CFSPEC,CFSPECBINDINGS";
@@ -12,14 +12,14 @@
     $currentTag = "?";
     $exception = "";
     $hint = "";
-    $startTime = getTickCount();    
+    $startTime = getTickCount();
     $exampleCount = 0;
     $passCount = 0;
     $pendCount = 0;
     $suiteNumber = 0;
     return this;
   }
-  
+
   function determineSpecFile(spec) {
     var webroot = expandPath("/");
     webroot = replace(webroot, "\", "/", "all");
@@ -72,7 +72,7 @@
     stepCurrent();
     $current = $current & ",0";
   }
-  
+
   function popCurrent() {
     $current = reReplace($current, "(^|,)\d+$", "");
   }
@@ -102,12 +102,12 @@
   function isDescribeInsideRunnable() {
     return find(reReplace($current, "\d+$", ""), $target) == 1;
   }
-  
+
   function isBeforeAllRunnable() {
     $currentTag = "beforeAll";
     return isDescribeStartRunnable();
   }
-  
+
   function isBeforeRunnable() {
     $currentTag = "before";
     return isDescribeInsideRunnable();
@@ -126,7 +126,7 @@
     $currentTag = "after";
     return isDescribeInsideRunnable();
   }
-  
+
   function isAfterAllRunnable() {
     $currentTag = "afterAll";
     return isDescribeEndRunnable();
@@ -137,7 +137,7 @@
     if (arrayLen($targets) == 0) return true;
     return find($current, $targets[1]) != 1;
   }
-  
+
   function setHint(hint) {
     $hint = hint;
   }
@@ -154,15 +154,15 @@
     $pendCount++;
     if ($contextStatus[1] == "pass") $contextStatus[1] = "pend";
   }
-  
+
   function pushContext() {
     arrayPrepend($context, structNew());
     arrayPrepend($contextStatus, "pass");
   }
-  
+
   function popContext() {
     var status = $contextStatus[1];
-    arrayDeleteAt($context, 1);    
+    arrayDeleteAt($context, 1);
     arrayDeleteAt($contextStatus, 1);
     if (arrayLen($contextStatus)) {
       switch ($contextStatus[1]) {
@@ -171,7 +171,7 @@
       }
     }
   }
-  
+
   function getContext() {
     var context = {};
     var i = arrayLen($context);
@@ -181,7 +181,7 @@
     }
     return context;
   }
-  
+
   function setContext(context) {
     var key = "";
     if (arrayIsEmpty($context)) return;
@@ -205,7 +205,7 @@
       }
     }
   }
-  
+
   function scrubContext(context) {
     for (key in context) {
       if (!listFind($keywords, key)) {
@@ -213,19 +213,19 @@
       }
     }
   }
-  
+
   function getContextStatus() {
     return $contextStatus[1];
   }
-  
+
   function getCurrent() {
     return $current;
   }
-  
+
   function appendOutput(data) {
     $output = $output & data;
   }
-  
+
   function getOutput() {
     var failCount = $exampleCount - $passCount - $pendCount;
     var summary = "#$exampleCount# example";
@@ -249,7 +249,7 @@
   function setExpectedException(e) {
     $exception = e;
   }
-  
+
   function getExpectedException() {
     var e = $exception;
     $exception = "";
@@ -265,18 +265,19 @@
   function recoverFromException(status) {
     var target = "";
     var css = "";
-    var i = 0;    
+    var i = 0;
     if (listFind("beforeAll,before,after,afterAll", $currentTag)) {
       while (arrayLen($targets) and find(reReplace($current, "\d+$", ""), $targets[1]) == 1) {
         arrayDeleteAt($targets, 1);
       }
     }
     if (arrayLen($targets)) target = $targets[1];
-    while ((listLen($current) gt i) and 
-           (listLen(target) gt i) and 
+    while ((listLen($current) gt i) and
+           (listLen(target) gt i) and
            (listGetAt($current, i+1) == listGetAt(target, i+1))) i++;
     i = listLen($current) - i - 1;
-    if ($contextStatus[1] != "fail") $contextStatus[1] = status;
+
+    if (arrayLen($contextStatus) and $contextStatus[1] != "fail") $contextStatus[1] = status;
     while (i > 0) {
       css = "";
       if (getContextStatus() eq "pend") css = "background:##FFFF00;color:black";
@@ -297,7 +298,7 @@
       result = result & "<pre>  ";
       if (isDefined("context.id")) result = result & context.id; else result = result & "???";
       result = result & " at #context.template#(#context.line#,#context.column#)</pre>";
-    }    
+    }
     result = result & "</small></div>";
     return result;
   }
@@ -309,7 +310,7 @@
   function hadAnExpectation() {
     return $expectationEncountered;
   }
-  
+
   function inDelayedMatcher(flag) {
     $inDelayedMatcher = flag;
   }
@@ -323,6 +324,16 @@
       $inflector = createObject("component", "cfspec.util.Inflector").init();
     }
     return $inflector;
+  }
+
+  function registerMatcher(pattern, type) {
+    if (!isDefined("$customMatchers")) $customMatchers = [];
+    arrayAppend($customMatchers, "#pattern#/#type#");
+  }
+
+  function getCustomMatchers() {
+    if (!isDefined("$customMatchers")) $customMatchers = [];
+    return $customMatchers;
   }
 
 </cfscript></cfcomponent>

@@ -51,7 +51,6 @@
       <cfset structAppend(variables, $cfspec.getContext())>
       <cftry>
         <cfinclude template="#$cfspec.getSpecFile()#">
-        <cfset $cfspec.rethrowExpectedException()>
         <cfset $cfspec.throwOnDelayedMatcher()>
         <cfcatch type="cfspec">
           <cfset $cfspec.appendOutput("<div class='it #listLast(cfcatch.type, '.')#'>should #cfcatch.message#</div>")>
@@ -63,7 +62,7 @@
         </cfcatch>
       </cftry>
       <cfset $cfspec.updateContext(variables)>
-      <cfset $cfspec.scrubContext(variables)>            
+      <cfset $cfspec.scrubContext(variables)>
     </cfloop>
   </cffunction>
 

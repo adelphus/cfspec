@@ -10,7 +10,7 @@
 
   function isMatch(actual) {
     $actual = actual;
-  	if (not isNumeric($actual)) throw("cfspec.fail", "Be#$comparison# expected a number, got #inspect($actual)#");
+    if (not isNumeric($actual)) throw("cfspec.fail", "Be#$comparison# expected a number, got #inspect($actual)#");
     switch ($comparison) {
       case "LessThan":             return $actual < $expected;
       case "LessThanOrEqualTo":    return $actual <= $expected;
@@ -40,5 +40,5 @@
       case "GreaterThan":          return ">";
     }
   }
-  
+
 </cfscript></cfcomponent>

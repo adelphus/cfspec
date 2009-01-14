@@ -8,7 +8,7 @@
   }
 
   function isMatch(actual) {
-  	if (not isObject(actual)) throw("cfspec.fail", "RespondTo expected an object, got #inspect(actual)#");
+    if (not isObject(actual)) throw("cfspec.fail", "RespondTo expected an object, got #inspect(actual)#");
     return hasMethod(actual, $methodName);
   }
 

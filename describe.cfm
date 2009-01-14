@@ -7,7 +7,7 @@
 
 <cfif thisTag.executionMode eq "start">
   <cfset caller.$cfspec.pushCurrent()>
-  
+
   <cfif caller.$cfspec.isTrial()>
     <cfexit method="exitTemplate">
   </cfif>
@@ -18,17 +18,18 @@
   </cfif>
 
   <cfif caller.$cfspec.isDescribeStartRunnable()>
-    <cfset caller.$cfspec.pushContext()>    
+    <cfset caller.$cfspec.pushContext()>
     <cfset caller.$cfspec.appendOutput("<h2 id='desc_#caller.$cfspec.getSuiteNumber()#_#replace(caller.$cfspec.getCurrent(), ',', '_', 'all')#'>#attributes.hint#</h2><div>")>
   </cfif>
 
   <cfexit method="exitTemplate">
 <cfelse>
+  <cfset caller.$cfspec.rethrowExpectedException()>
   <cfset caller.$cfspec.popCurrent()>
-  
+
   <cfif caller.$cfspec.isTrial() or not caller.$cfspec.isDescribeEndRunnable()>
     <cfexit method="exitTag">
-  </cfif>  
+  </cfif>
 
   <cfif caller.$cfspec.getContextStatus() eq "fail">
     <cfset css = "background:##CC0000">
