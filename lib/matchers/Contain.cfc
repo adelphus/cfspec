@@ -20,29 +20,34 @@
     var j = "";
     $actual = actual;
 
-		if (isSimpleValue($actual)) {
-	    if ($noCase) {
-	    	for (i = 1; i <= arrayLen($expected); i++) {
-	  	  	if (not isSimpleValue($expected[i])) throw("Application", "The EXPECTED parameters to the Contain matcher must be simple values.");
-	    	  if (not reFindNoCase($expected[i], actual)) return false;
-	    	}
-	    } else {
-	    	for (i = 1; i <= arrayLen($expected); i++) {
-	  	  	if (not isSimpleValue($expected[i])) throw("Application", "The EXPECTED parameters to the Contain matcher must be simple values.");
-	    	  if (not reFind($expected[i], actual)) return false;
-	    	}
-  	  }
-	    return true;
+    if (isSimpleValue($actual)) {
+      if ($noCase) {
+        for (i = 1; i <= arrayLen($expected); i++) {
+          if (not isSimpleValue($expected[i])) throw("Application", "The EXPECTED parameters to the Contain matcher must be simple values.");
+          if (not reFindNoCase($expected[i], actual)) return false;
+        }
+      } else {
+        for (i = 1; i <= arrayLen($expected); i++) {
+          if (not isSimpleValue($expected[i])) throw("Application", "The EXPECTED parameters to the Contain matcher must be simple values.");
+          if (not reFind($expected[i], actual)) return false;
+        }
+      }
+      return true;
 
-		} else if (isObject($actual)) {
-	   	for (i = 1; i <= arrayLen($expected); i++) {
-	   		try {
-	   			result = $actual.hasElement($expected[i]);
-	   		} catch (Application e) {
-          if (e.message != "The method contains was not found.") rethrow(e);
-          throw("cfspec.fail", "Contain expected actual.hasElement(expected) to return a boolean, but the method was not found.");
-         }
-        if (not isBoolean(result)) throw("cfspec.fail", "Contain expected actual.hasElement(expected) to return a boolean, got #inspect(result)#");
+    } else if (isObject($actual)) {
+       for (i = 1; i <= arrayLen($expected); i++) {
+         try {
+           result = $actual.hasElement($expected[i]);
+         } catch (Application e) {
+          if (e.message != "The method hasElement was not found.") rethrow(e);
+           try {
+             result = $actual.contains($expected[i]);
+           } catch (Application e) {
+            if (e.message != "The method contains was not found.") rethrow(e);
+            throw("cfspec.fail", "Contain expected actual.hasElement(expected) or actual.contains(expected) to return a boolean, but neither method was not found.");
+          }
+        }
+        if (not isBoolean(result)) throw("cfspec.fail", "Contain expected actual.hasElement(expected) or actual.contains(expected) to return a boolean, got #inspect(result)#");
         if (!result) return false;
       }
       return true;
