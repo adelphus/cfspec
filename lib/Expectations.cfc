@@ -6,6 +6,7 @@
     "Be/BeSame",
     "Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)/BeComparison",
     "Have(AtLeast|AtMost|Exactly)?/Have",
+    "HaveTag/HaveTag",
     "Match(NoCase)?/Match",
     "Contain(NoCase)?/Contain",
     "Be(.+)/Be",

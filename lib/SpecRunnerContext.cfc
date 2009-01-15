@@ -325,6 +325,16 @@
     }
     return $inflector;
   }
+  
+  function getJavaLoader() {
+    var classpath = [];
+    if (!isDefined("$javaLoader")) {
+      arrayAppend(classpath, expandPath("/cfspec/external/jars/tagsoup-1.2.jar"));
+      arrayAppend(classpath, expandPath("/cfspec/external/jars/xom-1.1.jar"));
+      $javaLoader = createObject("component", "cfspec.external.javaloader.JavaLoader").init(classpath);
+    }
+    return $javaLoader;
+  }
 
   function simpleMatcher(pattern, expression) {
     if (!isDefined("$customMatchers")) $customMatchers = [];
