@@ -16,13 +16,13 @@
     <cfset $context.__cfspecEval(bindings, "(x+y)*z").shouldEqual(50)>
   </it>
 
-  <it should="should save a bound variable back to the current context if it's changed by the expression">
+  <it should="save a bound variable back to the current context if it's changed by the expression">
     <cfset bindings.x = 2>
     <cfset $context.__cfspecEval(bindings, "x=x+1")>
     <cfset $(bindings.x).shouldEqual(3)>
   </it>
 
-  <it should="should save a new variable back to the current context if it's created by the expression">
+  <it should="save a new variable back to the current context if it's created by the expression">
     <cfset $context.__cfspecEval(bindings, "foo='bar'")>
     <cfset $(bindings.foo).shouldEqual("bar")>
   </it>
