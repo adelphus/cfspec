@@ -1,7 +1,9 @@
 <cfsetting enableCfoutputOnly="true">
 
 <cfif thisTag.executionMode eq "start">
-  <cfif caller.$cfspec.isTrial() or not caller.$cfspec.isBeforeRunnable()>
+  <cfif not caller.this.beforeStartTag(attributes)>
     <cfexit method="exitTag">
   </cfif>
+<cfelse>
+  <cfset caller.this.beforeEndTag(attributes)>
 </cfif>

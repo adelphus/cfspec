@@ -109,4 +109,100 @@
     <cfreturn variables>
   </cffunction>
 
-</cfcomponent>
+  <cfscript>
+    
+  function describeStartTag(attributes) {
+    $cfspec.pushCurrent();
+
+    if ($cfspec.isTrial()) return "exitTemplate";
+    
+    if (not $cfspec.isDescribeInsideRunnable()) {
+      $cfspec.popCurrent();
+      return "exitTag";
+    }
+
+    if ($cfspec.isDescribeStartRunnable()) {
+      $cfspec.pushContext();
+      $cfspec.appendOutput("<h2 id='desc_#$cfspec.getSuiteNumber()#_#replace($cfspec.getCurrent(), ',', '_', 'all')#'>#attributes.hint#</h2><div>");
+    }
+
+    return "exitTemplate";
+  }
+    
+  function beforeAllStartTag(attributes) {
+    return not $cfspec.isTrial() and $cfspec.isBeforeAllRunnable();
+  }
+
+  function beforeAllEndTag(attributes, bindings) {
+    $cfspec.updateContext(bindings);
+    $cfspec.setContext(variables);
+  }
+
+  function beforeStartTag(attributes) {
+    return not $cfspec.isTrial() and $cfspec.isBeforeRunnable();
+  }
+
+  function beforeEndTag(attributes) {
+  }
+  
+  function itStartTag(attributes) {
+    $cfspec.stepCurrent();
+    if ($cfspec.isTrial()) {
+      $cfspec.makeTarget();
+      return false;
+    }
+    if (not $cfspec.isItRunnable()) {
+      return false;
+    }
+    $cfspec.setHint(attributes.should);
+    return true;
+  }
+  
+  function itEndTag(attributes) {
+    if (not $cfspec.hasExpectedException()) {
+      $cfspec.throwOnDelayedMatcher();
+      if ($cfspec.hadAnExpectation()) {
+        $cfspec.appendOutput("<div class='it pass'>should #attributes.should#</div>");
+        $cfspec.incrementPassCount();
+      } else {
+        pend("There were no expectations.");
+      }
+    }
+  }
+
+  function afterStartTag(attributes) {
+    return not $cfspec.isTrial() and $cfspec.isAfterRunnable();
+  }
+
+  function afterEndTag(attributes) {
+  }
+
+  function afterAllStartTag(attributes) {
+    return not $cfspec.isTrial() and $cfspec.isAfterAllRunnable();
+  }
+
+  function afterAllEndTag(attributes) {
+  }
+  
+  function describeEndTag(attributes) {
+    var css = "";
+    
+    $cfspec.rethrowExpectedException();
+    $cfspec.popCurrent();
+    
+    if ($cfspec.isTrial() or not $cfspec.isDescribeEndRunnable()) return "exitTag";
+    
+    if ($cfspec.getContextStatus() eq "fail") {
+      css = "background:##CC0000";
+    } else if ($cfspec.getContextStatus() eq "pend") {
+     	css = "background:##FFFF00;color:black";
+    } else {
+      css = "background:##00CC00";
+    }
+
+    $cfspec.popContext();
+    $cfspec.appendOutput("<style>##desc_#$cfspec.getSuiteNumber()#_#replace($cfspec.getCurrent(), ',', '_', 'all')#_0{#css#}</style></div>");
+    return "";
+  }
+
+</cfscript></cfcomponent>
