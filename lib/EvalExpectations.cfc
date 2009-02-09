@@ -1,7 +1,8 @@
 <cfcomponent extends="Expectations" output="false"><cfscript>
 
   $matchers = [
-    "Change(NoCase)?/Change"
+    "Change(NoCase)?/Change",
+    "Throw/Throw"
   ];
   
   function eval(expression) {

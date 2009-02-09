@@ -295,7 +295,7 @@
   <describe hint="Pending">
 
     <it should="pend explicitly">
-      <cfset pend("This test is not yet implemented ;-)")>
+      <cfset $eval("pend('This test is not yet implemented ;-)')").shouldThrow("cfspec.pend")>
     </it>
 
     <it should="pend because there are no expectations">
@@ -308,15 +308,15 @@
   <describe hint="Failures">
 
     <it should="expect shouldEqual to fail">
-      <cfset $("foo").shouldEqual("FOO")>
+      <cfset $eval("$('foo').shouldEqual('FOO')").shouldThrow("cfspec.fail")>
     </it>
 
     <it should="expect shouldNotEqualNoCase to fail">
-      <cfset $("foo").shouldNotEqualNoCase("FOO")>
+      <cfset $eval("$('foo').shouldNotEqualNoCase('FOO')").shouldThrow("cfspec.fail")>
     </it>
 
     <it should="expect shouldHave(n).items() to fail">
-      <cfset $(listToArray("a,b,c")).shouldHave(4).items()>
+      <cfset $eval("$(listToArray('a,b,c')).shouldHave(4).items()").shouldThrow("cfspec.fail")>
     </it>
 
     <it should="fail because there is a delayed matcher without completion">
@@ -329,22 +329,22 @@
 
     <it should="expect nonExistantMethod() on an object to throw an exception">
       <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
-      <cfset $(target).nonExistantMethod()>
+      <cfset $eval("$(target).nonExistantMethod()").shouldThrow("Application")>
     </it>
 
     <it should="expect nonExistantMethod() on an object chained by another expectation to throw an exception">
       <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
-      <cfset $(target).nonExistantMethod().shouldBeAnInstanceOf("cfspec.spec.assets.Widget")>
+      <cfset $eval("$(target).nonExistantMethod().shouldBeAnInstanceOf('cfspec.spec.assets.Widget')").shouldThrow("Application")>
     </it>
 
     <it should="expect nonExistantMethod() on an object followed by another met expectation to throw an exception">
       <cfset target = createObject("component", "cfspec.spec.assets.Widget")>
       <cfset $(target).nonExistantMethod()>
-      <cfset $(target).shouldBeAnInstanceOf("cfspec.spec.assets.Widget")>
+      <cfset $eval("$(target).shouldBeAnInstanceOf('cfspec.spec.assets.Widget')").shouldThrow("Application")>
     </it>
 
     <it should="expect nonExistantMethod() on a simple value to throw an exception">
-      <cfset $("foo").nonExistantMethod()>
+      <cfset $eval("$('foo').nonExistantMethod()").shouldThrow("Application")>
     </it>
 
   </describe>

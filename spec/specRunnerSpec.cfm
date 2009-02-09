@@ -101,7 +101,8 @@
   </it>
 
   <it should="do setup for the multiple nesting 'describe' block">
-    <cfset level1BeforeAllVar = 1000>
+    <cfset $(true).shouldBeTrue()><!--- so we don't pend --->
+    <cfset level1BeforeAllVar = 1000>    
   </it>
 
   <describe hint="multiple nesting without before/afters">

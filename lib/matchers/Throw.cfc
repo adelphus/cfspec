@@ -19,6 +19,7 @@
   }
 
   function isMatch(actual) {
+  	if (isInstanceOf($expectations, "cfspec.lib.EvalExpectations")) tryEval(actual);
     $actual = "";
     try {
       $actual = $context.getExpectedException();
@@ -77,4 +78,17 @@
     return description;
   }
 
-</cfscript></cfcomponent>
+</cfscript>
+
+  <cffunction name="tryEval">
+    <cfargument name="actual">
+    <cfset var result = "">
+    <cftry>
+      <cfset result = $expectations.eval(actual)>
+      <cfcatch type="any">
+        <cfset $context.setExpectedException(cfcatch)>
+      </cfcatch>
+    </cftry>
+  </cffunction>
+
+</cfcomponent>

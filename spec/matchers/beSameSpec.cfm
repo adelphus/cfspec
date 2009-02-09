@@ -22,7 +22,7 @@
     <cfset $matcher.isMatch(o).shouldBeTrue()>
   </it>
 
-  <it should="match when actual and expected are different objects that are equal">
+  <it should="not match when actual and expected are different objects that are equal">
     <cfset o1 = stub(isEqualTo=true)>
     <cfset o2 = stub(isEqualTo=true)>
     <cfset $matcher = $(matcher.init(o1))>
