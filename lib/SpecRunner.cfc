@@ -130,32 +130,36 @@
   }
     
   function beforeAllStartTag(attributes) {
-    return not $cfspec.isTrial() and $cfspec.isBeforeAllRunnable();
+    if ($cfspec.isTrial() or not $cfspec.isBeforeAllRunnable()) return "exitTag";
+    return "";
   }
 
-  function beforeAllEndTag(attributes, bindings) {
-    $cfspec.updateContext(bindings);
+  function beforeAllEndTag(attributes) {
+    //$cfspec.updateContext(bindings);
     $cfspec.setContext(variables);
+    return "";
   }
 
   function beforeStartTag(attributes) {
-    return not $cfspec.isTrial() and $cfspec.isBeforeRunnable();
+    if ($cfspec.isTrial() or not $cfspec.isBeforeRunnable()) return "exitTag";
+    return "";
   }
 
   function beforeEndTag(attributes) {
+    return "";
   }
   
   function itStartTag(attributes) {
     $cfspec.stepCurrent();
     if ($cfspec.isTrial()) {
       $cfspec.makeTarget();
-      return false;
+      return "exitTag";
     }
     if (not $cfspec.isItRunnable()) {
-      return false;
+      return "exitTag";
     }
     $cfspec.setHint(attributes.should);
-    return true;
+    return "";
   }
   
   function itEndTag(attributes) {
@@ -168,20 +172,25 @@
         pend("There were no expectations.");
       }
     }
+    return "";
   }
 
   function afterStartTag(attributes) {
-    return not $cfspec.isTrial() and $cfspec.isAfterRunnable();
+    if ($cfspec.isTrial() or not $cfspec.isAfterRunnable()) return "exitTag";
+    return "";
   }
 
   function afterEndTag(attributes) {
+    return "";
   }
 
   function afterAllStartTag(attributes) {
-    return not $cfspec.isTrial() and $cfspec.isAfterAllRunnable();
+    if ($cfspec.isTrial() or not $cfspec.isAfterAllRunnable()) return "exitTag";
+    return "";
   }
 
   function afterAllEndTag(attributes) {
+    return "";
   }
   
   function describeEndTag(attributes) {
