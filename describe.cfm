@@ -1,7 +1,8 @@
 <cfsetting enableCfoutputOnly="true">
 
 <cfif not isDefined("caller.$cfspec")>
-  <cfset createObject("component", "cfspec.lib.SpecRunner").runSpecFile(getBaseTemplatePath())>
+  <cfset specRunner = createObject("component", "cfspec.lib.SpecRunner")>
+  <cfset specRunner.runSpecFile(getBaseTemplatePath())>
   <cfabort>
 </cfif>
 
