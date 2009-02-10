@@ -46,6 +46,7 @@
   </cffunction>
 
   <cffunction name="runSpec">
+    <cfset var __cfspecRunner = this>
     <cfinclude template="#$cfspec.getSpecFile()#">
     <cfloop condition="$cfspec.nextTarget()">
       <cfset structAppend(variables, $cfspec.getContext())>

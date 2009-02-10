@@ -9,7 +9,7 @@
     
     structAppend(variables, arguments.__cfspecEvalBindings);
     __cfspecEvalResult = evaluate(arguments.__cfspecEvalExpression);
-    structAppend(__cfspecEvalBindings, variables);
+    structAppend(arguments.__cfspecEvalBindings, variables);
     
     return iif(isDefined("__cfspecEvalResult"), "__cfspecEvalResult", "false");
   }

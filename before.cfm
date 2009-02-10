@@ -1,12 +1,12 @@
 <cfsetting enableCfoutputOnly="true">
 
 <cfif thisTag.executionMode eq "start">
-  <cfset exitMethod = caller.this.beforeStartTag(attributes)>
+  <cfset exitMethod = caller.__cfspecRunner.beforeStartTag(attributes)>
   <cfif exitMethod neq "">
     <cfexit method="#exitMethod#">
   </cfif>
 <cfelse>
-  <cfset exitMethod = caller.this.beforeEndTag(attributes)>
+  <cfset exitMethod = caller.__cfspecRunner.beforeEndTag(attributes)>
   <cfif exitMethod neq "">
     <cfexit method="#exitMethod#">
   </cfif>

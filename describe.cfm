@@ -7,12 +7,12 @@
 </cfif>
 
 <cfif thisTag.executionMode eq "start">
-  <cfset exitMethod = caller.this.describeStartTag(attributes)>
+  <cfset exitMethod = caller.__cfspecRunner.describeStartTag(attributes)>
   <cfif exitMethod neq "">
     <cfexit method="#exitMethod#">
   </cfif>
 <cfelse>
-  <cfset exitMethod = caller.this.describeEndTag(attributes)>
+  <cfset exitMethod = caller.__cfspecRunner.describeEndTag(attributes)>
   <cfif exitMethod neq "">
     <cfexit method="#exitMethod#">
   </cfif>
