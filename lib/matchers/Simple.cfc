@@ -1,35 +1,67 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!--- 
+  SimpleMatcher allows the quick setup of a custom matcher using syntax like:
+    simpleMatcher(pattern, booleanExpression)
 
-  function init(name) {
-  	$name = name;
-  	$args = structNew();
-    return this;
-  }
-  
-  function setArguments() {
-  	$args = arguments;
-  }
+  For example:
+    simpleMatcher("BeEven", "target mod 2 eq 0")
+      allows
+    $(42).shouldBeEven()
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function isMatch(target) {
-    var ec = createObject("component", "cfspec.lib.EvalContext");
-    var result = "";
-    variables.target = target;
-    if (arrayLen($args) gt 1) variables.expected = $args[2];
-    result = ec.__cfspecEval(variables, $runner.getSimpleMatcherExpression($name));
-    if (isDefined("result")) return result;
-    return false;
-  }
 
-  function getFailureMessage() {
-    return "expected to #$name#, failed";
-  }
 
-  function getNegativeFailureMessage() {
-    return "expected not to #$name#, failed";
-  }
+  <cffunction name="init">
+    <cfargument name="pattern">
+    <cfset _pattern = pattern>
+    <cfset _args = structNew()>
+    <cfreturn this>
+  </cffunction>
 
-  function getDescription() {
-    return $name;
-  }
 
-</cfscript></cfcomponent>
+
+  <cffunction name="setArguments">
+    <cfset _args = arguments>
+  </cffunction>
+
+
+
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset var expression = _runner.getSimpleMatcherExpression(_pattern)>
+    <cfset var context = createObject("component", "cfspec.lib.EvalContext")>
+    <cfset var bindings = structNew()>
+    <cfset var result = "">
+
+    <cfset context.target = target>
+    <cfset context.args = _args>
+
+    <cfset result = context.__cfspecEval(bindings, expression)>
+    <cfif not isDefined("result")>
+      <cfset result = false>
+    </cfif>
+
+    <cfreturn result>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected to #_pattern#, failed">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected not to #_pattern#, failed">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn _pattern>
+  </cffunction>
+
+
+
+</cfcomponent>

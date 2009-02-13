@@ -1,4 +1,25 @@
-<cfcomponent extends="Base" output="false"><cfscript>
+<cfcomponent extends="Base" output="false">
+
+  <cffunction name="requireArgs">
+    <cfargument name="args">
+    <cfargument name="count">
+    <cfset var argCount = arrayLen(args)>
+    <cfif argCount neq count>
+      <cfthrow message="The #_matcherName# matcher expected #count# argument(s), got #argCount#.">
+    </cfif>
+  </cffunction>
+
+  <cffunction name="verifyArg">
+    <cfargument name="verified">
+    <cfargument name="argName">
+    <cfargument name="message">
+    <cfif not verified>
+      <cfthrow message="The #uCase(argName)# parameter to the #_matcherName# matcher #message#.">
+    </cfif>
+  </cffunction>
+
+
+<cfscript>
 
   function init() {
   	return this;

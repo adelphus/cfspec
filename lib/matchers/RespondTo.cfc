@@ -1,26 +1,44 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function setArguments() {
-    if (arrayLen(arguments) != 1) throw("Application", "The RespondTo matcher expected 1 argument, got #arrayLen(arguments)#.");
-    $methodName = arguments[1];
-    if (not isSimpleValue($methodName)) throw("Application", "The METHODNAME parameter to the RespondTo matcher must be a simple value.");
-  }
 
-  function isMatch(actual) {
-    if (not isObject(actual)) throw("cfspec.fail", "RespondTo expected an object, got #inspect(actual)#");
-    return hasMethod(actual, $methodName);
-  }
+  <cffunction name="setArguments">
+    <cfset _matcherName = "RespondTo">
+    <cfset requireArgs(arguments, 1)>
 
-  function getFailureMessage() {
-    return "expected to respond to #inspect($methodName)#, but the method was not found";
-  }
+    <cfset _methodName = arguments[1]>
+    <cfset verifyArg(isSimpleValue(_methodName), "methodName", "must be a simple value")>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected not to respond to #inspect($methodName)#, but the method was found";
-  }
 
-  function getDescription() {
-    return "respond to #inspect($methodName)#";
-  }
 
-</cfscript></cfcomponent>
+  <cffunction name="isMatch">
+    <cfargument name="target">
+
+    <cfif not isObject(target)>
+      <cfset _runner.fail("RespondTo expected an object, got #inspect(target)#")>
+    </cfif>
+
+    <cfreturn hasMethod(actual, _methodName)>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected to respond to #inspect(_methodName)#, but the method was not found">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected not to respond to #inspect(_methodName)#, but the method was found">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn "respond to #inspect(_methodName)#">
+  </cffunction>
+
+
+
+</cfcomponent>
