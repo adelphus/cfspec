@@ -1,5 +1,12 @@
 <cfcomponent output="false">
 
+  <cffunction name="init">
+    <cffile action="read" file="#expandPath('/cfspec/lib/matchers.json')#" variable="_matchers">
+    <cfset _matchers = deserializeJson(_matchers)>
+    <cfset _simpleMatchers = structNew()>
+    <cfreturn this>
+  </cffunction>
+
   <cffunction name="runSpecSuite">
     <cfargument name="specPath">
     <cfargument name="showOutput" default="true">
@@ -52,7 +59,7 @@
       <cfset structAppend(variables, $cfspec.getContext())>
       <cftry>
         <cfinclude template="#$cfspec.getSpecFile()#">
-        <cfset $cfspec.throwOnDelayedMatcher()>
+        <cfset $cfspec.ensureNoDelayedMatchersArePending()>
         <cfcatch type="cfspec">
           <cfset $cfspec.appendOutput("<div class='it #listLast(cfcatch.type, '.')#'>should #cfcatch.message#</div>")>
           <cfset $cfspec.recoverFromException(listLast(cfcatch.type, "."))>
@@ -69,16 +76,16 @@
 
   <cffunction name="$" output="false">
     <cfargument name="obj">
-    <cfreturn createObject("component", "Expectations").init(this, $cfspec, obj)>
+    <cfreturn createObject("component", "Expectations").__cfspecInit(this, obj)>
   </cffunction>
 
   <cffunction name="$eval" output="false">
     <cfargument name="obj">
-    <cfreturn createObject("component", "EvalExpectations").init(this, $cfspec, obj)>
+    <cfreturn createObject("component", "EvalExpectations").__cfspecInit(this, obj)>
   </cffunction>
 
   <cffunction name="stub" output="false">
-    <cfreturn createObject("component", "Stub").init(argumentCollection=arguments)>
+    <cfreturn createObject("component", "Stub").__cfspecInit(argumentCollection=arguments)>
   </cffunction>
 
   <cffunction name="mock" output="false">
@@ -108,6 +115,70 @@
 
   <cffunction name="cfSpecBindings">
     <cfreturn variables>
+  </cffunction>
+
+  <cffunction name="getMatchers">
+    <cfif not isDefined("_matchers")><cfset init()></cfif>
+    <cfreturn _matchers>
+  </cffunction>
+
+  <cffunction name="ensureNoExceptionsArePending">
+    <cfset $cfspec.rethrowExpectedException()>
+  </cffunction>
+  
+  <cffunction name="ensureNoDelayedMatchersArePending">
+    <cfset $cfspec.ensureNoDelayedMatchersArePending()>
+  </cffunction>
+  
+  <cffunction name="flagExpectationEncountered">
+    <cfset $cfspec.expectationEncountered()>
+  </cffunction>
+  
+  <cffunction name="getAndResetPendingException">
+    <cfreturn $cfspec.getExpectedException()>
+  </cffunction>
+
+  <cffunction name="setPendingException">
+    <cfargument name="e">
+    <cfset $cfspec.setExpectedException(e)>
+  </cffunction>
+
+  <cffunction name="getJavaLoader">
+    <cfreturn $cfspec.getJavaLoader()>
+  </cffunction>
+  <cffunction name="getInflector">
+    <cfreturn $cfspec.getInflector()>
+  </cffunction>
+  <cffunction name="flagDelayedMatcher">
+    <cfargument name="flag">
+    <cfreturn $cfspec.inDelayedMatcher(flag)>
+  </cffunction>
+
+  <cffunction name="simpleMatcher">
+    <cfargument name="pattern">
+    <cfargument name="expression">
+    <cfset var matcher = arrayNew(1)>
+    <cfif not isDefined("_matchers")><cfset init()></cfif>
+    <cfset arrayAppend(matcher, "(#pattern#)")>
+    <cfset arrayAppend(matcher, "cfspec.lib.matchers.Simple")>
+    <cfset arrayPrepend(_matchers, matcher)>
+    <cfset _simpleMatchers[pattern] = expression>
+  </cffunction>
+  
+  <cffunction name="getSimpleMatcherExpression">
+    <cfargument name="pattern">
+    <cfif not isDefined("_matchers")><cfset init()></cfif>
+    <cfreturn _simpleMatchers[pattern]>
+  </cffunction>
+
+  <cffunction name="registerMatcher">
+    <cfargument name="pattern">
+    <cfargument name="type">
+    <cfset var matcher = arrayNew(1)>
+    <cfif not isDefined("_matchers")><cfset init()></cfif>
+    <cfset arrayAppend(matcher, pattern)>
+    <cfset arrayAppend(matcher, type)>
+    <cfset arrayPrepend(_matchers, matcher)>
   </cffunction>
 
   <cfscript>
@@ -165,7 +236,7 @@
   
   function itEndTag(attributes) {
     if (not $cfspec.hasExpectedException()) {
-      $cfspec.throwOnDelayedMatcher();
+      $cfspec.ensureNoDelayedMatchersArePending();
       if ($cfspec.hadAnExpectation()) {
         $cfspec.appendOutput("<div class='it pass'>should #attributes.should#</div>");
         $cfspec.incrementPassCount();

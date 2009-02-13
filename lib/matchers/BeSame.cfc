@@ -1,9 +1,8 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init() {
+  function setArguments() {
     if (arrayLen(arguments) != 1) throw("Application", "The BeSame matcher expected 1 argument, got #arrayLen(arguments)#.");
     $expected = arguments[1];
-    return this;
   }
 
   function isMatch(actual) {

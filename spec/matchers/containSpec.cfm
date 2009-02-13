@@ -3,7 +3,8 @@
 <describe hint="Contain">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Contain").init("", "in"))>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Contain").init(""))>
+    <cfset $matcher.setArguments("in")>
   </before>
 
   <it should="match when actual contains expected">
@@ -31,7 +32,8 @@
   <describe hint="NoCase">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Contain").init("NoCase", "in"))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Contain").init("NoCase"))>
+      <cfset $matcher.setArguments("in")>
     </before>
 
     <it should="match when target matches actual (case-insensitive)">

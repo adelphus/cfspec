@@ -5,7 +5,8 @@
   <describe hint="less than">
   
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThan", 5))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThan"))>
+      <cfset $matcher.setArguments(5)>
     </before>
 
     <it should="match when target < actual">
@@ -39,7 +40,8 @@
   <describe hint="less than or equal to">
   
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThanOrEqualTo", 5))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThanOrEqualTo"))>
+      <cfset $matcher.setArguments(5)>
     </before>
 
     <it should="match when target < actual">
@@ -73,7 +75,8 @@
   <describe hint="greater than or equal to">
   
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("GreaterThanOrEqualTo", 5))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("GreaterThanOrEqualTo"))>
+      <cfset $matcher.setArguments(5)>
     </before>
 
     <it should="not match when target < actual">
@@ -107,7 +110,8 @@
   <describe hint="greater than">
   
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("GreaterThan", 5))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("GreaterThan"))>
+      <cfset $matcher.setArguments(5)>
     </before>
 
     <it should="not match when target < actual">
@@ -141,7 +145,8 @@
   <describe hint="bad types">
     
     <it should="provide a useful failure message if actual is non-numeric">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThan", 5))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThan"))>
+      <cfset $matcher.setArguments(5)>
       <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeLessThan expected a number, got")>
     </it>
 

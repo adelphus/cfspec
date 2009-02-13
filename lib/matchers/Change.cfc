@@ -1,19 +1,22 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
   function init(noCase) {
-    var i = "";
     $noCase = len(noCase);
-    if (arrayLen(arguments) < 2) throw("Application", "The Change matcher expected 1 argument, got #arrayLen(arguments)-1#.");
-    $isMultiple = arrayLen(arguments) > 2;
-    $changee = [];
-    for (i = 2; i <= arrayLen(arguments); i++) {
-      arrayAppend($changee, arguments[i]);
-    }
     return this;
+  }
+  
+  function setArguments() {
+    var i = "";
+    if (arrayLen(arguments) < 1) throw("Application", "The Change matcher expected 1 argument, got #arrayLen(arguments)#.");
+    $isMultiple = arrayLen(arguments) > 1;
+    $changee = [];
+    for (i = 1; i <= arrayLen(arguments); i++) {
+      arrayAppend($changee, arguments[i]);
+    }  	
   }
 
   function isMatch(actual) {
-    var eqMatcher = createObject("component", "cfspec.lib.matchers.Equal");
+    var eqMatcher = createObject("component", "cfspec.lib.matchers.Equal").init("", iif($noCase, de("NoCase"), de("")));
     var i = "";
     var before = [];
     for (i = 1; i <= arrayLen($changee); i++) {
@@ -23,7 +26,8 @@
     for (i = 1; i <= arrayLen($changee); i++) {
       $before = before[i];
       $after = $expectations.eval($changee[i]);
-      if (eqMatcher.init("", iif($noCase, de("NoCase"), de("")), $before).isMatch($after)) return false;
+      eqMatcher.setArguments($before);
+      if (eqMatcher.isMatch($after)) return false;
     }
     return true;
   }
@@ -41,7 +45,7 @@
   }
 
   function isChained() {
-    return not ($negateExpectations or $isMultiple);
+    return not ($expectations.__cfspecIsNegated() or $isMultiple);
   }
 
   function by(delta) {
@@ -64,14 +68,20 @@
   
   function from(before) {
     var eqMatcher = createObject("component", "cfspec.lib.matchers.Equal");
-    var pass = eqMatcher.init("", iif($noCase, de("NoCase"), de("")), before).isMatch($before);
+    var pass = "";
+    eqMatcher.init("", iif($noCase, de("NoCase"), de("")));
+    eqMatcher.setArguments(before);
+    pass = eqMatcher.isMatch($before);
     if (!pass) $runner.fail("expected to change #prettyPrint($changee)# from #inspect(before)#, was #inspect($before)#");
     return this;
   }
 
   function to(after) {
     var eqMatcher = createObject("component", "cfspec.lib.matchers.Equal");
-    var pass = eqMatcher.init("", iif($noCase, de("NoCase"), de("")), after).isMatch($after);
+    var pass = "";
+    eqMatcher.init("", iif($noCase, de("NoCase"), de("")));
+    eqMatcher.setArguments(after);
+    pass = eqMatcher.isMatch($after);
     if (!pass) $runner.fail("expected to change #prettyPrint($changee)# to #inspect(after)#, got #inspect($after)#");
     return this;
   }

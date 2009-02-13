@@ -3,8 +3,9 @@
 <describe hint="HaveTag">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.HaveTag").init("h1"))>
-    <cfset $matcher.setExpectations(stub(), false, this, $cfspec)>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.HaveTag").init())>
+    <cfset $matcher.setArguments("h1")>
+    <cfset $matcher.setRunner(this)>
   </before>
 
   <it should="match when target has the expected tag">

@@ -1,7 +1,11 @@
 <cfcomponent extends="Base" output="false"><cfscript>
 
+  function init() {
+  	return this;
+  }
+
   function isDelayed() {
-    if (isDefined("$context")) $context.inDelayedMatcher(false);
+    if (isDefined("$runner")) $runner.flagDelayedMatcher(false);
     return false;
   }
   
@@ -9,13 +13,16 @@
     return false;
   }
 
-  function setExpectations(expectations, negate, runner, context) {
-    $expectations = expectations;
-    $negateExpectations = negate;
+  function setRunner(runner) {
     $runner = runner;
-    $context = context;
   }
 
+  function setExpectations(expectations) {
+    $expectations = expectations;
+  }
+
+  function setArguments() {}
+  
   function inspect(value) {
     var keys = "";
     var data = "";

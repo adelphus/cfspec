@@ -5,8 +5,9 @@
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Throw").init())>    
     <cfset $target = $(createObject("component", "cfspec.spec.assets.Widget"))>
-    <cfset $expectations = createObject("component", "cfspec.lib.Expectations").init(this, $cfspec, false)>
-    <cfset $matcher.setExpectations($expectations, false, this, $cfspec)>
+    <cfset expectations = createObject("component", "cfspec.lib.Expectations").__cfspecInit(this, false)>
+    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setExpectations(expectations)>
   </before>
 
   <it should="match when target throws an exception">

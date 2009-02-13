@@ -2,8 +2,12 @@
 
   function init(name) {
   	$name = name;
-  	$args = arguments;
+  	$args = structNew();
     return this;
+  }
+  
+  function setArguments() {
+  	$args = arguments;
   }
 
   function isMatch(target) {
@@ -11,7 +15,7 @@
     var result = "";
     variables.target = target;
     if (arrayLen($args) gt 1) variables.expected = $args[2];
-    result = ec.__cfspecEval(variables, $context.getSimpleMatcher($name));
+    result = ec.__cfspecEval(variables, $runner.getSimpleMatcherExpression($name));
     if (isDefined("result")) return result;
     return false;
   }

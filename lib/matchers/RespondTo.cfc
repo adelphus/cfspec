@@ -1,10 +1,9 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init() {
-    if (arrayLen(arguments) != 1) throw("Application", "The RespondTo matcher expected 1 argument, got #arrayLen(arguments)-1#.");
+  function setArguments() {
+    if (arrayLen(arguments) != 1) throw("Application", "The RespondTo matcher expected 1 argument, got #arrayLen(arguments)#.");
     $methodName = arguments[1];
     if (not isSimpleValue($methodName)) throw("Application", "The METHODNAME parameter to the RespondTo matcher must be a simple value.");
-    return this;
   }
 
   function isMatch(actual) {

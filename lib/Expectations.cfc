@@ -1,119 +1,153 @@
-<cfcomponent output="false"><cfscript>
+<!--- 
+  Expectations wrap an object or expression.  It provides a hook for matchers via the 'should' or
+  'shouldNot' method prefixes.  Since everything else is passed through to the underlying object,
+  the public method namespace should be kept very clean.
+--->
+<cfcomponent output="false">
 
-  $matchers = [
-    "Equal(Numeric|Date|Boolean|String|Object|Struct|Array|Query)?(NoCase)?/Equal",
-    "BeCloseTo/BeCloseTo",
-    "Be/BeSame",
-    "Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)/BeComparison",
-    "Have(AtLeast|AtMost|Exactly)?/Have",
-    "HaveTag/HaveTag",
-    "Match(NoCase)?/Match",
-    "Contain(NoCase)?/Contain",
-    "Be(.+)/Be",
-    "RespondTo/RespondTo",
-    "Throw/Throw"
-  ];
+  <cffunction name="__cfspecInit">
+    <cfargument name="runner">
+    <cfargument name="target">
+    <cfset _runner = runner>
+    <cfset _target = target>
+    <cfset _matchers = _runner.getMatchers()>
+    <cfreturn this>    
+  </cffunction>
 
-  function init(runner, context, target) {
-    $runner = runner;
-    $context = context;
-    $target = target;
-    registerCustomMatchers();
-    return this;
-  }
+  <cffunction name="__cfspecEvalMatcher">
+    <cfargument name="matcher">
+    <cfset var result = "">
+    <cfif matcher.isDelayed()>
+      <cfreturn matcher>
+    </cfif>
+    <cfset result = matcher.isMatch(_target)>
+    <cfif result eqv _negated>
+      <cfif _negated>
+        <cfreturn _runner.fail(matcher.getNegativeFailureMessage())>
+      <cfelse>
+        <cfreturn _runner.fail(matcher.getFailureMessage())>
+      </cfif>
+    </cfif>
+    <cfif matcher.isChained()>
+      <cfreturn matcher>
+    </cfif>
+    <cfreturn this>
+  </cffunction>
+  
+  <cffunction name="__cfspecIsNegated">
+    <cfreturn _negated>
+  </cffunction>
+  
+  <cffunction name="onMissingMethod">
+    <cfargument name="missingMethodName">
+    <cfargument name="missingMethodArguments">
 
-  function registerCustomMatchers() {
-    var matchers = $context.getCustomMatchers();
-    var i = "";
-    $customMatcherCount = arrayLen(matchers);
-    for (i = 1; i <= $customMatcherCount; i++) {
-      arrayPrepend($matchers, matchers[i]);
-    }
-  }
+    <cfif not listFindNoCase("shouldThrow,shouldNotThrow", missingMethodName)>
+      <cfset _runner.ensureNoExceptionsArePending()>
+    </cfif>    
+    <cfset _runner.ensureNoDelayedMatchersArePending()>
 
-  function resumeDelayedMatcher(matcher, negate) {
-    var result = "";
-    if (matcher.isDelayed()) return matcher;
-    result = matcher.isMatch($target);
-    if (result eqv negate) {
-      if (negate) {
-        return $runner.fail(matcher.getNegativeFailureMessage());
-      } else {
-        return $runner.fail(matcher.getFailureMessage());
-      }
-    }
-    if (matcher.isChained()) return matcher;
-    return this;
-  }
+    <cfset matcher = findMatcher(missingMethodName)>
+    <cfif isObject(matcher)>
+      <cfset _runner.flagExpectationEncountered()>
+      <cfset matcher.setRunner(_runner)>
+      <cfset matcher.setExpectations(this)>
+      <cfset evaluate("matcher.setArguments(#flatArgs(missingMethodArguments)#)")>
+      <cfreturn __cfspecEvalMatcher(matcher)>
+    </cfif>
+    
+    <cfif isObject(_target)>
+      <cfreturn passItOn(missingMethodName, missingMethodArguments)>
+    </cfif>
+    
+    <cfthrow message="The method #missingMethodName# was not found.">
+  </cffunction>
 
-  function onMissingMethod(missingMethodName, missingMethodArguments) {
-    var regexp = "";
-    var matchData = "";
-    var matcher = "";
-    var args = "";
-    var flatArgs = "";
-    var result = "";
-    var i = "";
-    var j = "";
-    var k = "";
+  <cffunction name="findMatcher" access="private">
+    <cfargument name="methodName">
+    <cfset var matchData = "">
+    <cfset var matcher = "">
+    <cfset var i = "">
+    <cfloop index="i" from="1" to="#arrayLen(_matchers)#">
+      <cfset matchData = reFindNoCase("^should(Not)?#_matchers[i][1]#$", methodName, 1, true)>
+      <cfif matchData.len[1]>
+        <cfset matcher = createObject("component", _matchers[i][2])>
+        <cfset _negated = matchData.len[2] gt 0>
+        <cfset evaluate("matcher.init(#flatArgsFromMatchData(methodName, matchData)#)")>
+        <cfreturn matcher>
+      </cfif>      
+    </cfloop>
+    <cfreturn false>
+  </cffunction>
 
-    if ($context.hasExpectedException()) {
-      if (not listFindNoCase("shouldThrow,shouldNotThrow", missingMethodName)) {
-        $context.rethrow($context.getExpectedException());
-      }
-    }
-    $context.throwOnDelayedMatcher();
+  <cffunction name="passItOn" access="private">
+    <cfargument name="methodName">
+    <cfargument name="args">
+    <cfset var result = "">
+    <cftry>
+      <cfset result = evaluate("_target.#methodName#(#flatArgs(args)#)")>
+      <cfcatch type="any" >
+        <cfset _runner.setPendingException(cfcatch)>
+        <cfreturn _runner.$(this)>
+      </cfcatch>
+    </cftry>
+    <cfif not isDefined("result")>
+      <cfset result = false>
+    </cfif>
+    <cfreturn _runner.$(result)>
+  </cffunction>
 
-    for (i = 1; i <= arrayLen($matchers); i++) {
-      regexp = $matchers[i];
-      matchData = reFindNoCase("^should(Not)?#listFirst(regexp, '/')#$", missingMethodName, 1, true);
-      if (matchData.len[1]) {
-        k = 1;
-        args = [];
-        for (j = 3; j <= arrayLen(matchData.len); j++) {
-          if (matchData.len[j]) arrayAppend(args, mid(missingMethodName, matchData.pos[j], matchData.len[j]));
-          else arrayAppend(args, "");
-          flatArgs = listAppend(flatArgs, "args[#k#]");
-          k++;
-        }
-        for (j = 1; j <= arrayLen(missingMethodArguments); j++) {
-          arrayAppend(args, missingMethodArguments[j]);
-          flatArgs = listAppend(flatArgs, "args[#k#]");
-          k++;
-        }
+  <cffunction name="flatArgs" access="private">
+    <cfargument name="args">
+    <cfif arrayLen(args) eq 0>
+      <cfreturn "">
+    </cfif>
+    <cfif listFind(structKeyList(args), "1")>
+      <cfreturn flatArgsFromArray(args)>
+    <cfelse>
+      <cfreturn flatArgsFromStruct(args)>
+    </cfif>
+  </cffunction>
 
-        if (i <= $customMatcherCount) {
-          matcher = createObject("component", listLast(regexp, "/"));
-        } else {
-          matcher = createObject("component", "cfspec.lib.matchers.#listLast(regexp, '/')#");
-        }
-        evaluate("matcher.init(#flatArgs#)");
+  <cffunction name="flatArgsFromArray" access="private">
+    <cfargument name="args">
+    <cfset var flatArgs = "">
+    <cfset var i = "">
+    <cfset _args = arrayNew(1)>
+    <cfloop index="i" from="1" to="#arrayLen(args)#">
+      <cfset arrayAppend(_args, args[i])>
+      <cfset flatArgs = listAppend(flatArgs, "_args[#i#]")>
+    </cfloop>
+    <cfreturn flatArgs>
+  </cffunction>
 
-        negate = matchData.len[2];
-        matcher.setExpectations(this, negate, $runner, $context);
-        $context.expectationEncountered();
+  <cffunction name="flatArgsFromStruct" access="private">
+    <cfargument name="args">
+    <cfset var flatArgs = "">
+    <cfset var key = "">
+    <cfset _args = structNew()>
+    <cfloop item="key" collection="#args#">
+      <cfset _args[key] = args[key]>
+      <cfset flatArgs = listAppend(flatArgs, "#key#=_args.#key#")>
+    </cfloop>
+    <cfreturn flatArgs>
+  </cffunction>
 
-        return resumeDelayedMatcher(matcher, negate);
-      }
-    }
-
-    if (isObject($target)) {
-      args = [];
-      for (i = 1; i <= arrayLen(missingMethodArguments); i++) {
-        arrayAppend(args, missingMethodArguments[i]);
-        flatArgs = listAppend(flatArgs, "args[#i#]");
-      }
-      try {
-        result = evaluate("$target.#missingMethodName#(#flatArgs#)");
-      } catch (Any e) {
-        $context.setExpectedException(e);
-        return $runner.$(this);
-      }
-      if (!isDefined("result")) result = false;
-      return $runner.$(result);
-    } else {
-      $context.throw("Application", "The method #missingMethodName# was not found.");
-    }
-  }
-
-</cfscript></cfcomponent>
+  <cffunction name="flatArgsFromMatchData" access="private">
+    <cfargument name="string">
+    <cfargument name="matchData">
+    <cfset var flatArgs = "">
+    <cfset var i = "">
+    <cfset _args = arrayNew(1)>
+    <cfloop index="i" from="3" to="#arrayLen(matchData.len)#">
+      <cfif matchData.len[i]>
+        <cfset arrayAppend(_args, mid(string, matchData.pos[i], matchData.len[i]))>
+      <cfelse>
+        <cfset arrayAppend(_args, "")>
+      </cfif>
+      <cfset flatArgs = listAppend(flatArgs, "_args[#(i-2)#]")>
+    </cfloop>
+    <cfreturn flatArgs>
+  </cffunction>
+  
+</cfcomponent>

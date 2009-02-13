@@ -3,9 +3,12 @@
   function init(type, noCase) {
     $type = type;
     $noCase = len(noCase);
-    if (arrayLen(arguments) != 3) throw("Application", "The Equal#$type# matcher expected 1 argument, got #arrayLen(arguments)-2#.");
-    $expected = arguments[3];
     return this;
+  }
+  
+  function setArguments() {
+    if (arrayLen(arguments) != 1) throw("Application", "The Equal#$type# matcher expected 1 argument, got #arrayLen(arguments)#.");
+    $expected = arguments[1];
   }
 
   function isMatch(actual) {

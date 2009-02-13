@@ -3,9 +3,9 @@
 <describe hint="Custom Matcher">
 
   <beforeAll>
-    <cfset $cfspec.registerMatcher("Say", "cfspec.spec.assets.SimonSaysMatcher")>
-    <cfset $cfspec.simpleMatcher("BeEven", "target mod 2 eq 0")>
-    <cfset $cfspec.simpleMatcher("BeOdd", "target mod 2 eq 1")>
+    <cfset registerMatcher("Say", "cfspec.spec.assets.SimonSaysMatcher")>
+    <cfset simpleMatcher("BeEven", "target mod 2 eq 0")>
+    <cfset simpleMatcher("BeOdd", "target mod 2 eq 1")>
   </beforeAll>
 
   <before>

@@ -1,12 +1,11 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init() {
+  function setArguments() {
     $tagName = arguments[1];
-    return this;
   }
 
   function isMatch(actual) {
-    var loader = $context.getJavaLoader();
+    var loader = $runner.getJavaLoader();
     var tagSoup = loader.create("org.ccil.cowan.tagsoup.Parser").init();
     var doc = loader.create("nu.xom.Document");
     var xpath = $tagName;

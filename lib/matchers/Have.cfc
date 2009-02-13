@@ -2,10 +2,13 @@
 
   function init(relativity) {
     $relativity = relativity;
-    if (arrayLen(arguments) != 2) throw("Application", "The Have#$relativity# matcher expected 1 argument, got #arrayLen(arguments)-1#.");
-    $expected = arguments[2];
-    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Have#$relativity# matcher must be numeric.");
     return this;
+  }
+
+  function setArguments() {
+    if (arrayLen(arguments) != 1) throw("Application", "The Have#$relativity# matcher expected 1 argument, got #arrayLen(arguments)#.");
+    $expected = arguments[1];
+    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Have#$relativity# matcher must be numeric.");
   }
 
   function isMatch(collectionOwner) {
@@ -16,7 +19,7 @@
       if (hasMethod(collectionOwner, "get#$collectionName#")) {
         collection = evaluate("collectionOwner.get#$collectionName#()");
       } else {
-        pluralCollectionName = $context.getInflector().pluralize($collectionName);
+        pluralCollectionName = $runner.getInflector().pluralize($collectionName);
         if (pluralCollectionName != $collectionName and hasMethod(collectionOwner, "get#pluralCollectionName#")) {
           collection = evaluate("collectionOwner.get#pluralCollectionName#()");
         } else if (hasMethod(collectionOwner, "length") || hasMethod(collectionOwner, "size")) {
@@ -75,13 +78,13 @@
 
   function onMissingMethod(missingMethodName, missingMethodArguments) {
     $collectionName = missingMethodName;
-    if (isDefined("$expectations"))  $expectations.resumeDelayedMatcher(this, $negateExpectations);
+    if (isDefined("$expectations")) $expectations.__cfspecEvalMatcher(this);
     return this;
   }
 
   function isDelayed() {
     var delayed = not isDefined("$collectionName");
-    $context.inDelayedMatcher(delayed);
+    $runner.flagDelayedMatcher(delayed);
     return delayed;
   }
 

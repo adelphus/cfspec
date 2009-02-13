@@ -5,7 +5,8 @@
   <describe hint="Numeric">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Numeric", "", 5))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Numeric", ""))>
+      <cfset $matcher.setArguments(5)>
     </before>
 
     <it should="match when actual == expected">
@@ -43,7 +44,8 @@
   <describe hint="Date">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Date", "", createDate(2001, 9, 11)))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Date", ""))>
+      <cfset $matcher.setArguments(createDate(2001, 9, 11))>
     </before>
 
     <it should="match when actual == expected">
@@ -81,7 +83,8 @@
   <describe hint="Boolean">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Boolean", "", true))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Boolean", ""))>
+      <cfset $matcher.setArguments(true)>
     </before>
 
     <it should="match when actual == expected">
@@ -119,7 +122,8 @@
   <describe hint="String">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("String", "", "Who is John Galt?"))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("String", ""))>
+      <cfset $matcher.setArguments("Who is John Galt?")>
     </before>
 
     <it should="match when actual == expected">
@@ -158,7 +162,8 @@
 
     <before>
       <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Object", "", obj))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Object", ""))>
+      <cfset $matcher.setArguments(obj)>
     </before>
 
     <it should="match when actual == expected">
@@ -209,7 +214,8 @@
 
     <before>
       <cfset struct = {a="foo",b="bar",c="baz"}>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Struct", "", struct))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Struct", ""))>
+      <cfset $matcher.setArguments(struct)>
     </before>
 
     <it should="match when actual == expected">
@@ -251,7 +257,8 @@
   <describe hint="Array">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Array", "", listToArray("a,b,c")))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Array", ""))>
+      <cfset $matcher.setArguments(listToArray("a,b,c"))>
     </before>
 
     <it should="match when actual == expected">
@@ -297,7 +304,8 @@
       <cfset queryAddColumn(query, "foo", listToArray("a,d,g"))>
       <cfset queryAddColumn(query, "bar", listToArray("b,e,h"))>
       <cfset queryAddColumn(query, "baz", listToArray("c,f,i"))>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Query", "", query))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Query", ""))>
+      <cfset $matcher.setArguments(query)>
     </before>
 
     <it should="match when actual == expected">
@@ -351,22 +359,26 @@
   <describe hint="Mixed Simple Types">
 
     <it should="convert arguments to numbers when Numeric is specified">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Numeric", "", "123"))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Numeric", ""))>
+      <cfset $matcher.setArguments("123")>
       <cfset $matcher.isMatch("123.0").shouldBeTrue()>
     </it>
 
     <it should="convert arguments to dates when Date is specified">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Date", "", "1/1/01"))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Date", ""))>
+      <cfset $matcher.setArguments("1/1/01")>
       <cfset $matcher.isMatch("January 1, 2001").shouldBeTrue()>
     </it>
 
     <it should="convert arguments to booleans when Boolean is specified">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Boolean", "", "123"))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Boolean", ""))>
+      <cfset $matcher.setArguments("123")>
       <cfset $matcher.isMatch(42).shouldBeTrue()>
     </it>
 
     <it should="convert arguments to strings when String is specified">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Boolean", "", 42))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("String", ""))>
+      <cfset $matcher.setArguments(42)>
       <cfset $matcher.isMatch("42").shouldBeTrue()>
     </it>
 
@@ -374,82 +386,86 @@
 
   <describe hint="Unspecified Type">
 
+    <before>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", ""))>
+    </before>
+
     <it should="match when actual == target (auto-sense numeric)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", 12))>
+      <cfset $matcher.setArguments(12)>
       <cfset $matcher.isMatch("12.0").shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense numeric)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", 12))>
+      <cfset $matcher.setArguments(12)>
       <cfset $matcher.isMatch("12.1").shouldBeFalse()>
     </it>
 
     <it should="match when actual == target (auto-sense date)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", createDate(2001, 9, 11)))>
+      <cfset $matcher.setArguments(createDate(2001, 9, 11))>
       <cfset $matcher.isMatch("9/11/01").shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense date)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", createDate(2001, 9, 11)))>
+      <cfset $matcher.setArguments(createDate(2001, 9, 11))>
       <cfset $matcher.isMatch("9/11/02").shouldBeFalse()>
     </it>
 
     <it should="match when actual == target (auto-sense boolean)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", true))>
+      <cfset $matcher.setArguments(true)>
       <cfset $matcher.isMatch("Yes").shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense boolean)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", true))>
+      <cfset $matcher.setArguments(true)>
       <cfset $matcher.isMatch("No").shouldBeFalse()>
     </it>
 
     <it should="match when actual == target (auto-sense string)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", "123abc"))>
+      <cfset $matcher.setArguments("123abc")>
       <cfset $matcher.isMatch("123abc").shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense string)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", "123abc"))>
+      <cfset $matcher.setArguments("123abc")>
       <cfset $matcher.isMatch("123xyz").shouldBeFalse()>
     </it>
 
     <it should="match when actual == target (auto-sense object)">
       <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
+      <cfset $matcher.setArguments(obj)>
       <cfset target = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
       <cfset $matcher.isMatch(target).shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense object)">
       <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
+      <cfset $matcher.setArguments(obj)>
       <cfset target = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Hancock")>
       <cfset $matcher.isMatch(target).shouldBeFalse()>
     </it>
 
     <it should="match when actual == target (auto-sense struct)">
       <cfset struct = {a="foo",b="bar",c="baz"}>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", struct))>
+      <cfset $matcher.setArguments(struct)>
       <cfset target = {a="foo",b="bar",c="baz"}>
       <cfset $matcher.isMatch(target).shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense struct)">
       <cfset struct = {a="foo",b="bar",c="baz"}>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", struct))>
+      <cfset $matcher.setArguments(struct)>
       <cfset target = {a="foo",b="Bar",c="baz"}>
       <cfset $matcher.isMatch(target).shouldBeFalse()>
     </it>
 
     <it should="match when actual == target (auto-sense array)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Array", "", listToArray("a,b,c")))>
+      <cfset $matcher.setArguments(listToArray("a,b,c"))>
       <cfset target = listToArray("a,b,c")>
       <cfset $matcher.isMatch(target).shouldBeTrue()>
     </it>
 
     <it should="not match when actual != target (auto-sense array)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Array", "", listToArray("a,b,c")))>
+      <cfset $matcher.setArguments(listToArray("a,b,c"))>
       <cfset target = listToArray("a,B,c")>
       <cfset $matcher.isMatch(target).shouldBeFalse()>
     </it>
@@ -459,7 +475,7 @@
       <cfset queryAddColumn(query, "foo", listToArray("a,d,g"))>
       <cfset queryAddColumn(query, "bar", listToArray("b,e,h"))>
       <cfset queryAddColumn(query, "baz", listToArray("c,f,i"))>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Query", "", query))>
+      <cfset $matcher.setArguments(query)>
       <cfset target = queryNew("")>
       <cfset queryAddColumn(target, "foo", listToArray("a,d,g"))>
       <cfset queryAddColumn(target, "bar", listToArray("b,e,h"))>
@@ -472,7 +488,7 @@
       <cfset queryAddColumn(query, "foo", listToArray("a,d,g"))>
       <cfset queryAddColumn(query, "bar", listToArray("b,e,h"))>
       <cfset queryAddColumn(query, "baz", listToArray("c,f,i"))>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Query", "", query))>
+      <cfset $matcher.setArguments(query)>
       <cfset target = queryNew("")>
       <cfset queryAddColumn(target, "foo", listToArray("a,d,g"))>
       <cfset queryAddColumn(target, "bar", listToArray("b,E,h"))>
@@ -484,13 +500,13 @@
     
       <it should="provide a useful failure message if actual.isEqualTo() returns a non-boolean">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
-        <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
+        <cfset $matcher.setArguments(obj)>
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Equal expected actual.isEqualTo(expected) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if actual.isEqualTo() is not implemented">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
-        <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", obj))>
+        <cfset $matcher.setArguments(obj)>
         <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "Equal expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
       </it>
 
@@ -499,20 +515,24 @@
   </describe>
 
   <describe hint="Mismatched Types">
+
+    <before>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", ""))>
+    </before>
     
     <it should="not match when actual is simple and target is complex">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", "[1,2,3]"))>
+      <cfset $matcher.setArguments("[1,2,3]")>
       <cfset $matcher.isMatch(listToArray("1,2,3")).shouldBeFalse()>
     </it>
 
     <it should="not match when actual is complex and target is simple">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", "[1,2,3]"))>
-      <cfset $matcher.isMatch(listToArray("1,2,3")).shouldBeFalse()>
+      <cfset $matcher.setArguments(listToArray("1,2,3"))>
+      <cfset $matcher.isMatch("[1,2,3]").shouldBeFalse()>
     </it>
     
     <it should="not match when actual and target are different complex types">
       <cfset struct = {a=1,b=2,c=3}>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "", struct))>
+      <cfset $matcher.setArguments(struct)>
       <cfset $matcher.isMatch(listToArray("1,2,3")).shouldBeFalse()>
     </it>
 
@@ -520,14 +540,18 @@
 
   <describe hint="NoCase">
 
+    <before>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "NoCase"))>
+    </before>
+
     <it should="match when actual == target (strings of different case)">
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "NoCase", "foo"))>
+      <cfset $matcher.setArguments("foo")>
       <cfset $matcher.isMatch("FOO").shouldBeTrue()>
     </it>
 
     <it should="match when actual == target (arrays with elements that differ by case)">
       <cfset array = ["a", "b", "c"]>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", "NoCase", array))>
+      <cfset $matcher.setArguments(array)>
       <cfset target = ["A", "B", "C"]>
       <cfset $matcher.isMatch(target).shouldBeTrue()>
     </it>

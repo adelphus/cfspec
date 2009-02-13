@@ -1,18 +1,21 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
   function init(noCase) {
-    var i = "";
     $noCase = len(noCase);
-    if (arrayLen(arguments) < 2) throw("Application", "The Contain matcher expected at least 1 argument, got #arrayLen(arguments)-1#.");
-    $expected = [];
-    for (i = 2; i <= arrayLen(arguments); i++) {
-      arrayAppend($expected, arguments[i]);
-    }
     return this;
   }
 
+  function setArguments() {
+    var i = "";
+    if (arrayLen(arguments) < 1) throw("Application", "The Contain matcher expected at least 1 argument, got #arrayLen(arguments)#.");
+    $expected = [];
+    for (i = 1; i <= arrayLen(arguments); i++) {
+      arrayAppend($expected, arguments[i]);
+    }
+  }
+
   function isMatch(actual) {
-    var eqMatcher = createObject("component", "cfspec.lib.matchers.Equal");
+    var eqMatcher = createObject("component", "cfspec.lib.matchers.Equal").init("", iif($noCase, de("NoCase"), de("")));
     var result = "";
     var row = "";
     var key = "";
@@ -59,7 +62,8 @@
          } else if (isStruct($expected[i])) {
            for (key in $expected[i]) {
              if (!structKeyExists($actual, key)) return false;
-             if (!eqMatcher.init("", iif($noCase, de("NoCase"), de("")), $actual[key]).isMatch($expected[i][key])) return false;
+             eqMatcher.setArguments($actual[key]);
+             if (!eqMatcher.isMatch($expected[i][key])) return false;
            }
          } else {
           throw("Application", "The EXPECTED parameters to the Contain matcher must be simple values or structs.");
@@ -71,7 +75,8 @@
        for (i = 1; i <= arrayLen($expected); i++) {
         result = false;
          for (j = 1; j <= arrayLen($actual); j++) {
-           if (eqMatcher.init("", iif($noCase, de("NoCase"), de("")), $actual[j]).isMatch($expected[i])) {
+           eqMatcher.setArguments($actual[j]);
+           if (eqMatcher.isMatch($expected[i])) {
              result = true;
              break;
            }
@@ -88,11 +93,12 @@
            for (key in $expected[i]) {
              if (!listFindNoCase($actual.columnList, key)) return false;
            }
-          result = false;
+           result = false;
            for (j = 1; j <= $actual.recordCount; j++) {
              row = true;
              for (key in $expected[i]) {
-               if (!eqMatcher.init("", iif($noCase, de("NoCase"), de("")), $actual[key][j]).isMatch($expected[i][key])) {
+               eqMatcher.setArguments($actual[key][j]);
+               if (!eqMatcher.isMatch($expected[i][key])) {
                  row = false;
                  break;
                }

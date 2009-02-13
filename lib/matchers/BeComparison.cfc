@@ -1,11 +1,14 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init() {
-    $comparison = arguments[1];
-    if (arrayLen(arguments) != 2) throw("Application", "The Be#$comparison# matcher expected 1 argument, got #arrayLen(arguments)-1#.");
-    $expected = arguments[2];
-    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Be#$comparison# matcher must be numeric.");
+  function init(comparison) {
+    $comparison = comparison;
     return this;
+  }
+  
+  function setArguments() {
+    if (arrayLen(arguments) != 1) throw("Application", "The Be#$comparison# matcher expected 1 argument, got #arrayLen(arguments)#.");
+    $expected = arguments[1];
+    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Be#$comparison# matcher must be numeric.");
   }
 
   function isMatch(actual) {

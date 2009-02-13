@@ -1,15 +1,20 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
   function init(predicate) {
-    var i = "";
     $predicate = predicate;
     $args = [];
     $flatArgs = "";
-    for (i = 2; i <= arrayLen(arguments); i++) {
-      arrayAppend($args, arguments[i]);
-      $flatArgs = listAppend($flatArgs, "$args[#i-1#]");
-    }
     return this;
+  }
+  
+  function setArguments() {
+    var i = "";
+    $args = [];
+    $flatArgs = "";
+    for (i = 1; i <= arrayLen(arguments); i++) {
+      arrayAppend($args, arguments[i]);
+      $flatArgs = listAppend($flatArgs, "$args[#i#]");
+    }
   }
 
   function isMatch(actual) {
@@ -77,8 +82,8 @@
       return $actual;
 
     case "AnInstanceOf":
-      if (arrayLen($args) != 1) throw("Application", "The BeEmpty matcher expected 1 argument, got #arrayLen($args)#.");
-      if (not isSimpleValue($args[1])) throw("Application", "The CLASSNAME parameter to the BeEmpty matcher must be a string.");
+      if (arrayLen($args) != 1) throw("Application", "The BeAnInstanceOf matcher expected 1 argument, got #arrayLen($args)#.");
+      if (not isSimpleValue($args[1])) throw("Application", "The CLASSNAME parameter to the BeAnInstanceOf matcher must be a string.");
       try {
         $actual = getMetaData($actual).name;
       } catch (Any e) {

@@ -1,13 +1,9 @@
-<cfcomponent extends="Expectations" output="false"><cfscript>
-
-  $matchers = [
-    "Change(NoCase)?/Change",
-    "Throw/Throw"
-  ];
+<cfcomponent extends="Expectations" output="false">
   
-  function eval(expression) {
-    var ec = createObject("component", "EvalContext");
-    return ec.__cfspecEval($runner.cfSpecBindings(), expression);
-  }
+  <cffunction name="eval">
+    <cfargument name="expression">
+    <cfset var context = createObject("component", "EvalContext")>
+    <cfreturn context.__cfspecEval(_runner.cfSpecBindings(), expression)>
+  </cffunction>
 
-</cfscript></cfcomponent>
+</cfcomponent>

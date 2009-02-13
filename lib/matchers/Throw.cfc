@@ -2,6 +2,11 @@
 
   function init() {
     $type = "Any";
+    return this;  	
+  }
+
+  function setArguments() {
+    $type = "Any";
     if (arrayLen(arguments) >= 1) {
       $type = arguments[1];
       if (not isSimpleValue($type)) throw("Application", "The TYPE parameter to the Throw matcher must be a simple value.");
@@ -15,14 +20,13 @@
       if (not isSimpleValue($detail)) throw("Application", "The DETAIL parameter to the Throw matcher must be a simple value.");
     }
     if (arrayLen(arguments) >= 4) throw("Application", "The Throw matcher expected at most 3 arguments, got #arrayLen(arguments)#.");
-    return this;
   }
 
   function isMatch(actual) {
   	if (isInstanceOf($expectations, "cfspec.lib.EvalExpectations")) tryEval(actual);
     $actual = "";
     try {
-      $actual = $context.getExpectedException();
+      $actual = $runner.getAndResetPendingException();
     } catch (Any e) {
       return false;
     }
@@ -32,7 +36,7 @@
         (isDefined("$message") and !findNoCase($message, $actual.message) and !reFindNoCase($message, $actual.message)) or
         (isDefined("$detail") and !findNoCase($detail, $actual.detail) and !reFindNoCase($detail, $actual.detail))) {
 
-      if ($negateExpectations) $context.setExpectedException($actual);          
+      if ($expectations.__cfspecIsNegated()) $runner.setPendingException($actual);          
       return false;      
     }
 
@@ -86,7 +90,7 @@
     <cftry>
       <cfset result = $expectations.eval(actual)>
       <cfcatch type="any">
-        <cfset $context.setExpectedException(cfcatch)>
+        <cfset $runner.setPendingException(cfcatch)>
       </cfcatch>
     </cftry>
   </cffunction>

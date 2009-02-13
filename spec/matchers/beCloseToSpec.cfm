@@ -3,7 +3,8 @@
 <describe hint="BeCloseTo">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeCloseTo").init(5, 0.5))>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeCloseTo").init())>
+    <cfset $matcher.setArguments(5, 0.5)>
   </before>
 
   <it should="match when actual == expected">

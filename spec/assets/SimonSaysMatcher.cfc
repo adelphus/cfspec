@@ -1,8 +1,7 @@
 <cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
 
-  function init(expected) {
+  function setArguments(expected) {
     _expected = expected;
-    return this;
   }
 
   function isMatch(target) {

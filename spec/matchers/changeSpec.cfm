@@ -3,9 +3,11 @@
 <describe hint="Change">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Change").init("", "foo"))>
-    <cfset $expectations = createObject("component", "cfspec.lib.EvalExpectations").init(this, $cfspec, false)>
-    <cfset $matcher.setExpectations($expectations, false, this, $cfspec)>
+    <cfset expectations = createObject("component", "cfspec.lib.EvalExpectations").__cfspecInit(this, false)>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Change").init(""))>
+    <cfset $matcher.setExpectations(expectations)>
+    <cfset $matcher.setArguments("foo")>
+    <cfset $matcher.setRunner(this)>
   </before>
 
   <it should="match when the expression causes a change in the changee">
@@ -42,9 +44,10 @@
   <describe hint="NoCase">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Change").init("NoCase", "foo"))>
-      <cfset $expectations = createObject("component", "cfspec.lib.EvalExpectations").init(this, $cfspec, false)>
-      <cfset $matcher.setExpectations($expectations, false, this, $cfspec)>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Change").init("NoCase"))>
+      <cfset $matcher.setExpectations(expectations)>
+      <cfset $matcher.setArguments("foo")>
+      <cfset $matcher.setRunner(this)>
     </before>
   
     <it should="not match when results are the same except for case">

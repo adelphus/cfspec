@@ -413,7 +413,7 @@
   
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Defined"))>
-    <cfset $matcher.setExpectations(stub(), false, this, $cfspec)>
+    <cfset $matcher.setRunner(this)>
   </before>
 
   <it should="match if target is a defined variable name">
@@ -445,7 +445,8 @@
 <describe hint="Be AnInstanceOf">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("AnInstanceOf", "cfspec.spec.assets.Widget"))>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("AnInstanceOf"))>
+    <cfset $matcher.setArguments("cfspec.spec.assets.Widget")>
   </before>
 
   <it should="match if target is an instance of the expected class">
@@ -516,7 +517,8 @@
   <describe hint="with arguments">
 
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("InMood", "happy", 42))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("InMood"))>
+      <cfset $matcher.setArguments("happy", 42)>
     </before>
 
     <it should="match when actual.isInMood('happy', 42) returns true">

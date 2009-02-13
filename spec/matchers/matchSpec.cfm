@@ -3,7 +3,8 @@
 <describe hint="Match">
   
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init("", "^t\s\(\d{3}\)\s\d{3}-\d{4}$"))>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init(""))>
+    <cfset $matcher.setArguments("^t\s\(\d{3}\)\s\d{3}-\d{4}$")>
   </before>
 
   <it should="match when target matches actual">
@@ -31,7 +32,8 @@
   <describe hint="NoCase">
   
     <before>
-      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init("NoCase", "^t\s\(\d{3}\)\s\d{3}-\d{4}$"))>
+      <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init("NoCase"))>
+      <cfset $matcher.setArguments("^t\s\(\d{3}\)\s\d{3}-\d{4}$")>
     </before>
 
     <it should="match when target matches actual (case-insensitive)">

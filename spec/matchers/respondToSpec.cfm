@@ -3,7 +3,8 @@
 <describe hint="RespondTo">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.RespondTo").init("getName"))>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.RespondTo").init())>
+    <cfset $matcher.setArguments("getName")>
     <cfset widget = createObject("component", "cfspec.spec.assets.Widget")>
     <cfset specialWidget = createObject("component", "cfspec.spec.assets.SpecialWidget")>
   </before>

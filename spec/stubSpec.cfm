@@ -3,7 +3,7 @@
 <describe hint="Stub">
 
   <before>
-    <cfset $stub = $(createObject("component", "cfspec.lib.Stub").init(getName="John Doe", getAge=21, isMale=true))>
+    <cfset $stub = $(createObject("component", "cfspec.lib.Stub").__cfspecInit(getName="John Doe", getAge=21, isMale=true))>
   </before>
 
   <it should="return a new stub when an arbitrary method is called">
@@ -19,7 +19,7 @@
   <describe hint="stubMissingMethod=false">
 
     <it should="throw an exception on an unspecified method call">
-      <cfset $stub = $(createObject("component", "cfspec.lib.Stub").init(getName="John Doe", stubMissingMethod=false))>
+      <cfset $stub = $(createObject("component", "cfspec.lib.Stub").__cfspecInit(getName="John Doe", stubMissingMethod=false))>
       <cfset $stub.anyOldMethod().shouldThrow()>
     </it>
     
