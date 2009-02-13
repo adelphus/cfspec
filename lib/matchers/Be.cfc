@@ -63,6 +63,10 @@
       if (arrayLen($args) != 0) throw("Application", "The BeQuery matcher expected 0 arguments, got #arrayLen($args)#.");
       return isQuery($actual);
 
+    case "UUID":
+      if (arrayLen($args) != 0) throw("Application", "The BeUUID matcher expected 0 arguments, got #arrayLen($args)#.");
+      return isValid('uuid',$actual);
+
     case "Empty":
       if (arrayLen($args) != 0) throw("Application", "The BeEmpty matcher expected 0 arguments, got #arrayLen($args)#.");
       if (isSimpleValue($actual)) return trim($actual) == "";
@@ -127,6 +131,7 @@
       case "Struct":       return iif(negative, de('not '), de('')) & "to be a struct";
       case "Array":        return iif(negative, de('not '), de('')) & "to be an array";
       case "Query":        return iif(negative, de('not '), de('')) & "to be a query";
+      case "UUID":         return iif(negative, de('not '), de('')) & "to be a valid uuid";
       case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
       case "Defined":      return iif(negative, de('not '), de('')) & "to be defined";
       case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
