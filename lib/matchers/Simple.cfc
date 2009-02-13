@@ -33,8 +33,8 @@
     <cfset var bindings = structNew()>
     <cfset var result = "">
 
-    <cfset context.target = target>
-    <cfset context.args = _args>
+    <cfset bindings.target = target>
+    <cfset bindings.args = _args>
 
     <cfset result = context.__cfspecEval(bindings, expression)>
     <cfif not isDefined("result")>

@@ -18,7 +18,7 @@
       <cfset _runner.fail("RespondTo expected an object, got #inspect(target)#")>
     </cfif>
 
-    <cfreturn hasMethod(actual, _methodName)>
+    <cfreturn hasMethod(target, _methodName)>
   </cffunction>
 
 

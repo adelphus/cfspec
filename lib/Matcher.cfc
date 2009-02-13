@@ -36,10 +36,12 @@
 
   function setRunner(runner) {
     $runner = runner;
+    _runner = runner;
   }
 
   function setExpectations(expectations) {
     $expectations = expectations;
+    _expectations = expectations;
   }
 
   function setArguments() {}
