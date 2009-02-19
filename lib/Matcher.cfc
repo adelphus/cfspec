@@ -23,6 +23,19 @@
     </cfif>
   </cffunction>
 
+  <cffunction name="prettyPrint">
+    <cfargument name="value">
+    <cfset var s = inspect(value[1])>
+    <cfset var l = arrayLen(value)>
+    <cfset var i = "">
+    <cfloop index="i" from="2" to="#(l - 1)#">
+      <cfset s = s & ", " & inspect(value[i])>
+    </cfloop>
+    <cfif l gt 1>
+      <cfset s = s & " and " & inspect(value[l])>
+    </cfif>
+    <cfreturn s>
+  </cffunction>
 
 <cfscript>
 

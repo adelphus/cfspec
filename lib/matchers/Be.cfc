@@ -1,147 +1,262 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!---
+  Be expects the target to match the specified predicate.
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function init(predicate) {
-    $predicate = predicate;
-    $args = [];
-    $flatArgs = "";
-    return this;
-  }
-  
-  function setArguments() {
-    var i = "";
-    $args = [];
-    $flatArgs = "";
-    for (i = 1; i <= arrayLen(arguments); i++) {
-      arrayAppend($args, arguments[i]);
-      $flatArgs = listAppend($flatArgs, "$args[#i#]");
-    }
-  }
 
-  function isMatch(actual) {
-    $actual = actual;
-    switch ($predicate) {
 
-    case "True":
-      if (arrayLen($args) != 0) throw("Application", "The BeTrue matcher expected 0 arguments, got #arrayLen($args)#.");
-      if (not isBoolean($actual)) throw("cfspec.fail", "BeTrue expected a boolean, got #inspect($actual)#");
-      return $actual eq true;
+  <cffunction name="init">
+    <cfargument name="predicate">
+    <cfset _predicate = predicate>
+    <cfset _args = arrayNew(1)>
+    <cfset _flatArgs = "">
+    <cfreturn this>
+  </cffunction>
 
-    case "False":
-      if (arrayLen($args) != 0) throw("Application", "The BeFalse matcher expected 0 arguments, got #arrayLen($args)#.");
-      if (not isBoolean($actual)) throw("cfspec.fail", "BeFalse expected a boolean, got #inspect($actual)#");
-      return $actual eq false;
 
-    case "SimpleValue":
-      if (arrayLen($args) != 0) throw("Application", "The BeSimpleValue matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isSimpleValue($actual);
 
-    case "Numeric":
-      if (arrayLen($args) != 0) throw("Application", "The BeNumeric matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isNumeric($actual);
+  <cffunction name="setArguments">
+    <cfset var i = "">
+    <cfset _matcherName = "Be#_predicate#">
+    <cfset _args = arrayNew(1)>
+    <cfset _flatArgs = "">
+    <cfloop index="i" from="1" to="#arrayLen(arguments)#">
+      <cfset arrayAppend(_args, arguments[i])>
+      <cfset _flatArgs = listAppend(_flatArgs, "_args[#i#]")>
+    </cfloop>
+  </cffunction>
 
-    case "Date":
-      if (arrayLen($args) != 0) throw("Application", "The BeDate matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isDate($actual);
 
-    case "Boolean":
-      if (arrayLen($args) != 0) throw("Application", "The BeBoolean matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isBoolean($actual);
 
-    case "Object":
-      if (arrayLen($args) != 0) throw("Application", "The BeObject matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isObject($actual);
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset _target = target>
+    <cfswitch expression="#_predicate#">
+      <cfcase value="True">          <cfreturn isMatchTrue(target)>             </cfcase>
+      <cfcase value="False">         <cfreturn isMatchFalse(target)>            </cfcase>
+      <cfcase value="SimpleValue">   <cfreturn isMatchSimpleValue(target)>      </cfcase>
+      <cfcase value="Numeric">       <cfreturn isMatchNumeric(target)>          </cfcase>
+      <cfcase value="Date">          <cfreturn isMatchDate(target)>             </cfcase>
+      <cfcase value="Boolean">       <cfreturn isMatchBoolean(target)>          </cfcase>
+      <cfcase value="Object">        <cfreturn isMatchObject(target)>           </cfcase>
+      <cfcase value="Struct">        <cfreturn isMatchStruct(target)>           </cfcase>
+      <cfcase value="Array">         <cfreturn isMatchArray(target)>            </cfcase>
+      <cfcase value="Query">         <cfreturn isMatchQuery(target)>            </cfcase>
+      <cfcase value="UUID">          <cfreturn isMatchUUID(target)>             </cfcase>
+      <cfcase value="Empty">         <cfreturn isMatchEmpty(target)>            </cfcase>
+      <cfcase value="Defined">       <cfreturn isMatchDefined(target)>          </cfcase>
+      <cfcase value="AnInstanceOf">  <cfreturn isMatchAnInstanceOf(target)>     </cfcase>
+      <cfdefaultcase>
+        <cfreturn isMatchCustomPredicate(target)>
+      </cfdefaultcase>
+    </cfswitch>
+  </cffunction>
 
-    case "Struct":
-      if (arrayLen($args) != 0) throw("Application", "The BeStruct matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isStruct($actual);
 
-    case "Array":
-      if (arrayLen($args) != 0) throw("Application", "The BeArray matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isArray($actual);
 
-    case "Query":
-      if (arrayLen($args) != 0) throw("Application", "The BeQuery matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isQuery($actual);
+  <cffunction name="isMatchTrue">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfif not isBoolean(target)>
+      <cfthrow type="cfspec.fail" message="BeTrue expected a boolean, got #inspect(target)#.">
+    </cfif>
+    <cfreturn target eq true>
+  </cffunction>
 
-    case "UUID":
-      if (arrayLen($args) != 0) throw("Application", "The BeUUID matcher expected 0 arguments, got #arrayLen($args)#.");
-      return isValid('uuid',$actual);
 
-    case "Empty":
-      if (arrayLen($args) != 0) throw("Application", "The BeEmpty matcher expected 0 arguments, got #arrayLen($args)#.");
-      if (isSimpleValue($actual)) return trim($actual) == "";
-      if (isQuery($actual)) return $actual.recordCount == 0;
-      try {
-        $actual = actual.isEmpty();
-      } catch (Application e) {
-        if (e.message != "The method isEmpty was not found.") rethrow(e);
-        throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, but the method was not found.");
-      }
-      if (not isBoolean($actual)) throw("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got #inspect($actual)#");
-      return $actual;
 
-    case "Defined":
-      if (arrayLen($args) != 0) throw("Application", "The BeDefined matcher expected 0 arguments, got #arrayLen($args)#.");
-      $actual = structKeyExists($runner.cfspecBindings(), actual);
-      return $actual;
+  <cffunction name="isMatchFalse">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfif not isBoolean(target)>
+      <cfthrow type="cfspec.fail" message="BeFalse expected a boolean, got #inspect(target)#.">
+    </cfif>
+    <cfreturn target eq false>
+  </cffunction>
 
-    case "AnInstanceOf":
-      if (arrayLen($args) != 1) throw("Application", "The BeAnInstanceOf matcher expected 1 argument, got #arrayLen($args)#.");
-      if (not isSimpleValue($args[1])) throw("Application", "The CLASSNAME parameter to the BeAnInstanceOf matcher must be a string.");
-      try {
-        $actual = getMetaData($actual).name;
-      } catch (Any e) {
-        $actual = "???";
-      }
-      return isInstanceOf(actual, $args[1]);
 
-    default:
-      try {
-        $actual = evaluate("$actual.is#$predicate#(#$flatArgs#)");
-      } catch (Application e) {
-        if (e.message != "The method is#$predicate# was not found.") rethrow(e);
-        throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, but the method was not found.");
-      }
-      if (not isBoolean($actual)) throw("cfspec.fail", "Be#$predicate# expected actual.#predicateMethod()# to return a boolean, got #inspect($actual)#");
-      return $actual;
-    }
-  }
 
-  function getFailureMessage() {
-    return "expected #predicateExpectation(false)#, got #inspect($actual)#";
-  }
+  <cffunction name="isMatchSimpleValue">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isSimpleValue(target)>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected #predicateExpectation(true)#, got #inspect($actual)#";
-  }
 
-  function getDescription() {
-    return reReplace(predicateExpectation(false), "^to\s+", "");
-  }
 
-  function predicateExpectation(negative) {
-    switch ($predicate) {
-      case "True":         return iif(negative, de('not '), de('')) & "to be true";
-      case "False":        return iif(negative, de('not '), de('')) & "to be false";
-      case "SimpleValue":  return iif(negative, de('not '), de('')) & "to be a simple value";
-      case "Numeric":      return iif(negative, de('not '), de('')) & "to be numeric";
-      case "Date":         return iif(negative, de('not '), de('')) & "to be a date";
-      case "Boolean":      return iif(negative, de('not '), de('')) & "to be a boolean";
-      case "Object":       return iif(negative, de('not '), de('')) & "to be an object";
-      case "Struct":       return iif(negative, de('not '), de('')) & "to be a struct";
-      case "Array":        return iif(negative, de('not '), de('')) & "to be an array";
-      case "Query":        return iif(negative, de('not '), de('')) & "to be a query";
-      case "UUID":         return iif(negative, de('not '), de('')) & "to be a valid uuid";
-      case "Empty":        return iif(negative, de('not '), de('')) & "to be empty";
-      case "Defined":      return iif(negative, de('not '), de('')) & "to be defined";
-      case "AnInstanceOf": return iif(negative, de('not '), de('')) & "to be an instance of #inspect($args[1])#";
-      default:
-        return "#predicateMethod()# to be " & iif(negative, de('false'), de('true'));
-    }
-  }
+  <cffunction name="isMatchNumeric">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isNumeric(target)>
+  </cffunction>
 
-  function predicateMethod() {
-    return "is#$predicate#(#reReplace(inspect($args), '^\[(.*)\]$', '\1')#)";
-  }
 
-</cfscript></cfcomponent>
+
+  <cffunction name="isMatchDate">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isDate(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchBoolean">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isBoolean(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchObject">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isObject(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchStruct">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isStruct(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchArray">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isArray(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchQuery">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isQuery(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchUUID">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isValid("uuid", target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchEmpty">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfif isSimpleValue(target)><cfreturn trim(target) eq ""></cfif>
+    <cfif isQuery(target)><cfreturn target.recordCount eq 0></cfif>
+    <cftry>
+      <cfset _target = target.isEmpty()>
+      <cfcatch type="Application">
+        <cfif cfcatch.message does not contain "isEmpty was not found"><cfrethrow></cfif>
+        <cfthrow type="cfspec.fail" message="BeEmpty expected target.isEmpty() to return a boolean, but the method was not found.">
+      </cfcatch>
+    </cftry>
+    <cfif not isBoolean(_target)>
+      <cfthrow type="cfspec.fail" message="BeEmpty expected target.isEmpty() to return a boolean, got #inspect(_target)#.">
+    </cfif>
+    <cfreturn _target>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchDefined">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfset _target = structKeyExists(_runner.getBindings(), target)>
+    <cfreturn _target>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchAnInstanceOf">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 1)>
+    <cfset verifyArg(isSimpleValue(_args[1]), "className", "must be a simple value")>
+    <cftry>
+      <cfset _target = getMetaData(target).name>
+      <cfcatch type="any">
+        <cfset _target = "???">
+      </cfcatch>
+    </cftry>
+    <cfreturn isInstanceOf(target, _args[1])>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchCustomPredicate">
+    <cfargument name="target">
+    <cftry>
+      <cfset _target = evaluate("target.is#_predicate#(#_flatArgs#)")>
+      <cfcatch type="Application">
+        <cfif cfcatch.message does not contain "is#_predicate# was not found"><cfrethrow></cfif>
+        <cfthrow type="cfspec.fail" message="Be#_predicate# expected target.#predicateMethod()# to return a boolean, but the method was not found.">
+      </cfcatch>
+    </cftry>
+    <cfif not isBoolean(_target)>
+      <cfthrow type="cfspec.fail" message="Be#_predicate# expected target.#predicateMethod()# to return a boolean, got #inspect(_target)#.">
+    </cfif>
+    <cfreturn _target>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected #predicateExpectation(false)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected #predicateExpectation(true)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn reReplace(predicateExpectation(false), "^to\s+", "")>
+  </cffunction>
+
+
+
+  <cffunction name="predicateExpectation">
+    <cfargument name="negative">
+    <cfset var hamlet = iif(negative, de('not '), de('')) & "to be">
+    <cfswitch expression="#_predicate#">
+      <cfcase value="True">          <cfreturn "#hamlet# true">                                </cfcase>
+      <cfcase value="False">         <cfreturn "#hamlet# false">                               </cfcase>
+      <cfcase value="SimpleValue">   <cfreturn "#hamlet# a simple value">                      </cfcase>
+      <cfcase value="Numeric">       <cfreturn "#hamlet# numeric">                             </cfcase>
+      <cfcase value="Date">          <cfreturn "#hamlet# a date">                              </cfcase>
+      <cfcase value="Boolean">       <cfreturn "#hamlet# a boolean">                           </cfcase>
+      <cfcase value="Object">        <cfreturn "#hamlet# an object">                           </cfcase>
+      <cfcase value="Struct">        <cfreturn "#hamlet# a struct">                            </cfcase>
+      <cfcase value="Array">         <cfreturn "#hamlet# an array">                            </cfcase>
+      <cfcase value="Query">         <cfreturn "#hamlet# a query">                             </cfcase>
+      <cfcase value="UUID">          <cfreturn "#hamlet# a valid uuid">                        </cfcase>
+      <cfcase value="Empty">         <cfreturn "#hamlet# empty">                               </cfcase>
+      <cfcase value="Defined">       <cfreturn "#hamlet# defined">                             </cfcase>
+      <cfcase value="AnInstanceOf">  <cfreturn "#hamlet# an instance of #inspect(_args[1])#">  </cfcase>
+      <cfdefaultcase>
+        <cfreturn "#predicateMethod()# to be " & iif(negative, de('false'), de('true'))>
+      </cfdefaultcase>
+    </cfswitch>
+  </cffunction>
+
+
+
+  <cffunction name="predicateMethod">
+    <cfreturn "is#_predicate#(#reReplace(inspect(_args), '^\[(.*)\]$', '\1')#)">
+  </cffunction>
+
+
+
+</cfcomponent>

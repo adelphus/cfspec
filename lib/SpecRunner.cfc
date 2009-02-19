@@ -113,7 +113,7 @@
     <cfthrow type="cfspec.pend" message="#msg#">
   </cffunction>
 
-  <cffunction name="cfSpecBindings">
+  <cffunction name="getBindings">
     <cfreturn variables>
   </cffunction>
 

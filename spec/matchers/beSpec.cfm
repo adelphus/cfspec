@@ -397,12 +397,12 @@
 
   <describe hint="bad types">
 
-    <it should="provide a useful failure message if actual.isEmpty() returns a non-boolean">
-      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, got")>
+    <it should="provide a useful failure message if target.isEmpty() returns a non-boolean">
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeEmpty expected target.isEmpty() to return a boolean, got")>
     </it>
 
     <it should="provide a useful failure message if actual doesn't implement isEmpty">
-      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeEmpty expected actual.isEmpty() to return a boolean, but the method was not found.")>
+      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeEmpty expected target.isEmpty() to return a boolean, but the method was not found.")>
     </it>
 
   </describe>
@@ -488,12 +488,12 @@
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Happy"))>
   </before>
 
-  <it should="match when actual.isHappy() returns true">
+  <it should="match when target.isHappy() returns true">
     <cfset target = stub(isHappy=true)>
     <cfset $matcher.isMatch(target).shouldBeTrue()>
   </it>
 
-  <it should="not match when actual.isHappy() returns false">
+  <it should="not match when target.isHappy() returns false">
     <cfset target = stub(isHappy=false)>
     <cfset $matcher.isMatch(target).shouldBeFalse()>
   </it>
@@ -521,12 +521,12 @@
       <cfset $matcher.setArguments("happy", 42)>
     </before>
 
-    <it should="match when actual.isInMood('happy', 42) returns true">
+    <it should="match when target.isInMood('happy', 42) returns true">
       <cfset target = createObject("component", "cfspec.spec.assets.HappyGuy")>
       <cfset $matcher.isMatch(target).shouldBeTrue()>
     </it>
 
-    <it should="not match when actual.isInMood('happy', 42) returns false">
+    <it should="not match when target.isInMood('happy', 42) returns false">
       <cfset target = createObject("component", "cfspec.spec.assets.SadGuy")>
       <cfset $matcher.isMatch(target).shouldBeFalse()>
     </it>
@@ -549,12 +549,12 @@
 
     <describe hint="bad types">
 
-      <it should="provide a useful failure message if actual.isPredicate() returns a non-boolean">
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected actual.isInMood('happy',42) to return a boolean, got")>
+      <it should="provide a useful failure message if target.isPredicate() returns a non-boolean">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected target.isInMood('happy',42) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if actual doesn't implement isPredicate">
-        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeInMood expected actual.isInMood('happy',42) to return a boolean, but the method was not found.")>
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeInMood expected target.isInMood('happy',42) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>
