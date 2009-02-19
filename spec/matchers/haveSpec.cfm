@@ -119,7 +119,7 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("abcde")>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected 3 items, got 5")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected 3 items, got 5.")>
   </it>
 
   <it should="describe itself">
@@ -130,11 +130,11 @@
 
     <it should="provide a useful failure message if actual.size() returns a non-numeric">
       <cfset target = createObject("component", "cfspec.spec.assets.HasSize").init(stub())>
-      <cfset $matcher.isMatch(target).shouldThrow("cfspec.fail", "HaveExactly expected actual.size() or actual.length() to return a number, got")>
+      <cfset $matcher.isMatch(target).shouldThrow("cfspec.fail", "HaveExactly expected target.size() or target.length() to return a number, got")>
     </it>
 
     <it should="provide a useful failure message if actual doesn't implement size">
-      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "HaveExactly expected actual.size() or actual.length() to return a number, but the method was not found.")>
+      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "HaveExactly expected target.size() or target.length() to return a number, but the method was not found.")>
     </it>
 
   </describe>
@@ -260,7 +260,7 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("ab")>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected at least 3 items, got 2")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected at least 3 items, got 2.")>
   </it>
 
   <it should="describe itself">
@@ -388,7 +388,7 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("abcde")>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected at most 3 items, got 5")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected at most 3 items, got 5.")>
   </it>
 
   <it should="describe itself">
