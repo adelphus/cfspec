@@ -1,47 +1,69 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!---
+  BeComparison expects the given number to be related to the target accorging to the named
+  comparison relationship.
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function init(comparison) {
-    $comparison = comparison;
-    return this;
-  }
-  
-  function setArguments() {
-    if (arrayLen(arguments) != 1) throw("Application", "The Be#$comparison# matcher expected 1 argument, got #arrayLen(arguments)#.");
-    $expected = arguments[1];
-    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Be#$comparison# matcher must be numeric.");
-  }
 
-  function isMatch(actual) {
-    $actual = actual;
-    if (not isNumeric($actual)) throw("cfspec.fail", "Be#$comparison# expected a number, got #inspect($actual)#");
-    switch ($comparison) {
-      case "LessThan":             return $actual < $expected;
-      case "LessThanOrEqualTo":    return $actual <= $expected;
-      case "GreaterThanOrEqualTo": return $actual >= $expected;
-      case "GreaterThan":          return $actual > $expected;
-      default:                     return false;
-    }
-  }
 
-  function getFailureMessage() {
-    return "expected to be #comparisonOperator()# #inspect($expected)#, got #inspect($actual)#";
-  }
+  <cffunction name="init">
+    <cfargument name="comparison">
+    <cfset _comparison = comparison>
+    <cfreturn this>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected not to be #comparisonOperator()# #inspect($expected)#, got #inspect($actual)#";
-  }
 
-  function getDescription() {
-    return "be #comparisonOperator()# #inspect($expected)#";
-  }
 
-  function comparisonOperator() {
-    switch ($comparison) {
-      case "LessThan":             return "<";
-      case "LessThanOrEqualTo":    return "<=";
-      case "GreaterThanOrEqualTo": return ">=";
-      case "GreaterThan":          return ">";
-    }
-  }
+  <cffunction name="setArguments">
+    <cfset _matcherName = "Be#_comparison#">
+    <cfset requireArgs(arguments, 1)>
+    <cfset _expected = arguments[1]>
+    <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>
+  </cffunction>
 
-</cfscript></cfcomponent>
+
+
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset _target = target>
+    <cfif not isNumeric(_target)>
+      <cfthrow type="cfspec.fail" message="Be#_comparison# expected a number, got #inspect(_target)#">
+    </cfif>
+    <cfswitch expression="#_comparison#">
+      <cfcase value="LessThan">              <cfreturn _target lt _expected>  </cfcase>
+      <cfcase value="LessThanOrEqualTo">     <cfreturn _target le _expected>  </cfcase>
+      <cfcase value="GreaterThanOrEqualTo">  <cfreturn _target ge _expected>  </cfcase>
+      <cfcase value="GreaterThan">           <cfreturn _target gt _expected>  </cfcase>
+    </cfswitch>
+    <cfthrow message="Internal Sytem Bug">
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected to be #_shorthand[_comparison]# #inspect(_expected)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected not to be #_shorthand[_comparison]# #inspect(_expected)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn "be #_shorthand[_comparison]# #inspect(_expected)#">
+  </cffunction>
+
+
+
+  <cfset _shorthand = structNew()>
+  <cfset _shorthand.lessThan             = "<"  >
+  <cfset _shorthand.lessThanOrEqualTo    = "<=" >
+  <cfset _shorthand.greaterThanOrEqualTo = ">=" >
+  <cfset _shorthand.greaterThan          = ">"  >
+
+
+
+</cfcomponent>

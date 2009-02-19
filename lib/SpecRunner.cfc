@@ -134,8 +134,14 @@
     <cfset $cfspec.expectationEncountered()>
   </cffunction>
   
-  <cffunction name="getAndResetPendingException">
-    <cfreturn $cfspec.getExpectedException()>
+  <cffunction name="getPendingException">
+    <cfset var e = $cfspec.getExpectedException()>
+    <cfset $cfspec.setExpectedException(e)>
+    <cfreturn e>
+  </cffunction>
+
+  <cffunction name="clearPendingException">
+    <cfset $cfspec.getExpectedException()>
   </cffunction>
 
   <cffunction name="setPendingException">

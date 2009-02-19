@@ -1,3 +1,7 @@
+<!---
+  RespondTo expectes the target object to have a method defined with the given name
+  (not using onMissingMethod). Parents of the target object may also have the method.
+--->
 <cfcomponent extends="cfspec.lib.Matcher" output="false">
 
 

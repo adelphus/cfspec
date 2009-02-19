@@ -3,9 +3,14 @@
   <cffunction name="requireArgs">
     <cfargument name="args">
     <cfargument name="count">
+    <cfargument name="relation" default="">
     <cfset var argCount = arrayLen(args)>
-    <cfif argCount neq count>
-      <cfthrow message="The #_matcherName# matcher expected #count# argument(s), got #argCount#.">
+    <cfset var op = "eq">
+    <cfif relation eq "at least"><cfset op = "ge"></cfif>
+    <cfif relation eq "at most"> <cfset op = "le"></cfif>
+
+    <cfif not evaluate("argCount #op# count")>
+      <cfthrow message="The #_matcherName# matcher expected #trim(relation & ' ' & count)# argument(s), got #argCount#.">
     </cfif>
   </cffunction>
 

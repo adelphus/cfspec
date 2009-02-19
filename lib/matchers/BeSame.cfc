@@ -1,25 +1,42 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!---
+  BeSame expects the exact same object (not just one that is equal).
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function setArguments() {
-    if (arrayLen(arguments) != 1) throw("Application", "The BeSame matcher expected 1 argument, got #arrayLen(arguments)#.");
-    $expected = arguments[1];
-  }
 
-  function isMatch(actual) {
-    var system = createObject("java", "java.lang.System");
-    return system.identityHashCode(actual) == system.identityHashCode($expected);
-  }
 
-  function getFailureMessage() {
-    return "expected to be the same, got different (native arrays are always different)";
-  }
+  <cffunction name="setArguments">
+    <cfset _matcherName = "BeSame">
+    <cfset requireArgs(arguments, 1)>
+    <cfset _expected = arguments[1]>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected not to be different, got the same (equivalent simple values are usually the same)";
-  }
 
-  function getDescription() {
-    return "be the same";
-  }
 
-</cfscript></cfcomponent>
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset var system = createObject("java", "java.lang.System")>
+    <cfreturn system.identityHashCode(target) eq system.identityHashCode(_expected)>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected to be the same, got different (native arrays are always different)">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected not to be different, got the same (equivalent simple values are usually the same)">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn "be the same">
+  </cffunction>
+
+
+
+</cfcomponent>

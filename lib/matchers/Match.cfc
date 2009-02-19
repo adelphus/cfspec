@@ -1,36 +1,57 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!---
+  Match expects the target to be a simple value that matches the given regular expression.
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function init(noCase) {
-    $noCase = len(noCase);
-    return this;
-  }
-  
-  function setArguments() {
-    if (arrayLen(arguments) != 1) throw("Application", "The Match matcher expected 1 argument, got #arrayLen(arguments)#.");
-    $expected = arguments[1];
-    if (not isSimpleValue($expected)) throw("Application", "The EXPECTED parameter to the Match matcher must be a simple value.");
-  }
 
-  function isMatch(actual) {
-    $actual = actual;
-    if (not isSimpleValue($actual)) throw("cfspec.fail", "Match expected a simple value, got #inspect($actual)#");
-    if ($noCase) {
-      return reFindNoCase($expected, $actual) > 0;
-    } else {
-      return reFind($expected, $actual) > 0;
-    }
-  }
 
-  function getFailureMessage() {
-    return "expected to match #inspect($expected)#, got #inspect($actual)#";
-  }
+  <cffunction name="init">
+    <cfargument name="noCase">
+    <cfset _noCase = len(noCase) gt 0>
+    <cfreturn this>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected not to match #inspect($expected)#, got #inspect($actual)#";
-  }
 
-  function getDescription() {
-    return "match #inspect($expected)#";
-  }
 
-</cfscript></cfcomponent>
+  <cffunction name="setArguments">
+    <cfset requireArgs(arguments, 1)>
+    <cfset _regexp = arguments[1]>
+    <cfset verifyArg(isSimpleValue(_regexp), "regExp", "must be a valid regular expression")>
+  </cffunction>
+
+
+
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset _target = target>
+    <cfif not isSimpleValue(_target)>
+      <cfthrow type="cfspec.fail" message="Match expected a simple value, got #inspect(_target)#">
+    </cfif>
+    <cfif _noCase>
+      <cfreturn reFindNoCase(_regexp, _target) gt 0>
+    <cfelse>
+      <cfreturn reFind(_regexp, _target) gt 0>
+    </cfif>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected to match #inspect(_regexp)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected not to match #inspect(_regexp)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn "match #inspect(_regexp)#">
+  </cffunction>
+
+
+
+</cfcomponent>

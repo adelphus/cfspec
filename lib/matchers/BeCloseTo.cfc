@@ -1,29 +1,48 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!---
+  BeCloseTo expected numeric arguments to fall within a given delta of the target.
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function setArguments() {
-    if (arrayLen(arguments) != 2) throw("Application", "The BeCloseTo matcher expected 2 arguments, got #arrayLen(arguments)#.");
-    $expected = arguments[1];
-    if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the BeCloseTo matcher must be numeric.");
-    $delta = arguments[2];
-    if (not isNumeric($delta)) throw("Application", "The DELTA parameter to the BeCloseTo matcher must be numeric.");
-  }
 
-  function isMatch(actual) {
-    $actual = actual;
-    if (not isNumeric($actual)) throw("cfspec.fail", "BeCloseTo expected a number, got #inspect($actual)#");
-    return abs($actual - $expected) < $delta;
-  }
 
-  function getFailureMessage() {
-    return "expected #inspect($expected)# +/- (< #inspect($delta)#), got #inspect($actual)#";
-  }
+  <cffunction name="setArguments">
+    <cfset _matcherName = "BeCloseTo">
+    <cfset requireArgs(arguments, 2)>
+    <cfset _expected = arguments[1]>
+    <cfset _delta = arguments[2]>
+    <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>
+    <cfset verifyArg(isNumeric(_delta), "delta", "must be numeric")>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected #inspect($expected)# +/- (>= #inspect($delta)#), got #inspect($actual)#";
-  }
 
-  function getDescription() {
-    return "be close to #inspect($expected)# (within +/- #inspect($delta)#)";
-  }
 
-</cfscript></cfcomponent>
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset _target = target>
+    <cfif not isNumeric(_target)>
+      <cfthrow type="cfspec.fail" message="BeCloseTo expected a number, got #inspect(_target)#">
+    </cfif>
+    <cfreturn abs(_target - _expected) lt _delta>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected #inspect(_expected)# +/- (< #inspect(_delta)#), got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected #inspect(_expected)# +/- (>= #inspect(_delta)#), got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn "be close to #inspect(_expected)# (within +/- #inspect(_delta)#)">
+  </cffunction>
+
+
+
+</cfcomponent>
