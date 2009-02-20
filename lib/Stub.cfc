@@ -1,19 +1,34 @@
-<cfcomponent output="false"><cfscript>
+<!---
+  Stub object.  Method name space should be kept clean.
+--->
+<cfcomponent output="false">
 
-  __cfspecMethods = structNew();
 
-  function __cfspecInit() {
-    __cfspecMethods = structCopy(arguments);
-    return this;
-  }
 
-  function onMissingMethod(missingMethodName, missingMethodArguments) {
-    if (structKeyExists(__cfspecMethods, missingMethodName)) return __cfspecMethods[missingMethodName];
-    if (not structKeyExists(__cfspecMethods, "stubMissingMethod") or __cfspecMethods.stubMissingMethod) {
-      return createObject("component", "Stub");
-    } else {
-      createObject("component", "cfspec.lib.Base").throw("Application", "The method #missingMethodName# was not found.");
-    }
-  }
+  <cfset __cfspecMethods = structNew()>
 
-</cfscript></cfcomponent>
+
+
+  <cffunction name="__cfspecInit">
+    <cfset __cfspecMethods = structCopy(arguments)>
+    <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="onMissingMethod">
+    <cfargument name="missingMethodName">
+    <cfargument name="missingMethodArguments">
+    <cfif structKeyExists(__cfspecMethods, missingMethodName)>
+      <cfreturn __cfspecMethods[missingMethodName]>
+    </cfif>
+    <cfif not structKeyExists(__cfspecMethods, "stubMissingMethod") or __cfspecMethods.stubMissingMethod>
+      <cfreturn createObject("component", "Stub")>
+    <cfelse>
+      <cfthrow message="The method #missingMethodName# was not found.">
+    </cfif>
+  </cffunction>
+
+
+
+</cfcomponent>
