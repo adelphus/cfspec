@@ -8,6 +8,7 @@
 
   <cffunction name="init">
     <cfargument name="comparison">
+    <cfset _matcherName = "Be#comparison#">
     <cfset _comparison = comparison>
     <cfreturn this>
   </cffunction>
@@ -15,7 +16,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "Be#_comparison#">
     <cfset requireArgs(arguments, 1)>
     <cfset _expected = arguments[1]>
     <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>

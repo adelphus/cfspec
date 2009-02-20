@@ -13,6 +13,7 @@
 
   <cffunction name="init">
     <cfargument name="pattern">
+    <cfset _matcherName = "Simple">
     <cfset _pattern = pattern>
     <cfset _args = structNew()>
     <cfreturn this>

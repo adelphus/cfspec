@@ -7,6 +7,7 @@
 
   <cffunction name="init">
     <cfargument name="noCase">
+    <cfset _matcherName = "Change">
     <cfset _noCase = len(noCase) gt 0>
     <cfreturn this>
   </cffunction>
@@ -15,7 +16,6 @@
 
   <cffunction name="setArguments">
     <cfset var i = "">
-    <cfset _matcherName = "Change">
     <cfset requireArgs(arguments, 1, "at least")>
     <cfset _isMultiple = arrayLen(arguments) gt 1>
     <cfset _changee = arrayNew(1)>

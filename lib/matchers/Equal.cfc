@@ -8,6 +8,7 @@
   <cffunction name="init">
     <cfargument name="type">
     <cfargument name="noCase">
+    <cfset _matcherName = "Equal#type#">
     <cfset _type = type>
     <cfset _noCase = len(noCase) gt 0>
     <cfreturn this>
@@ -16,7 +17,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "Equal#_type#">
     <cfset requireArgs(arguments, 1)>
     <cfset _expected = arguments[1]>
   </cffunction>

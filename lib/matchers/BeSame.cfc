@@ -6,7 +6,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "BeSame">
     <cfset requireArgs(arguments, 1)>
     <cfset _expected = arguments[1]>
   </cffunction>

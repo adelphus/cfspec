@@ -6,9 +6,7 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "RespondTo">
     <cfset requireArgs(arguments, 1)>
-
     <cfset _methodName = arguments[1]>
     <cfset verifyArg(isSimpleValue(_methodName), "methodName", "must be a simple value")>
   </cffunction>

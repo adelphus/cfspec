@@ -22,7 +22,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "Throw">
     <cfset requireArgs(arguments, 3, "at most")>
 
     <cfif arrayLen(arguments) ge 1>

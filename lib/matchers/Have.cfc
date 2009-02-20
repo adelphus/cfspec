@@ -7,6 +7,7 @@
 
   <cffunction name="init">
     <cfargument name="relativity">
+    <cfset _matcherName = "Have#relativity#">
     <cfset _relativity = relativity>
     <cfreturn this>
   </cffunction>
@@ -14,7 +15,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "Have#_relativity#">
     <cfset requireArgs(arguments, 1)>
     <cfset _expected = arguments[1]>
     <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>

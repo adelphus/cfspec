@@ -2,16 +2,22 @@
   EvalContext is used to evaluate expressions within a specific binding context. To the extent
   possible, it is a clean environment where no other variables or methods can interfere.
 --->
-<cfcomponent output="false"><cfscript>
+<cfcomponent output="false">
 
-  function __cfspecEval(__cfspecEvalBindings, __cfspecEvalExpression) {
-    var __cfspecEvalResult = "";
-    
-    structAppend(variables, arguments.__cfspecEvalBindings);
-    __cfspecEvalResult = evaluate(arguments.__cfspecEvalExpression);
-    structAppend(arguments.__cfspecEvalBindings, variables);
-    
-    return iif(isDefined("__cfspecEvalResult"), "__cfspecEvalResult", "false");
-  }
 
-</cfscript></cfcomponent>
+
+  <cffunction name="__cfspecEval">
+    <cfargument name="__cfspecEvalBindings">
+    <cfargument name="__cfspecEvalExpression">
+    <cfset var __cfspecEvalResult = "">
+
+    <cfset structAppend(variables, __cfspecEvalBindings)>
+    <cfset __cfspecEvalResult = evaluate(__cfspecEvalExpression)>
+    <cfset structAppend(__cfspecEvalBindings, variables)>
+
+    <cfreturn iif(isDefined("__cfspecEvalResult"), "__cfspecEvalResult", "false")>
+  </cffunction>
+
+
+
+</cfcomponent>

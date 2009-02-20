@@ -6,7 +6,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "BeCloseTo">
     <cfset requireArgs(arguments, 2)>
     <cfset _expected = arguments[1]>
     <cfset _delta = arguments[2]>

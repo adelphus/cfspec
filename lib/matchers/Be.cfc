@@ -7,6 +7,7 @@
 
   <cffunction name="init">
     <cfargument name="predicate">
+    <cfset _matcherName = "Be#predicate#">
     <cfset _predicate = predicate>
     <cfset _args = arrayNew(1)>
     <cfset _flatArgs = "">
@@ -17,7 +18,6 @@
 
   <cffunction name="setArguments">
     <cfset var i = "">
-    <cfset _matcherName = "Be#_predicate#">
     <cfset _args = arrayNew(1)>
     <cfset _flatArgs = "">
     <cfloop index="i" from="1" to="#arrayLen(arguments)#">
@@ -58,7 +58,7 @@
     <cfargument name="target">
     <cfset requireArgs(_args, 0)>
     <cfif not isBoolean(target)>
-      <cfthrow type="cfspec.fail" message="BeTrue expected a boolean, got #inspect(target)#.">
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a boolean, got #inspect(target)#.">
     </cfif>
     <cfreturn target eq true>
   </cffunction>
@@ -69,7 +69,7 @@
     <cfargument name="target">
     <cfset requireArgs(_args, 0)>
     <cfif not isBoolean(target)>
-      <cfthrow type="cfspec.fail" message="BeFalse expected a boolean, got #inspect(target)#.">
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a boolean, got #inspect(target)#.">
     </cfif>
     <cfreturn target eq false>
   </cffunction>
@@ -157,11 +157,11 @@
       <cfset _target = target.isEmpty()>
       <cfcatch type="Application">
         <cfif cfcatch.message does not contain "isEmpty was not found"><cfrethrow></cfif>
-        <cfthrow type="cfspec.fail" message="BeEmpty expected target.isEmpty() to return a boolean, but the method was not found.">
+        <cfthrow type="cfspec.fail" message="#_matcherName# expected target.isEmpty() to return a boolean, but the method was not found.">
       </cfcatch>
     </cftry>
     <cfif not isBoolean(_target)>
-      <cfthrow type="cfspec.fail" message="BeEmpty expected target.isEmpty() to return a boolean, got #inspect(_target)#.">
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected target.isEmpty() to return a boolean, got #inspect(_target)#.">
     </cfif>
     <cfreturn _target>
   </cffunction>
@@ -198,11 +198,11 @@
       <cfset _target = evaluate("target.is#_predicate#(#_flatArgs#)")>
       <cfcatch type="Application">
         <cfif cfcatch.message does not contain "is#_predicate# was not found"><cfrethrow></cfif>
-        <cfthrow type="cfspec.fail" message="Be#_predicate# expected target.#predicateMethod()# to return a boolean, but the method was not found.">
+        <cfthrow type="cfspec.fail" message="#_matcherName# expected target.#predicateMethod()# to return a boolean, but the method was not found.">
       </cfcatch>
     </cftry>
     <cfif not isBoolean(_target)>
-      <cfthrow type="cfspec.fail" message="Be#_predicate# expected target.#predicateMethod()# to return a boolean, got #inspect(_target)#.">
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected target.#predicateMethod()# to return a boolean, got #inspect(_target)#.">
     </cfif>
     <cfreturn _target>
   </cffunction>

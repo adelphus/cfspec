@@ -33,7 +33,7 @@
   </it>
 
   <it should="not see any variables except '__cfspecEval' & 'this'">
-    <cfset $context.__cfspecEval(bindings, "structCount(variables)").shouldEqual(2)>    
+    <cfset $context.__cfspecEval(bindings, "structCount(variables)").shouldEqual(2)>
   </it>
 
 </describe>

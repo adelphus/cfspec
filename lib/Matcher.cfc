@@ -1,4 +1,17 @@
+<!---
+  Matcher is the parent class for all other matchers, which takes care of the boilerplate code,
+  and provides some utility functions that are useful in a matcher.
+--->
 <cfcomponent extends="Base" output="false">
+
+
+
+  <cffunction name="init">
+    <cfset _matcherName = listLast(getMetaData(this).name, ".")>
+    <cfreturn this>
+  </cffunction>
+
+
 
   <cffunction name="requireArgs">
     <cfargument name="args">
@@ -14,6 +27,8 @@
     </cfif>
   </cffunction>
 
+
+
   <cffunction name="verifyArg">
     <cfargument name="verified">
     <cfargument name="argName">
@@ -22,6 +37,20 @@
       <cfthrow message="The #uCase(argName)# parameter to the #_matcherName# matcher #message#.">
     </cfif>
   </cffunction>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <cffunction name="prettyPrint">
     <cfargument name="value">
@@ -39,9 +68,6 @@
 
 <cfscript>
 
-  function init() {
-  	return this;
-  }
 
   function isDelayed() {
     if (isDefined("$runner")) $runner.flagDelayedMatcher(false);

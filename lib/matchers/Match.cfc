@@ -7,6 +7,7 @@
 
   <cffunction name="init">
     <cfargument name="noCase">
+    <cfset _matcherName = "Match">
     <cfset _noCase = len(noCase) gt 0>
     <cfreturn this>
   </cffunction>

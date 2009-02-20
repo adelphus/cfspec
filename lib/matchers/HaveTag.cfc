@@ -6,7 +6,6 @@
 
 
   <cffunction name="setArguments">
-    <cfset _matcherName = "HaveTag">
     <cfset requireArgs(arguments, 1)>
     <cfset _selector = arguments[1]>
     <cfset verifyArg(isSimpleValue(_selector), "selector", "should be a valid xpath selector")>
