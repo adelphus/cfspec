@@ -410,7 +410,7 @@
 </describe>
 
 <describe hint="Be Defined">
-  
+
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Defined"))>
     <cfset $matcher.setRunner(this)>
@@ -424,7 +424,7 @@
   <it should="not match if target is not a defined variable name">
     <cfset $matcher.isMatch("foo").shouldBeFalse()>
   </it>
-  
+
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("foo")>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to be defined, got false")>

@@ -1,7 +1,7 @@
 <cfimport taglib="/cfspec" prefix="">
 
 <describe hint="Match">
-  
+
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init(""))>
     <cfset $matcher.setArguments("^t\s\(\d{3}\)\s\d{3}-\d{4}$")>
@@ -27,10 +27,10 @@
 
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("match '^t\\s\\(\\d{3}\\)\\s\\d{3}-\\d{4}$'")>
-  </it>  
+  </it>
 
   <describe hint="NoCase">
-  
+
     <before>
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init("NoCase"))>
       <cfset $matcher.setArguments("^t\s\(\d{3}\)\s\d{3}-\d{4}$")>
@@ -40,10 +40,10 @@
       <cfset $matcher.isMatch("T (555) 123-4567").shouldBeTrue()>
     </it>
 
-  </describe>  
+  </describe>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual is not a simple type">
       <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Match expected a simple value, got")>
     </it>

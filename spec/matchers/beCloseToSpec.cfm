@@ -50,7 +50,7 @@
   </it>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual is non-numeric">
       <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeCloseTo expected a number, got")>
     </it>

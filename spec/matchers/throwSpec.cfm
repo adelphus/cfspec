@@ -3,7 +3,7 @@
 <describe hint="Throw">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Throw").init())>    
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Throw").init())>
     <cfset $target = $(createObject("component", "cfspec.spec.assets.Widget"))>
     <cfset expectations = createObject("component", "cfspec.lib.Expectations").__cfspecInit(this, false)>
     <cfset $matcher.setRunner(this)>
@@ -17,23 +17,23 @@
   <it should="not match when target does not throw an exception">
     <cfset $target.getName().shouldNotThrow()>
   </it>
-  
+
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch($target.getName())>
     <cfset $matcher.getFailureMessage().shouldEqual("expected to throw Any, got no exception")>
   </it>
-  
+
   <it should="provide a useful negative failure message">
     <cfset $matcher.isMatch($target.getName())>
     <cfset $matcher.getNegativeFailureMessage().shouldMatch("expected not to throw Any, got no exception")>
   </it>
-  
+
   <it should="describe itself">
     <cfset $matcher.getDescription().shouldEqual("throw Any")>
   </it>
-  
+
   <describe hint="with various arguments (some intentional failures)">
-    
+
     <it should="FAIL because no exception was thrown">
       <cfset $eval("$target.getName().shouldThrow()").shouldThrow("cfspec.fail")>
     </it>
@@ -117,7 +117,7 @@
     <it should="FAIL because the exception matches the type, message, and details">
       <cfset $eval("$target.nonExistantMethod().shouldNotThrow('Application', 'nonExistantMethod', 'Ensure that the method is defined')").shouldThrow("cfspec.fail")>
     </it>
-    
+
   </describe>
 
 </describe>

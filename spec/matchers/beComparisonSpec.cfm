@@ -1,9 +1,9 @@
 <cfimport taglib="/cfspec" prefix="">
 
 <describe hint="BeComparison">
-  
+
   <describe hint="less than">
-  
+
     <before>
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThan"))>
       <cfset $matcher.setArguments(5)>
@@ -35,10 +35,10 @@
       <cfset $matcher.getDescription().shouldEqual("be < 5")>
     </it>
 
-  </describe>  
+  </describe>
 
   <describe hint="less than or equal to">
-  
+
     <before>
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThanOrEqualTo"))>
       <cfset $matcher.setArguments(5)>
@@ -70,10 +70,10 @@
       <cfset $matcher.getDescription().shouldEqual("be <= 5")>
     </it>
 
-  </describe>  
+  </describe>
 
   <describe hint="greater than or equal to">
-  
+
     <before>
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("GreaterThanOrEqualTo"))>
       <cfset $matcher.setArguments(5)>
@@ -105,10 +105,10 @@
       <cfset $matcher.getDescription().shouldEqual("be >= 5")>
     </it>
 
-  </describe>  
+  </describe>
 
   <describe hint="greater than">
-  
+
     <before>
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("GreaterThan"))>
       <cfset $matcher.setArguments(5)>
@@ -140,10 +140,10 @@
       <cfset $matcher.getDescription().shouldEqual("be > 5")>
     </it>
 
-  </describe>  
+  </describe>
 
   <describe hint="bad types">
-    
+
     <it should="provide a useful failure message if actual is non-numeric">
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeComparison").init("LessThan"))>
       <cfset $matcher.setArguments(5)>

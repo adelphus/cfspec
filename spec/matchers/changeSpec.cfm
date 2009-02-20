@@ -40,7 +40,7 @@
     <cfset foo = "bar">
     <cfset $matcher.isMatch("foo = uCase(foo)").shouldBeTrue()>
   </it>
-  
+
   <describe hint="NoCase">
 
     <before>
@@ -49,12 +49,12 @@
       <cfset $matcher.setArguments("foo")>
       <cfset $matcher.setRunner(this)>
     </before>
-  
+
     <it should="not match when results are the same except for case">
       <cfset foo = "bar">
       <cfset $matcher.isMatch("foo = uCase(foo)").shouldBeFalse()>
     </it>
-  
+
   </describe>
 
 </describe>
