@@ -58,11 +58,11 @@
 
   <cffunction name="buildDoc">
     <cfargument name="target">
+    <cfset var targetAsBytes = createObject("java", "java.lang.String").init(target).getBytes()>
+    <cfset var targetAsStream = createobject("java","java.io.ByteArrayInputStream").init(targetAsBytes)>
     <cfif not isDefined("_docBuilder")>
       <cfset initDocBuilder()>
     </cfif>
-    <cfset var targetAsBytes = createObject("java", "java.lang.String").init(target).getBytes()>
-    <cfset var targetAsStream = createobject("java","java.io.ByteArrayInputStream").init(targetAsBytes)>
     <cfreturn _docBuilder.build(targetAsStream)>
   </cffunction>
 

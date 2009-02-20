@@ -32,7 +32,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is non-numeric">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualNumeric expected a number, got")>
       </it>
@@ -71,7 +71,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not a date">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualDate expected a date, got")>
       </it>
@@ -110,7 +110,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not a boolean">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualBoolean expected a boolean, got")>
       </it>
@@ -149,7 +149,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not a string">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualString expected a string, got")>
       </it>
@@ -193,17 +193,17 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not an object">
         <cfset $matcher.isMatch("foo").shouldThrow("cfspec.fail", "EqualObject expected an object, got")>
       </it>
 
-      <it should="provide a useful failure message if actual.isEqualTo() returns a non-boolean">
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, got")>
+      <it should="provide a useful failure message if target.isEqualTo() returns a non-boolean">
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualObject expected target.isEqualTo(expected) to return a boolean, got")>
       </it>
 
-      <it should="provide a useful failure message if actual.isEqualTo() is not implemented">
-        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "EqualObject expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
+      <it should="provide a useful failure message if target.isEqualTo() is not implemented">
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "EqualObject expected target.isEqualTo(expected) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>
@@ -245,7 +245,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not a struct">
         <cfset $matcher.isMatch("foo").shouldThrow("cfspec.fail", "EqualStruct expected a struct, got")>
       </it>
@@ -288,7 +288,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not an array">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualArray expected an array, got")>
       </it>
@@ -347,7 +347,7 @@
     </it>
 
     <describe hint="bad types">
-    
+
       <it should="provide a useful failure message if actual is not a query">
         <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualQuery expected a query, got")>
       </it>
@@ -497,17 +497,17 @@
     </it>
 
     <describe hint="bad types">
-    
-      <it should="provide a useful failure message if actual.isEqualTo() returns a non-boolean">
+
+      <it should="provide a useful failure message if target.isEqualTo() returns a non-boolean">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
         <cfset $matcher.setArguments(obj)>
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Equal expected actual.isEqualTo(expected) to return a boolean, got")>
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Equal expected target.isEqualTo(expected) to return a boolean, got")>
       </it>
 
-      <it should="provide a useful failure message if actual.isEqualTo() is not implemented">
+      <it should="provide a useful failure message if target.isEqualTo() is not implemented">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
         <cfset $matcher.setArguments(obj)>
-        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "Equal expected actual.isEqualTo(expected) to return a boolean, but the method was not found.")>
+        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "Equal expected target.isEqualTo(expected) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>
@@ -519,7 +519,7 @@
     <before>
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("", ""))>
     </before>
-    
+
     <it should="not match when actual is simple and target is complex">
       <cfset $matcher.setArguments("[1,2,3]")>
       <cfset $matcher.isMatch(listToArray("1,2,3")).shouldBeFalse()>
@@ -529,7 +529,7 @@
       <cfset $matcher.setArguments(listToArray("1,2,3"))>
       <cfset $matcher.isMatch("[1,2,3]").shouldBeFalse()>
     </it>
-    
+
     <it should="not match when actual and target are different complex types">
       <cfset struct = {a=1,b=2,c=3}>
       <cfset $matcher.setArguments(struct)>
@@ -555,7 +555,7 @@
       <cfset target = ["A", "B", "C"]>
       <cfset $matcher.isMatch(target).shouldBeTrue()>
     </it>
-  
+
   </describe>
 
 </describe>

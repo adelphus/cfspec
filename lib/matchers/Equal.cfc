@@ -1,156 +1,308 @@
-<cfcomponent extends="cfspec.lib.Matcher" output="false"><cfscript>
+<!---
+  Equal expects the the target to have the same value.
+--->
+<cfcomponent extends="cfspec.lib.Matcher" output="false">
 
-  function init(type, noCase) {
-    $type = type;
-    $noCase = len(noCase);
-    return this;
-  }
-  
-  function setArguments() {
-    if (arrayLen(arguments) != 1) throw("Application", "The Equal#$type# matcher expected 1 argument, got #arrayLen(arguments)#.");
-    $expected = arguments[1];
-  }
 
-  function isMatch(actual) {
-    var result = "";
-    $actual = actual;
-    switch ($type) {
 
-      case "Numeric":
-        if (not isNumeric($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a number.");
-        if (not isNumeric($actual)) throw("cfspec.fail", "Equal#$type# expected a number, got #inspect($actual)#");
-        return isEqualNumeric($actual, $expected);
+  <cffunction name="init">
+    <cfargument name="type">
+    <cfargument name="noCase">
+    <cfset _type = type>
+    <cfset _noCase = len(noCase) gt 0>
+    <cfreturn this>
+  </cffunction>
 
-      case "Date":
-        if (not isDate($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a date.");
-        if (not isDate($actual)) throw("cfspec.fail", "Equal#$type# expected a date, got #inspect($actual)#");
-        return isEqualDate($actual, $expected);
 
-      case "Boolean":
-        if (not isBoolean($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a boolean.");
-        if (not isBoolean($actual)) throw("cfspec.fail", "Equal#$type# expected a boolean, got #inspect($actual)#");
-        return isEqualBoolean($actual, $expected);
 
-      case "String":
-        if (not isSimpleValue($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a string.");
-        if (not isSimpleValue($actual)) throw("cfspec.fail", "Equal#$type# expected a string, got #inspect($actual)#");
-        return isEqualString($actual, $expected);
+  <cffunction name="setArguments">
+    <cfset _matcherName = "Equal#_type#">
+    <cfset requireArgs(arguments, 1)>
+    <cfset _expected = arguments[1]>
+  </cffunction>
 
-      case "Object":
-        if (not isObject($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be an object.");
-        if (not isObject($actual)) throw("cfspec.fail", "Equal#$type# expected an object, got #inspect($actual)#");
-        try {
-          result = isEqualObject($actual, $expected);
-        } catch (Application e) {
-          if (e.message != "The method isEqualTo was not found.") rethrow(e);
-          throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, but the method was not found.");
-        }
-        if (not isBoolean(result)) throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, got #inspect(result)#");
-        return result;
 
-      case "Struct":
-        if (not isStruct($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a struct.");
-        if (not isStruct($actual)) throw("cfspec.fail", "Equal#$type# expected a struct, got #inspect($actual)#");
-        return isEqualStruct($actual, $expected);
 
-      case "Array":
-        if (not isArray($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be an array.");
-        if (not isArray($actual)) throw("cfspec.fail", "Equal#$type# expected an array, got #inspect($actual)#");
-        return isEqualArray($actual, $expected);
+  <cffunction name="isMatch">
+    <cfargument name="target">
+    <cfset var result = "">
+    <cfset _target = target>
+    <cfswitch expression="#_type#">
+      <cfcase value="Numeric">  <cfreturn isMatchNumeric(target)>  </cfcase>
+      <cfcase value="Date">     <cfreturn isMatchDate(target)>     </cfcase>
+      <cfcase value="Boolean">  <cfreturn isMatchBoolean(target)>  </cfcase>
+      <cfcase value="String">   <cfreturn isMatchString(target)>   </cfcase>
+      <cfcase value="Object">   <cfreturn isMatchObject(target)>   </cfcase>
+      <cfcase value="Struct">   <cfreturn isMatchStruct(target)>   </cfcase>
+      <cfcase value="Array">    <cfreturn isMatchArray(target)>    </cfcase>
+      <cfcase value="Query">    <cfreturn isMatchQuery(target)>    </cfcase>
+      <cfdefaultcase>
+        <cfreturn isEqual(target, _expected)>
+      </cfdefaultcase>
+    </cfswitch>
+  </cffunction>
 
-      case "Query":
-        if (not isQuery($expected)) throw("Application", "The EXPECTED parameter to the Equal#$type# matcher must be a query.");
-        if (not isQuery($actual)) throw("cfspec.fail", "Equal#$type# expected a query, got #inspect($actual)#");
-        return isEqualQuery($actual, $expected);
 
-      default:
-        return isEqual($actual, $expected);
-    }
-  }
 
-  function getFailureMessage() {
-    return "expected #inspect($expected)#, got #inspect($actual)#";
-  }
+  <cffunction name="isMatchNumeric">
+    <cfargument name="target">
+    <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>
+    <cfif not isNumeric(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a number, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualNumeric(target, _expected)>
+  </cffunction>
 
-  function getNegativeFailureMessage() {
-    return "expected not to equal #inspect($expected)#, got #inspect($actual)#";
-  }
 
-  function getDescription() {
-    return "equal #inspect($expected)#";
-  }
 
-  function isEqualNumeric(a, b) { return val(a) == val(b); }
-  function isEqualDate(a, b)    { return dateCompare(a, b) == 0; }
-  function isEqualBoolean(a, b) { return a eqv b; }
-  function isEqualString(a, b)  { return iif($noCase, 'compareNoCase(a, b)', 'compare(a, b)') == 0; }
+  <cffunction name="isMatchDate">
+    <cfargument name="target">
+    <cfset verifyArg(isDate(_expected), "expected", "must be a date")>
+    <cfif not isDate(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a date, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualDate(target, _expected)>
+  </cffunction>
 
-  function isEqualObject(a, b)   {
-    return a.isEqualTo(b);
-  }
 
-  function isEqualStruct(a, b)   {
-    var keys = "";
-    var i = "";
-    if (structCount(a) != structCount(b)) return false;
-    keys = listSort(structKeyList(a), "textnocase");
-    if (keys != listSort(structKeyList(b), "textnocase")) return false;
-    keys = listToArray(keys);
-    for (i = 1; i <= arrayLen(keys); i++) {
-      if (!isEqual(a[keys[i]], b[keys[i]])) return false;
-    }
-    return true;
-  }
 
-  function isEqualArray(a, b)   {
-    var i = "";
-    if (arrayLen(a) != arrayLen(b)) return false;
-    for (i = 1; i <= arrayLen(a); i++) {
-      if (!isEqual(a[i], b[i])) return false;
-    }
-    return true;
-  }
+  <cffunction name="isMatchBoolean">
+    <cfargument name="target">
+    <cfset verifyArg(isBoolean(_expected), "expected", "must be a boolean")>
+    <cfif not isBoolean(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a boolean, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualBoolean(target, _expected)>
+  </cffunction>
 
-  function isEqualQuery(a, b)   {
-    var keys = "";
-    var i = "";
-    var j = "";
-    if (a.recordCount != b.recordCount) return false;
-    keys = listSort(a.columnList, "textnocase");
-    if (keys != listSort(b.columnList, "textnocase")) return false;
-    keys = listToArray(keys);
-    for (i = 1; i <= a.recordCount; i++) {
-      for (j = 1; j <= arrayLen(keys); j++) {
-        if (!isEqual(a[keys[i]][j], b[keys[i]][j])) return false;
-      }
-    }
-    return true;
-  }
 
-  function isEqual(a, b) {
-    var result = "";
-    if (isSimpleValue(a) && isSimpleValue(b)) {
-      if (isNumeric(a) && isNumeric(b)) return isEqualNumeric(a, b);
-      if (isDate(a) && isDate(b))       return isEqualDate(a, b);
-      if (listFindNoCase("true,false,yes,no", a) && listFindNoCase("true,false,yes,no", b)) return isEqualBoolean(a, b);
-      return isEqualString(a, b);
-    } else if (isObject(a) && isObject(b)) {
-      try {
-        result = isEqualObject(a, b);
-      } catch (Application e) {
-        if (e.message != "The method isEqualTo was not found.") rethrow(e);
-        throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, but the method was not found.");
-      }
-      if (not isBoolean(result)) throw("cfspec.fail", "Equal#$type# expected actual.isEqualTo(expected) to return a boolean, got #inspect(result)#");
-      return result;
-    } else if (isStruct(a) && isStruct(b)) {
-      return isEqualStruct(a, b);
-    } else if (isArray(a) && isArray(b)) {
-      return isEqualArray(a, b);
-    } else if (isQuery(a) && isQuery(b)) {
-      return isEqualQuery(a, b);
-    }
-    return false;
-  }
 
-</cfscript></cfcomponent>
+  <cffunction name="isMatchString">
+    <cfargument name="target">
+    <cfset verifyArg(isSimpleValue(_expected), "expected", "must be a string")>
+    <cfif not isSimpleValue(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a string, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualString(target, _expected)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchObject">
+    <cfargument name="target">
+    <cfset verifyArg(isObject(_expected), "expected", "must be an object")>
+    <cfif not isObject(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected an object, got #inspect(target)#.">
+    </cfif>
+    <cftry>
+      <cfset result = isEqualObject(target, _expected)>
+      <cfcatch type="Application">
+        <cfif cfcatch.message does not contain "isEqualTo was not found"><cfrethrow></cfif>
+        <cfthrow type="cfspec.fail" message="#_matcherName# expected target.isEqualTo(expected) to return a boolean, but the method was not found.">
+      </cfcatch>
+    </cftry>
+    <cfif not isBoolean(result)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected target.isEqualTo(expected) to return a boolean, got #inspect(result)#.">
+    </cfif>
+    <cfreturn result>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchStruct">
+    <cfargument name="target">
+    <cfset verifyArg(isStruct(_expected), "expected", "must be a struct")>
+    <cfif not isStruct(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a struct, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualStruct(target, _expected)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchArray">
+    <cfargument name="target">
+    <cfset verifyArg(isArray(_expected), "expected", "must be an array")>
+    <cfif not isArray(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected an array, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualArray(target, _expected)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchQuery">
+    <cfargument name="target">
+    <cfset verifyArg(isQuery(_expected), "expected", "must be a query")>
+    <cfif not isQuery(target)>
+      <cfthrow type="cfspec.fail" message="#_matcherName# expected a query, got #inspect(target)#.">
+    </cfif>
+    <cfreturn isEqualQuery(target, _expected)>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureMessage">
+    <cfreturn "expected #inspect(_expected)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getNegativeFailureMessage">
+    <cfreturn "expected not to equal #inspect(_expected)#, got #inspect(_target)#">
+  </cffunction>
+
+
+
+  <cffunction name="getDescription">
+    <cfreturn "equal #inspect(_expected)#">
+  </cffunction>
+
+
+
+  <cffunction name="isEqualNumeric">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfreturn val(a) eq val(b)>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualDate">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfreturn dateCompare(a, b) eq 0>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualBoolean">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfreturn a eqv b>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualString">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfreturn iif(_noCase, 'compareNoCase(a, b)', 'compare(a, b)') eq 0>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualObject">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfreturn a.isEqualTo(b)>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualStruct">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfset var keys = "">
+    <cfset var i = "">
+    <cfif structCount(a) neq structCount(b)>
+      <cfreturn false>
+    </cfif>
+    <cfset keys = listSort(structKeyList(a), "textnocase")>
+    <cfif keys neq listSort(structKeyList(b), "textnocase")>
+      <cfreturn false>
+    </cfif>
+    <cfset keys = listToArray(keys)>
+    <cfloop index="i" from="1" to="#arrayLen(keys)#">
+      <cfif not isEqual(a[keys[i]], b[keys[i]])>
+        <cfreturn false>
+      </cfif>
+    </cfloop>
+    <cfreturn true>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualArray">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfset var i = "">
+    <cfif arrayLen(a) neq arrayLen(b)>
+      <cfreturn false>
+    </cfif>
+    <cfloop index="i" from="1" to="#arrayLen(a)#">
+      <cfif not isEqual(a[i], b[i])>
+        <cfreturn false>
+      </cfif>
+    </cfloop>
+    <cfreturn true>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualQuery">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfset var keys = "">
+    <cfset var i = "">
+    <cfset var j = "">
+    <cfif a.recordCount neq b.recordCount>
+      <cfreturn false>
+    </cfif>
+    <cfset keys = listSort(a.columnList, "textnocase")>
+    <cfif keys neq listSort(b.columnList, "textnocase")>
+      <cfreturn false>
+    </cfif>
+    <cfset keys = listToArray(keys)>
+    <cfloop index="i" from="1" to="#a.recordCount#">
+      <cfloop index="j" from="1" to="#arrayLen(keys)#">
+        <cfif not isEqual(a[keys[i]][j], b[keys[i]][j])>
+          <cfreturn false>
+        </cfif>
+      </cfloop>
+    </cfloop>
+    <cfreturn true>
+  </cffunction>
+
+
+
+  <cffunction name="isEqual">
+    <cfargument name="a">
+    <cfargument name="b">
+    <cfset var result = "">
+    <cfif isSimpleValue(a) and isSimpleValue(b)>
+      <cfif isNumeric(a) and isNumeric(b)>
+        <cfreturn isEqualNumeric(a, b)>
+      </cfif>
+      <cfif isDate(a) and isDate(b)>
+        <cfreturn isEqualDate(a, b)>
+      </cfif>
+      <cfif listFindNoCase("true,false,yes,no", a) and listFindNoCase("true,false,yes,no", b)>
+        <cfreturn isEqualBoolean(a, b)>
+      </cfif>
+      <cfreturn isEqualString(a, b)>
+    <cfelseif isObject(a) and isObject(b)>
+      <cftry>
+        <cfset result = isEqualObject(a, b)>
+        <cfcatch type="Application">
+          <cfif cfcatch.message does not contain "isEqualTo was not found"><cfrethrow></cfif>
+          <cfthrow type="cfspec.fail" message="Equal#_type# expected target.isEqualTo(expected) to return a boolean, but the method was not found.">
+        </cfcatch>
+      </cftry>
+      <cfif not isBoolean(result)>
+        <cfthrow type="cfspec.fail" message="Equal#_type# expected target.isEqualTo(expected) to return a boolean, got #inspect(result)#.">
+      </cfif>
+      <cfreturn result>
+    <cfelseif isStruct(a) and isStruct(b)>
+      <cfreturn isEqualStruct(a, b)>
+    <cfelseif isArray(a) and isArray(b)>
+      <cfreturn isEqualArray(a, b)>
+    <cfelseif isQuery(a) and isQuery(b)>
+      <cfreturn isEqualQuery(a, b)>
+    </cfif>
+    <cfreturn false>
+  </cffunction>
+
+
+
+</cfcomponent>
