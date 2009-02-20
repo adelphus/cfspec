@@ -3,15 +3,20 @@
 <describe hint="Matcher (base object)">
 
   <before>
-    <cfset $matcher = $(createObject("component", "cfspec.lib.Matcher"))>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.Matcher").init())>
+    <cfset $matcher.setRunner(this)>
   </before>
 
   <it should="not be delayed">
     <cfset $matcher.shouldNotBeDelayed()>
   </it>
 
+  <it should="not be chained">
+    <cfset $matcher.shouldNotBeChained()>
+  </it>
+
   <describe hint="inspect">
-    
+
     <it should="represent an integer directly with no decimal point">
       <cfset $matcher.inspect(42.0).shouldEqual("42")>
       <cfset $matcher.inspect(0).shouldEqual("0")>
@@ -70,27 +75,21 @@
 
   </describe>
 
-  <describe hint="throw">
+  <describe hint="pretty print">
 
-    <it should="be able to throw an exception">
-      <cfset $($matcher).throw().shouldThrow("Application")>
+    <it should="print a single argument">
+      <cfset values = [1]>
+      <cfset $matcher.prettyPrint(values).shouldEqual("1")>
     </it>
 
-    <it should="be able to throw an exception with type specified">
-      <cfset $($matcher).throw("SpecialException").shouldThrow("SpecialException")>
+    <it should="print two arguments">
+      <cfset values = [1, 2]>
+      <cfset $matcher.prettyPrint(values).shouldEqual("1 and 2")>
     </it>
 
-    <it should="be able to throw an exception with type specified and a message">
-      <cfset $($matcher).throw("SpecialException", "It didn't work!").shouldThrow("SpecialException", "It didn't work!")>
-    </it>
-
-    <it should="be able to rethrow an exception">
-      <cftry>
-        <cfthrow message="Rethrown Exception">
-        <cfcatch>
-          <cfset $($matcher).rethrow(cfcatch).shouldThrow("Application", "Rethrown Exception")>
-        </cfcatch>
-      </cftry>
+    <it should="print many arguments">
+      <cfset values = [1, 2, 3, 4, 5]>
+      <cfset $matcher.prettyPrint(values).shouldEqual("1, 2, 3, 4 and 5")>
     </it>
 
   </describe>
