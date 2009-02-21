@@ -51,3 +51,38 @@
   </describe>
 
 </describe>
+
+<describe hint="Match (dates)">
+
+  <before>
+    <cfset today = createDate(2001, 3, 15)>
+    <cfset anHourAgo = dateAdd("h", -1, today)>
+    <cfset anHourFromNow = dateAdd("h", 1, today)>
+
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Match").init(""))>
+    <cfset $matcher.setArguments(today, "d")>
+  </before>
+
+  <it should="match when target is on the same day as actual">
+    <cfset $matcher.isMatch(anHourFromNow).shouldBeTrue()>
+  </it>
+
+  <it should="not match when target is on a different day than actual">
+    <cfset $matcher.isMatch(anHourAgo).shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch(anHourAgo)>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to match 2001-03-15 12:00 AM (d), got 2001-03-14 11:00 PM")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(anHourFromNow)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to match 2001-03-15 12:00 AM (d), got 2001-03-15 01:00 AM")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("match 2001-03-15 12:00 AM (d)")>
+  </it>
+
+</describe>

@@ -49,6 +49,18 @@
       <cfset $(q).shouldBeQuery()>
     </it>
 
+    <it should="expect shouldBeBinary to return true">
+      <cfset $(toBinary(toBase64("foo"))).shouldBeBinary()>
+    </it>
+
+    <it should="expect shouldBeGUID to return true">
+      <cfset $("01234567-89AB-CDEF-0123-456789ABCDEF").shouldBeGUID()>
+    </it>
+
+    <it should="expect shouldBeUUID to return true">
+      <cfset $("01234567-89AB-CDEF-0123456789ABCDEF").shouldBeUUID()>
+    </it>
+
     <it should="expect shouldBeEmpty to return true">
       <cfset $("").shouldBeEmpty()>
     </it>
@@ -94,6 +106,14 @@
 
     <it should="expect shouldBeGreaterThan to return true">
       <cfset $(5).shouldBeGreaterThan(4)>
+    </it>
+
+    <it should="expect shouldBeBefore to return true">
+      <cfset $("2001-03-15").shouldBeBefore("2001-08-05")>
+    </it>
+
+    <it should="expect shouldBeAfter to return true">
+      <cfset $("2001-08-05").shouldBeAfter("2001-03-15")>
     </it>
 
   </describe>
@@ -299,8 +319,11 @@
     </it>
 
     <it should="pend because there are no expectations">
-      <cfset x = 1>
-      <cfset y = 2>
+      <cfset runner = createObject("component", "cfspec.lib.SpecRunner").init()>
+      <cfsilent>
+        <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithoutExpectation.cfm"))>
+      </cfsilent>
+      <cfset $(runner.getOutputAsHtml()).shouldHaveTag("div[@class='summary' and text()='1 example, 0 failures, 1 pending']")>
     </it>
 
   </describe>
@@ -320,7 +343,11 @@
     </it>
 
     <it should="fail because there is a delayed matcher without completion">
-      <cfset $(stub()).shouldHave(4)>
+      <cfset runner = createObject("component", "cfspec.lib.SpecRunner").init()>
+      <cfsilent>
+        <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithPendingDelayedMatcher.cfm"))>
+      </cfsilent>
+      <cfset $(runner.getOutputAsHtml()).shouldHaveTag("div[@class='summary' and text()='1 example, 1 failure, 0 pending']")>
     </it>
 
   </describe>

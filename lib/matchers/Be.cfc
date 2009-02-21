@@ -42,6 +42,8 @@
       <cfcase value="Struct">        <cfreturn isMatchStruct(target)>           </cfcase>
       <cfcase value="Array">         <cfreturn isMatchArray(target)>            </cfcase>
       <cfcase value="Query">         <cfreturn isMatchQuery(target)>            </cfcase>
+      <cfcase value="Binary">        <cfreturn isMatchBinary(target)>           </cfcase>
+      <cfcase value="GUID">          <cfreturn isMatchGUID(target)>             </cfcase>
       <cfcase value="UUID">          <cfreturn isMatchUUID(target)>             </cfcase>
       <cfcase value="Empty">         <cfreturn isMatchEmpty(target)>            </cfcase>
       <cfcase value="Defined">       <cfreturn isMatchDefined(target)>          </cfcase>
@@ -136,6 +138,22 @@
     <cfargument name="target">
     <cfset requireArgs(_args, 0)>
     <cfreturn isQuery(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchBinary">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isBinary(target)>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchGUID">
+    <cfargument name="target">
+    <cfset requireArgs(_args, 0)>
+    <cfreturn isValid("guid", target)>
   </cffunction>
 
 
@@ -241,6 +259,8 @@
       <cfcase value="Struct">        <cfreturn "#hamlet# a struct">                            </cfcase>
       <cfcase value="Array">         <cfreturn "#hamlet# an array">                            </cfcase>
       <cfcase value="Query">         <cfreturn "#hamlet# a query">                             </cfcase>
+      <cfcase value="Binary">        <cfreturn "#hamlet# binary">                              </cfcase>
+      <cfcase value="GUID">          <cfreturn "#hamlet# a valid guid">                        </cfcase>
       <cfcase value="UUID">          <cfreturn "#hamlet# a valid uuid">                        </cfcase>
       <cfcase value="Empty">         <cfreturn "#hamlet# empty">                               </cfcase>
       <cfcase value="Defined">       <cfreturn "#hamlet# defined">                             </cfcase>

@@ -30,4 +30,68 @@
     <cfset $matcher.getDescription().shouldEqual("have tag 'h1'")>
   </it>
 
+  <describe hint="using xpath">
+
+    <before>
+      <cfset $matcher.setArguments("p[foo]/a")>
+    </before>
+
+    <it should="match when the target has a tag that matches the given xpath">
+      <cfset $matcher.isMatch("<p class='foo'>Click <a href='bar'>here</a></p>").shouldBeTrue()>
+    </it>
+
+    <it should="not match when the target does not have a tag that matches the given xpath">
+      <cfset $matcher.isMatch("<p class='food'>Click <a href='bar'>here</a></p>").shouldBeFalse()>
+    </it>
+
+  </describe>
+
+  <describe hint="with a specified count">
+
+    <before>
+      <cfset $matcher.setArguments("p", 2)>
+    </before>
+
+    <it should="not match when the target has fewer matching tags than expected">
+      <cfset $matcher.isMatch("<p>one").shouldBeFalse()>
+    </it>
+
+    <it should="match when the target has the expected number of matching tags">
+      <cfset $matcher.isMatch("<p>one<p>two").shouldBeTrue()>
+    </it>
+
+    <it should="not match when the target has more matching tags than expected">
+      <cfset $matcher.isMatch("<p>one<p>two<p>three").shouldBeFalse()>
+    </it>
+
+  </describe>
+
+  <describe hint="with a specified range">
+
+    <before>
+      <cfset $matcher.setArguments("p", 2, 4)>
+    </before>
+
+    <it should="not match when the target has fewer matching tags than expected">
+      <cfset $matcher.isMatch("<p>one").shouldBeFalse()>
+    </it>
+
+    <it should="match when the target has the least expected number of matching tags">
+      <cfset $matcher.isMatch("<p>one<p>two").shouldBeTrue()>
+    </it>
+
+    <it should="match when the target has the median expected number of matching tags">
+      <cfset $matcher.isMatch("<p>one<p>two<p>three").shouldBeTrue()>
+    </it>
+
+    <it should="match when the target has the most expected number of matching tags">
+      <cfset $matcher.isMatch("<p>one<p>two<p>three<p>four").shouldBeTrue()>
+    </it>
+
+    <it should="not match when the target has more matching tags than expected">
+      <cfset $matcher.isMatch("<p>one<p>two<p>three<p>four<p>five").shouldBeFalse()>
+    </it>
+
+  </describe>
+
 </describe>

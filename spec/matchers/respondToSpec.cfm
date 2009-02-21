@@ -35,4 +35,20 @@
     <cfset $matcher.getDescription().shouldEqual("respond to 'getName'")>
   </it>
 
+  <describe hint="multiple arguments">
+
+    <before>
+      <cfset $matcher.setArguments("getName", "getSpecial")>
+    </before>
+
+    <it should="match when target responds to all methods listed">
+      <cfset $matcher.isMatch(specialWidget).shouldBeTrue()>
+    </it>
+
+    <it should="not match when target does not responds to one of the methods listed">
+      <cfset $matcher.isMatch(widget).shouldBeFalse()>
+    </it>
+
+  </describe>
+
 </describe>

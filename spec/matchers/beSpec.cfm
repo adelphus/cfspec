@@ -326,6 +326,99 @@
 
 </describe>
 
+<describe hint="Be Binary">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Binary"))>
+    <cfset binaryFoo = toBinary(toBase64("foo"))>
+  </before>
+
+  <it should="match when actual is binary">
+    <cfset $matcher.isMatch(binaryFoo).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not binary">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be binary, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(binaryFoo)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be binary, got [102,111,111]")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be binary")>
+  </it>
+
+</describe>
+
+<describe hint="Be GUID">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("GUID"))>
+    <cfset myGUID = "01234567-89AB-CDEF-0123-456789ABCDEF">
+  </before>
+
+  <it should="match when actual is a GUID">
+    <cfset $matcher.isMatch(myGUID).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a GUID">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a valid guid, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(myGUID)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a valid guid, got '#myGUID#'")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a valid guid")>
+  </it>
+
+</describe>
+
+<describe hint="Be UUID">
+
+  <before>
+    <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("UUID"))>
+    <cfset myUUID = "01234567-89AB-CDEF-0123456789ABCDEF">
+  </before>
+
+  <it should="match when actual is a UUID">
+    <cfset $matcher.isMatch(myUUID).shouldBeTrue()>
+  </it>
+
+  <it should="not match when actual is not a UUID">
+    <cfset $matcher.isMatch("foo").shouldBeFalse()>
+  </it>
+
+  <it should="provide a useful failure message">
+    <cfset $matcher.isMatch("foo")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to be a valid uuid, got 'foo'")>
+  </it>
+
+  <it should="provide a useful negative failure message">
+    <cfset $matcher.isMatch(myUUID)>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to be a valid uuid, got '#myUUID#'")>
+  </it>
+
+  <it should="describe itself">
+    <cfset $matcher.getDescription().shouldEqual("be a valid uuid")>
+  </it>
+
+</describe>
+
 <describe hint="Be Empty">
 
   <before>

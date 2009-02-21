@@ -8,7 +8,7 @@
   ["Be",
    "cfspec.lib.matchers.BeSame"],
 
-  ["Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan)",
+  ["Be(GreaterThanOrEqualTo|GreaterThan|LessThanOrEqualTo|LessThan|Before|After)",
    "cfspec.lib.matchers.BeComparison"],
 
   ["Have(AtLeast|AtMost|Exactly)?",
