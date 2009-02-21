@@ -3,11 +3,11 @@
 <describe hint="Change">
 
   <before>
-    <cfset expectations = createObject("component", "cfspec.lib.EvalExpectations").__cfspecInit(this, false)>
+    <cfset expectations = createObject("component", "cfspec.lib.EvalExpectations").__cfspecInit(__cfspecRunner, false)>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Change").init(""))>
     <cfset $matcher.setExpectations(expectations)>
     <cfset $matcher.setArguments("foo")>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
   </before>
 
   <it should="match when the expression causes a change in the changee">

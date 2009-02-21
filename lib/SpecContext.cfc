@@ -72,6 +72,13 @@
 
 
 
+  <cffunction name="__cfspecSetBindings">
+    <cfargument name="bindings">
+    <cfset structAppend(variables, bindings)>
+  </cffunction>
+
+
+
   <cffunction name="__cfspecScrub">
     <cfset var bindings = __cfspecGetBindings()>
     <cfset var shared = "">

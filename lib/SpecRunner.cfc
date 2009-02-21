@@ -291,6 +291,13 @@
 
 
 
+  <cffunction name="setBindings">
+    <cfargument name="bindings">
+    <cfset _context.__cfspecSetBindings(bindings)>
+  </cffunction>
+
+
+
   <!--- context --->
 
 

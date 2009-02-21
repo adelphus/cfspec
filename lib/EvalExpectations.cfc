@@ -10,7 +10,10 @@
   <cffunction name="eval">
     <cfargument name="expression">
     <cfset var context = createObject("component", "EvalContext")>
-    <cfreturn context.__cfspecEval(_runner.getBindings(), expression)>
+    <cfset var bindings = _runner.getBindings()>
+    <cfset var result = context.__cfspecEval(bindings, expression)>
+    <cfset _runner.setBindings(bindings)>
+    <cfreturn result>
   </cffunction>
 
 
