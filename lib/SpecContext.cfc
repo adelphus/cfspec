@@ -11,89 +11,39 @@
 
 
   <cffunction name="__cfspecInit">
-    <cfargument name="parent" default="">
-    <cfset __cfspecParent = parent>
-    <cfset __cfspecStatus = "pass">
+    <cfset __cfspecShared = arrayNew(1)>
+    <cfset __cfspecStatus = arrayNew(1)>
+    <cfset __cfspecPush()>
     <cfreturn this>
   </cffunction>
 
 
 
   <cffunction name="__cfspecGetStatus">
-    <cfreturn __cfspecStatus>
+    <cfreturn __cfspecStatus[1]>
   </cffunction>
 
 
 
   <cffunction name="__cfspecMergeStatus">
     <cfargument name="status">
-    <cfif __cfspecStatus neq "fail">
-      <cfset __cfspecStatus = status>
+    <cfif __cfspecStatus[1] neq "fail">
+      <cfset __cfspecStatus[1] = status>
     </cfif>
   </cffunction>
 
 
 
   <cffunction name="__cfspecPush">
-    <cfreturn createObject("component", "cfspec.lib.SpecContext").__cfspecInit(this)>
-  </cffunction>
-
-
-
-  <cffunction name="__cfspecSaveBindings">
-    <cfset var bindings = __cfspecGetBindings()>
-    <cfset __cfspecParent.__cfspecUpdate(bindings)>
-    <cfif not structIsEmpty(bindings)>
-      <cfset __cfspecParent.__cfspecMergeBindings(bindings)>
-    </cfif>
-  </cffunction>
-
-
-
-  <cffunction name="__cfspecMergeBindings">
-    <cfargument name="bindings">
-    <cfset structAppend(variables, bindings)>
-  </cffunction>
-
-
-
-  <cffunction name="__cfspecUpdate">
-    <cfargument name="bindings">
-    <cfset var key = "">
-
-    <cfloop collection="#bindings#" item="key">
-      <cfif structKeyExists(variables, key)>
-        <cfset variables[key] = bindings[key]>
-        <cfset structDelete(bindings, key)>
-      </cfif>
-    </cfloop>
-
-    <cfif isObject(__cfspecParent) and not structIsEmpty(bindings)>
-      <cfset __cfspecParent.__cfspecUpdate(bindings)>
-    </cfif>
-  </cffunction>
-
-
-
-  <cffunction name="__cfspecScrub">
-    <cfset var bindings = __cfspecGetBindings()>
-    <cfset var key = "">
-
-    <cfif isObject(__cfspecParent) and not structIsEmpty(bindings)>
-      <cfset __cfspecParent.__cfspecUpdate(bindings)>
-    </cfif>
-
-    <cfloop collection="#variables#" item="key">
-      <cfif findNoCase("__cfspec", key) neq 1 and not listFindNoCase(__cfspecKeywords, key)>
-        <cfset structDelete(variables, key)>
-      </cfif>
-    </cfloop>
+    <cfset arrayPrepend(__cfspecShared, "")>
+    <cfset arrayPrepend(__cfspecStatus, "pass")>
   </cffunction>
 
 
 
   <cffunction name="__cfspecPop">
-    <cfreturn __cfspecParent>
+    <cfset arrayDeleteAt(__cfspecShared, 1)>
+    <cfset arrayDeleteAt(__cfspecStatus, 1)>
   </cffunction>
 
 
@@ -102,8 +52,7 @@
     <cfargument name="__cfspecRunner">
     <cfargument name="__cfspecSpecFile">
     <cfset variables.__cfspecRunner = arguments.__cfspecRunner>
-    <cfset structAppend(variables, __cfspecGetBindings())>
-    <cfinclude template="#arguments.__cfspecSpecFile#">
+    <cfinclude template="#__cfspecSpecFile#">
   </cffunction>
 
 
@@ -111,29 +60,64 @@
   <cffunction name="__cfspecGetBindings">
     <cfset var bindings = structNew()>
     <cfset var key = "">
+
     <cfloop collection="#variables#" item="key">
       <cfif findNoCase("__cfspec", key) neq 1 and not listFindNoCase(__cfspecKeywords, key)>
         <cfset bindings[key] = variables[key]>
       </cfif>
     </cfloop>
 
-    <cfif isObject(__cfspecParent)>
-      <cfset structAppend(bindings, __cfspecParent.__cfspecGetBindings())>
-    </cfif>
-
     <cfreturn bindings>
   </cffunction>
 
 
 
+  <cffunction name="__cfspecScrub">
+    <cfset var bindings = __cfspecGetBindings()>
+    <cfset var shared = "">
+    <cfset var key = "">
+    <cfset var i = "">
+    <cfloop index="i" from="1" to="#arrayLen(__cfspecShared)#">
+      <cfset shared = listAppend(shared, __cfspecShared[i])>
+    </cfloop>
+    <cfloop collection="#bindings#" item="key">
+      <cfif not listFindNoCase(shared, key)>
+        <cfset structDelete(variables, key)>
+      </cfif>
+    </cfloop>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecSaveBindings">
+    <cfset var bindings = __cfspecGetBindings()>
+    <cfset var oldShared = "">
+    <cfset var newShared = "">
+    <cfset var key = "">
+    <cfset var i = "">
+    <cfloop index="i" from="2" to="#arrayLen(__cfspecShared)#">
+      <cfset oldShared = listAppend(oldShared, __cfspecShared[i])>
+    </cfloop>
+    <cfloop collection="#bindings#" item="key">
+      <cfif not listFindNoCase(oldShared, key)>
+        <cfset newShared = listAppend(newShared, key)>
+      </cfif>
+    </cfloop>
+    <cfset __cfspecShared[1] = newShared>
+  </cffunction>
+
+
+
   <cffunction name="$">
-    <cfreturn __cfspecRunner.$(argumentCollection=arguments)>
+    <cfargument name="obj">
+    <cfreturn __cfspecRunner.$(obj)>
   </cffunction>
 
 
 
   <cffunction name="$eval">
-    <cfreturn __cfspecRunner.$eval(argumentCollection=arguments)>
+    <cfargument name="obj">
+    <cfreturn __cfspecRunner.$eval(obj)>
   </cffunction>
 
 

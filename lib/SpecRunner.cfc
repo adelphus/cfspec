@@ -124,7 +124,7 @@
       <cfif _context.__cfspecGetStatus() eq "pend">
         <cfset css = "background:##FFFF00;color:black">
       </cfif>
-      <cfset popContext()>
+      <cfset _context.__cfspecPop()>
       <cfset popCurrent()>
       <cfif css neq "">
         <cfset htmlId = "desc_#_suiteNumber#_#replace(getCurrent(), ',', '_', 'all')#_0">
@@ -302,18 +302,6 @@
     <cfset _targets = arrayNew(1)>
     <cfset _target = "">
     <cfset _hint = "">
-  </cffunction>
-
-
-
-  <cffunction name="pushContext">
-    <cfset _context = _context.__cfspecPush()>
-  </cffunction>
-
-
-
-  <cffunction name="popContext">
-    <cfset _context = _context.__cfspecPop()>
   </cffunction>
 
 
@@ -547,7 +535,7 @@
     </cfif>
 
     <cfif isStartRunnable()>
-      <cfset pushContext()>
+      <cfset _context.__cfspecPush()>
       <cfset appendOutput(describeStartHelper(attributes.hint))>
     </cfif>
 
@@ -679,7 +667,7 @@
     </cfif>
 
     <cfset status = _context.__cfspecGetStatus()>
-    <cfset popContext()>
+    <cfset _context.__cfspecPop()>
 
     <cfset appendOutput(describeEndHelper(status))>
     <cfreturn "">
