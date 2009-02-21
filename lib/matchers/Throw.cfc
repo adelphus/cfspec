@@ -44,7 +44,7 @@
 
   <cffunction name="isMatch">
     <cfargument name="target">
-  	<cfif isInstanceOf(_expectations, "cfspec.lib.EvalExpectations")>
+    <cfif isInstanceOf(_expectations, "cfspec.lib.EvalExpectations")>
       <cfset tryEval(target)>
     </cfif>
 
@@ -53,7 +53,7 @@
       <cfreturn false>
     </cfif>
 
-    <cfif not isMatchException()> 
+    <cfif not isMatchException()>
       <cfif not _expectations.__cfspecIsNegated()>
         <cfset _runner.clearPendingException()>
       </cfif>

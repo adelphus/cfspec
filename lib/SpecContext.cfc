@@ -58,11 +58,13 @@
 
 
   <cffunction name="__cfspecGetBindings">
+    <cfargument name="includeHidden" default="false">
     <cfset var bindings = structNew()>
     <cfset var key = "">
 
     <cfloop collection="#variables#" item="key">
-      <cfif findNoCase("__cfspec", key) neq 1 and not listFindNoCase(__cfspecKeywords, key)>
+      <cfif includeHidden or
+            (findNoCase("__cfspec", key) neq 1 and not listFindNoCase(__cfspecKeywords, key))>
         <cfset bindings[key] = variables[key]>
       </cfif>
     </cfloop>

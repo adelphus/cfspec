@@ -115,6 +115,10 @@
     <cfset var css = "">
     <cfset var level = "">
 
+    <cfif status eq "pend">
+      <cfset incrementPendCount()>
+    </cfif>
+
     <cfset skipBrokenTargetsAfterException()>
     <cfset level = determineBadNestingLevelAfterException()>
     <cfset _context.__cfspecMergeStatus(status)>
@@ -127,7 +131,7 @@
       <cfset _context.__cfspecPop()>
       <cfset popCurrent()>
       <cfif css neq "">
-        <cfset htmlId = "desc_#_suiteNumber#_#replace(getCurrent(), ',', '_', 'all')#_0">
+        <cfset htmlId = "desc_#_suiteNumber#_#replace(_current, ',', '_', 'all')#_0">
         <cfset appendOutput("<style>###htmlId#{#css#}</style>")>
       </cfif>
       <cfset appendOutput("</div>")>
@@ -279,14 +283,14 @@
     <cfelse>
       <cfset msg = "#_hint#: #msg#">
     </cfif>
-    <cfset incrementPendCount()>
     <cfthrow type="cfspec.pend" message="#msg#">
   </cffunction>
 
 
 
   <cffunction name="getBindings">
-    <cfreturn _context.__cfspecGetBindings()>
+    <cfargument name="includeHidden" default="false">
+    <cfreturn _context.__cfspecGetBindings(includeHidden)>
   </cffunction>
 
 
