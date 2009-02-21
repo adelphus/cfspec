@@ -4,7 +4,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.Matcher").init())>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
   </before>
 
   <it should="not be delayed">

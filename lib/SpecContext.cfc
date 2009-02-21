@@ -6,7 +6,7 @@
 
 
 
-  <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend">
+  <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher">
 
 
 
@@ -149,6 +149,22 @@
 
   <cffunction name="pend">
     <cfreturn __cfspecRunner.pend(argumentCollection=arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="registerMatcher">
+    <cfargument name="pattern">
+    <cfargument name="type">
+    <cfreturn __cfspecRunner.registerMatcher(pattern, type)>
+  </cffunction>
+
+
+
+  <cffunction name="simpleMatcher">
+    <cfargument name="pattern">
+    <cfargument name="expression">
+    <cfreturn __cfspecRunner.simpleMatcher(pattern, expression)>
   </cffunction>
 
 

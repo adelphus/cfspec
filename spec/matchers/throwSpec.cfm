@@ -5,8 +5,8 @@
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Throw").init())>
     <cfset $target = $(createObject("component", "cfspec.spec.assets.Widget"))>
-    <cfset expectations = createObject("component", "cfspec.lib.Expectations").__cfspecInit(this, false)>
-    <cfset $matcher.setRunner(this)>
+    <cfset expectations = createObject("component", "cfspec.lib.Expectations").__cfspecInit(__cfspecRunner, false)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
     <cfset $matcher.setExpectations(expectations)>
   </before>
 

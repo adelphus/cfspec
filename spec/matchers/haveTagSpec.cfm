@@ -5,7 +5,7 @@
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.HaveTag").init())>
     <cfset $matcher.setArguments("h1")>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
   </before>
 
   <it should="match when target has the expected tag">

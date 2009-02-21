@@ -4,7 +4,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("Exactly"))>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
     <cfset $matcher.setArguments(3)>
     <cfset $matcher.items()>
   </before>
@@ -145,7 +145,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtLeast"))>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
     <cfset $matcher.setArguments(3)>
     <cfset $matcher.items()>
   </before>
@@ -273,7 +273,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Have").init("AtMost"))>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
     <cfset $matcher.setArguments(3)>
     <cfset $matcher.items()>
   </before>

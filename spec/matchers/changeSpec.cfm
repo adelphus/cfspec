@@ -47,7 +47,7 @@
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Change").init("NoCase"))>
       <cfset $matcher.setExpectations(expectations)>
       <cfset $matcher.setArguments("foo")>
-      <cfset $matcher.setRunner(this)>
+      <cfset $matcher.setRunner(__cfspecRunner)>
     </before>
 
     <it should="not match when results are the same except for case">
