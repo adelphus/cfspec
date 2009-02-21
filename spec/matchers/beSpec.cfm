@@ -413,7 +413,7 @@
 
   <before>
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Be").init("Defined"))>
-    <cfset $matcher.setRunner(this)>
+    <cfset $matcher.setRunner(__cfspecRunner)>
   </before>
 
   <it should="match if target is a defined variable name">
