@@ -1,5 +1,6 @@
 body {
   margin: 8px;
+  font-family: "Trebuchet MS", "Lucida Grande", san-serif;
 }
 div {
   padding-left: 16px;
@@ -8,7 +9,8 @@ div.header {
   margin: -8px -8px 0px;
   padding: 8px 12px;
   height: 40px;
-  font: bold 26px sans-serif;
+  font-weight: bold;
+  font-size: 26px;
 }
 div.pass {
   background: #00CC00;
@@ -24,22 +26,26 @@ div.fail {
 }
 
 div.summary {
-  font: bold 16px sans-serif;
+  font-weight: bold;
+  font-size: 16px;
   float: right;
   clear: both;
 }
 div.timer {
-  font: 12px sans-serif;
+  font-weight: normal;
+  font-size: 12px;
   float: right;
   clear: both;
 }
 h1 {
-  font: bold 20px sans-serif;
+  font-weight: bold;
+  font-size: 20px;
 }
 h2 {
   margin: 4px 0;
   padding: 4px;
-  font: bold 16px sans-serif;
+  font-weight: bold;
+  font-size: 16px;
   background: #CC0000;
   color: white;
 }
@@ -49,7 +55,8 @@ div.it {
   border-left: 6px solid #00CC00;
   border-bottom: 1px solid #00CC00;
   background: #CCFF99;
-  font: bold 16px sans-serif;
+  font-weight: bold;
+  font-size: 16px;
   color: #00CC00;
 }
 div.it.pend {
