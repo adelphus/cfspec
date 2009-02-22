@@ -18,12 +18,12 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("<h2>The Page Title</h2><p>Para1<p>Para2<p>Para3").shouldBeFalse()>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected to have tag 'h1', but the tag was not found")>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected to have tag 'h1', got 0")>
   </it>
 
   <it should="provide a useful negative failure message">
     <cfset $matcher.isMatch("<h1>The Page Title</h1><p>Para1<p>Para2<p>Para3").shouldBeTrue()>
-    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to have tag 'h1', but the tag was found")>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected not to have tag 'h1', got 1")>
   </it>
 
   <it should="describe itself">
@@ -64,6 +64,10 @@
       <cfset $matcher.isMatch("<p>one<p>two<p>three").shouldBeFalse()>
     </it>
 
+    <it should="describe itself">
+      <cfset $matcher.getDescription().shouldEqual("have tag 'p' (2)")>
+    </it>
+
   </describe>
 
   <describe hint="with a specified range">
@@ -90,6 +94,10 @@
 
     <it should="not match when the target has more matching tags than expected">
       <cfset $matcher.isMatch("<p>one<p>two<p>three<p>four<p>five").shouldBeFalse()>
+    </it>
+
+    <it should="describe itself">
+      <cfset $matcher.getDescription().shouldEqual("have tag 'p' (2-4)")>
     </it>
 
   </describe>
