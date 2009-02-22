@@ -5,12 +5,25 @@
 
 
 
+  <cfset _validDateParts = "yyyy,q,m,y,d,w,ww,h,n,s,l">
+
+
+
   <cffunction name="setArguments">
-    <cfset requireArgs(arguments, 2)>
+    <cfset requireArgs(arguments, 2, "at least")>
+    <cfset requireArgs(arguments, 3, "at most")>
     <cfset _expected = arguments[1]>
     <cfset _delta = arguments[2]>
-    <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>
-    <cfset verifyArg(isNumeric(_delta), "delta", "must be numeric")>
+    <cfset _datePart = "">
+    <cfif arrayLen(arguments) eq 2>
+      <cfset verifyArg(isNumeric(_expected), "expected", "must be numeric")>
+      <cfset verifyArg(isNumeric(_delta), "delta", "must be numeric")>
+    <cfelse>
+      <cfset _datePart = arguments[3]>
+      <cfset verifyArg(isDate(_expected), "expected", "must be a date")>
+      <cfset verifyArg(isNumeric(_delta), "delta", "must be numeric")>
+      <cfset verifyArg(listFindNoCase(_validDateParts, _datePart), "datePart", "must be a valid date part")>
+    </cfif>
   </cffunction>
 
 
@@ -18,28 +31,49 @@
   <cffunction name="isMatch">
     <cfargument name="target">
     <cfset _target = target>
-    <cfif not isNumeric(_target)>
-      <cfthrow type="cfspec.fail" message="BeCloseTo expected a number, got #inspect(_target)#">
+    <cfif _datePart eq "">
+      <cfreturn isMatchNumeric(target)>
+    <cfelse>
+      <cfreturn isMatchDate(target)>
     </cfif>
-    <cfreturn abs(_target - _expected) lt _delta>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchNumeric">
+    <cfargument name="target">
+    <cfif not isNumeric(target)>
+      <cfthrow type="cfspec.fail" message="BeCloseTo expected a number, got #inspect(target)#">
+    </cfif>
+    <cfreturn abs(target - _expected) lt _delta>
+  </cffunction>
+
+
+
+  <cffunction name="isMatchDate">
+    <cfargument name="target">
+    <cfif not isDate(target)>
+      <cfthrow type="cfspec.fail" message="BeCloseTo expected a date, got #inspect(target)#">
+    </cfif>
+    <cfreturn abs(dateDiff(_datePart, target, _expected)) lt _delta>
   </cffunction>
 
 
 
   <cffunction name="getFailureMessage">
-    <cfreturn "expected #inspect(_expected)# +/- (< #inspect(_delta)#), got #inspect(_target)#">
+    <cfreturn "expected #inspect(_expected)# +/- (< #inspect(_delta)##_datePart#), got #inspect(_target)#">
   </cffunction>
 
 
 
   <cffunction name="getNegativeFailureMessage">
-    <cfreturn "expected #inspect(_expected)# +/- (>= #inspect(_delta)#), got #inspect(_target)#">
+    <cfreturn "expected #inspect(_expected)# +/- (>= #inspect(_delta)##_datePart#), got #inspect(_target)#">
   </cffunction>
 
 
 
   <cffunction name="getDescription">
-    <cfreturn "be close to #inspect(_expected)# (within +/- #inspect(_delta)#)">
+    <cfreturn "be close to #inspect(_expected)# (within +/- #inspect(_delta)##_datePart#)">
   </cffunction>
 
 

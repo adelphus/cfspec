@@ -65,12 +65,12 @@
     <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.BeCloseTo").init())>
     <cfset today = createDate(2001, 3, 15)>
     <cfset lastMonth = dateAdd("m", -1, today)>
-    <cfset yesterday = dateAdd("d", -1, today)>
-    <cfset anHourAgo = dateAdd("h", -1, today)>
-    <cfset anHourFromNow = dateAdd("h", 1, today)>
-    <cfset tomorrow = dateAdd("d", 1, today)>
+    <cfset lastYear = dateAdd("yyyy", -1, today)>
+    <cfset lastWeek = dateAdd("ww", -1, today)>
+    <cfset nextWeek = dateAdd("ww", 1, today)>
+    <cfset nextYear = dateAdd("yyyy", 1, today)>
     <cfset nextMonth = dateAdd("m", 1, today)>
-    <cfset $matcher.setArguments(today, 1, "d")>
+    <cfset $matcher.setArguments(today, 1, "m")>
   </before>
 
   <it should="match when actual == expected">
@@ -78,41 +78,41 @@
   </it>
 
   <it should="match when actual > (expected - delta)">
-    <cfset $matcher.isMatch(anHourAgo).shouldBeTrue()>
+    <cfset $matcher.isMatch(lastWeek).shouldBeTrue()>
   </it>
 
   <it should="match when actual < (expected + delta)">
-    <cfset $matcher.isMatch(anHourFromNow).shouldBeTrue()>
+    <cfset $matcher.isMatch(nextWeek).shouldBeTrue()>
   </it>
 
   <it should="not match when actual == (expected - delta)">
-    <cfset $matcher.isMatch(yesterday).shouldBeFalse()>
-  </it>
-
-  <it should="not match when actual < (expected - delta)">
     <cfset $matcher.isMatch(lastMonth).shouldBeFalse()>
   </it>
 
-  <it should="not match when actual == (expected + delta)">
-    <cfset $matcher.isMatch(tomorrow).shouldBeFalse()>
+  <it should="not match when actual < (expected - delta)">
+    <cfset $matcher.isMatch(lastYear).shouldBeFalse()>
   </it>
 
-  <it should="not match when actual > (expected + delta2001-03-15 12:00 AM)">
+  <it should="not match when actual == (expected + delta)">
     <cfset $matcher.isMatch(nextMonth).shouldBeFalse()>
   </it>
 
+  <it should="not match when actual > (expected + delta)">
+    <cfset $matcher.isMatch(nextYear).shouldBeFalse()>
+  </it>
+
   <it should="provide a useful failure message">
-    <cfset $matcher.isMatch(nextMonth)>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected 2001-03-15 12:00 AM +/- (< 1d), got 2001-04-15 12:00 AM")>
+    <cfset $matcher.isMatch(nextYear)>
+    <cfset $matcher.getFailureMessage().shouldEqual("expected 2001-03-15 12:00 AM +/- (< 1m), got 2002-03-15 12:00 AM")>
   </it>
 
   <it should="provide a useful negative failure message">
     <cfset $matcher.isMatch(today)>
-    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected 2001-03-15 12:00 AM +/- (>= 1d), got 2001-03-15 12:00 AM")>
+    <cfset $matcher.getNegativeFailureMessage().shouldEqual("expected 2001-03-15 12:00 AM +/- (>= 1m), got 2001-03-15 12:00 AM")>
   </it>
 
   <it should="describe itself">
-    <cfset $matcher.getDescription().shouldEqual("be close to 2001-03-15 12:00 AM (within 1d)")>
+    <cfset $matcher.getDescription().shouldEqual("be close to 2001-03-15 12:00 AM (within +/- 1m)")>
   </it>
 
   <describe hint="bad types">
