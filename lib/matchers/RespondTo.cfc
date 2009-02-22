@@ -1,14 +1,18 @@
 <!---
-  RespondTo expectes the target object to have a method defined with the given name
-  (not using onMissingMethod). Parents of the target object may also have the method.
+  RespondTo expectes the target object to have methods defined with the given names
+  (not using onMissingMethod). Parents of the target object may also have the methods.
 --->
 <cfcomponent extends="cfspec.lib.Matcher" output="false">
 
 
   <cffunction name="setArguments">
-    <cfset requireArgs(arguments, 1)>
-    <cfset _methodName = arguments[1]>
-    <cfset verifyArg(isSimpleValue(_methodName), "methodName", "must be a simple value")>
+    <cfset var i = "">
+    <cfset requireArgs(arguments, 1, "at least")>
+    <cfset _methodNames = arrayNew(1)>
+    <cfloop index="i" from="1" to="#arrayLen(arguments)#">
+      <cfset arrayAppend(_methodNames, arguments[i])>
+      <cfset verifyArg(isSimpleValue(_methodNames[i]), "methodName (## #i#)", "must be a simple value")>
+    </cfloop>
   </cffunction>
 
 
@@ -20,7 +24,14 @@
       <cfset _runner.fail("RespondTo expected an object, got #inspect(target)#")>
     </cfif>
 
-    <cfreturn hasMethod(target, _methodName)>
+    <cfloop index="i" from="1" to="#arrayLen(_methodNames)#">
+      <cfset _methodName = _methodNames[i]>
+      <cfif not hasMethod(target, _methodName)>
+        <cfreturn false>
+      </cfif>
+    </cfloop>
+
+    <cfreturn true>
   </cffunction>
 
 
@@ -38,7 +49,7 @@
 
 
   <cffunction name="getDescription">
-    <cfreturn "respond to #inspect(_methodName)#">
+    <cfreturn "respond to #prettyPrint(_methodNames)#">
   </cffunction>
 
 
