@@ -80,24 +80,51 @@
 
   <cffunction name="determineSpecFile">
     <cfargument name="specPath">
-    <cfset var webRoot = normalizePath(expandPath("/"))>
     <cfset var specFile = normalizePath(specPath)>
-    <cfset specPath = specFile>
+    <cfif determineSpecFileInWebRoot(specFile)>    <cfreturn>  </cfif>
+    <cfif determineSpecFileFromMapping(specFile)>  <cfreturn>  </cfif>
+    <cfthrow message="Unable to determine the relative path for '#htmlEditFormat(specFile)#'.">
+  </cffunction>
 
-    <cfif len(specFile) gt len(webRoot) and left(specFile, len(webRoot)) eq webRoot>
-      <cfset _specFile = right(specFile, len(specFile) - len(webRoot) + 1)>
-      <cfreturn>
+
+
+  <cffunction name="determineSpecFileInWebRoot">
+    <cfargument name="specFile">
+    <cfset var webRoot = normalizePath(expandPath("/"))>
+    <cfif determineSpecFileFromMapRoot(specFile, "/", webRoot)>
+      <cfreturn true>
     </cfif>
+    <cfreturn false>
+  </cffunction>
 
-    <cfloop condition="specFile neq '/' and specPath neq normalizePath(expandPath(specFile))">
-      <cfset specFile = "/" & listRest(specFile, "/")>
+
+
+  <cffunction name="determineSpecFileFromMapping">
+    <cfargument name="specFile">
+    <cfset var serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
+    <cfset var mappings = serviceFactory.getRuntimeService().getMappings()>
+    <cfset var mapRoot = "">
+    <cfset var key = "">
+    <cfloop collection="#mappings#" item="key">
+      <cfset mapRoot = normalizePath(mappings[key])>
+      <cfif determineSpecFileFromMapRoot(specFile, key, mapRoot)>
+        <cfreturn true>
+      </cfif>
     </cfloop>
-    <cfif specFile neq "/">
-      <cfset _specFile = specFile>
-      <cfreturn>
-    </cfif>
+    <cfreturn false>
+  </cffunction>
 
-    <cfthrow message="Unable to determine the relative path for '#htmlEditFormat(specPath)#'.">
+
+
+  <cffunction name="determineSpecFileFromMapRoot">
+    <cfargument name="specFile">
+    <cfargument name="mapKey">
+    <cfargument name="mapRoot">
+    <cfif len(specFile) gt len(mapRoot) and left(specFile, len(mapRoot)) eq mapRoot>
+      <cfset _specFile = mapKey & right(specFile, len(specFile) - len(mapRoot))>
+      <cfreturn true>
+    </cfif>
+    <cfreturn false>
   </cffunction>
 
 
