@@ -33,7 +33,7 @@
   <describe hint="using xpath">
 
     <before>
-      <cfset $matcher.setArguments("p[foo]/a")>
+      <cfset $matcher.setArguments("p[@class='foo']/a")>
     </before>
 
     <it should="match when the target has a tag that matches the given xpath">
