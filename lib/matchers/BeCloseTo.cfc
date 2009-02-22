@@ -5,7 +5,7 @@
 
 
 
-  <cfset _validDateParts = "yyyy,q,m,y,d,w,ww,h,n,s,l">
+  <cfset _validDateParts = "yyyy,q,m,ww,w,y,d,h,n,s,l">
 
 
 
