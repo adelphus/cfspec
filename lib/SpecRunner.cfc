@@ -679,6 +679,7 @@
 
     <cfset status = _context.__cfspecGetStatus()>
     <cfset _context.__cfspecPop()>
+    <cfset _context.__cfspecMergeStatus(status)>
 
     <cfset appendOutput(describeEndHelper(status))>
     <cfreturn "">
