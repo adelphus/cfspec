@@ -211,6 +211,7 @@
 
   <cffunction name="getOutputAsHtml">
     <cfset var html = "">
+    <cfset var css = "">
     <cfset var headerClass = "pass">
     <cfset var failCount = _exampleCount - _passCount - _pendCount>
     <cfset var summary = "#_exampleCount# example">
@@ -228,8 +229,10 @@
       <cfset summary = summary & "s">
     </cfif>
     <cfset summary = summary & ", #_pendCount# pending">
+    <cffile action="read" file="#expandPath('/cfspec/includes/style.css')#" variable="css">
+    <cfset css = reReplace(css, "\s\s+", " ", "all")>
     <cfset html = "<html><head><title>cfSpec</title>" &
-                  "<link rel='stylesheet' type='text/css' href='/cfspec/includes/style.css'>" &
+                  "<style>#css#</style>" &
                   "</head><body>" &
                   "<div class='header #headerClass#'>" &
                   "<div class='summary'>#summary#</div>" &
