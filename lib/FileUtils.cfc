@@ -5,6 +5,12 @@
 
 
 
+  <cffunction name="init">
+    <cfreturn this>
+  </cffunction>
+
+
+
   <cffunction name="relativePath">
     <cfargument name="path">
     <cfset var webRoot = normalizePath(expandPath("/"))>

@@ -6,13 +6,10 @@
 
 
   <cffunction name="init">
-    <cfset _fileUtils = createObject("component", "cfspec.lib.FileUtils")>
+    <cfset _fileUtils = createObject("component", "cfspec.lib.FileUtils").init()>
+    <cfset _specStats = createObject("component", "cfspec.lib.SpecStats").init()>
     <cfset resetContext()>
     <cfset _suiteNumber = 0>
-    <cfset _startTime = getTickCount()>
-    <cfset _exampleCount = 0>
-    <cfset _passCount = 0>
-    <cfset _pendCount = 0>
     <cfset _output = "">
     <cfreturn this>
   </cffunction>
@@ -86,7 +83,8 @@
     <cfset var level = "">
 
     <cfif status eq "pend">
-      <cfset incrementPendCount()>
+      <cfset _specStats.incrementPendCount()>
+      <cfset _context.__cfspecMergeStatus("pend")>
     </cfif>
 
     <cfset skipBrokenTargetsAfterException()>
@@ -155,31 +153,14 @@
   <cffunction name="getOutputAsHtml">
     <cfset var html = "">
     <cfset var css = "">
-    <cfset var headerClass = "pass">
-    <cfset var failCount = _exampleCount - _passCount - _pendCount>
-    <cfset var summary = "#_exampleCount# example">
-    <cfset var timerSeconds = ((getTickCount() - _startTime) / 1000) & " seconds">
-    <cfif _exampleCount neq 1>
-      <cfset summary = summary & "s">
-    </cfif>
-    <cfif failCount>
-      <cfset headerClass = "fail">
-    <cfelseif _pendCount>
-      <cfset headerClass = "pend">
-    </cfif>
-    <cfset summary = summary & ", #failCount# failure">
-    <cfif failCount neq 1>
-      <cfset summary = summary & "s">
-    </cfif>
-    <cfset summary = summary & ", #_pendCount# pending">
     <cffile action="read" file="#expandPath('/cfspec/includes/style.css')#" variable="css">
     <cfset css = reReplace(css, "\s\s+", " ", "all")>
     <cfset html = "<html><head><title>cfSpec</title>" &
                   "<style>#css#</style>" &
                   "</head><body>" &
-                  "<div class='header #headerClass#'>" &
-                  "<div class='summary'>#summary#</div>" &
-                  "<div class='timer'>Finished in <strong>#timerSeconds#</strong></div>" &
+                  "<div class='header #_specStats.getStatus()#'>" &
+                  "<div class='summary'>#_specStats.getCounterSummary()#</div>" &
+                  "<div class='timer'>Finished in <strong>#_specStats.getTimerSummary()#</strong></div>" &
                   "cfSpec Results</div>" & _output & "</body></html>">
     <cfreturn html>
   </cffunction>
@@ -301,7 +282,7 @@
 
 
   <cffunction name="makeTarget">
-    <cfset _exampleCount = _exampleCount + 1>
+    <cfset _specStats.incrementExampleCount()>
     <cfset arrayAppend(_targets, _current)>
   </cffunction>
 
@@ -343,23 +324,6 @@
 
   <cffunction name="popCurrent">
     <cfset _current = reReplace(_current, "(^|,)\d+$", "")>
-  </cffunction>
-
-
-
-  <!--- counters --->
-
-
-
-  <cffunction name="incrementPassCount">
-    <cfset _passCount = _passCount + 1>
-  </cffunction>
-
-
-
-  <cffunction name="incrementPendCount">
-    <cfset _pendCount = _pendCount + 1>
-    <cfset _context.__cfspecMergeStatus("pend")>
   </cffunction>
 
 
@@ -592,7 +556,7 @@
     <cfif not hasPendingException()>
       <cfset ensureNoDelayedMatchersArePending()>
       <cfif hadAnExpectation()>
-        <cfset incrementPassCount()>
+        <cfset _specStats.incrementPassCount()>
         <cfset appendOutput("<div class='it pass'>should #attributes.should#</div>")>
       <cfelse>
         <cfset pend("There were no expectations.")>
