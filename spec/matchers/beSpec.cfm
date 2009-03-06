@@ -491,11 +491,11 @@
   <describe hint="bad types">
 
     <it should="provide a useful failure message if target.isEmpty() returns a non-boolean">
-      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeEmpty expected target.isEmpty() to return a boolean, got")>
+      <cfset $matcher.isMatch(stub(isEmpty="foo")).shouldThrow("cfspec.fail", "BeEmpty expected target.isEmpty() to return a boolean, got")>
     </it>
 
     <it should="provide a useful failure message if actual doesn't implement isEmpty">
-      <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeEmpty expected target.isEmpty() to return a boolean, but the method was not found.")>
+      <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeEmpty expected target.isEmpty() to return a boolean, but the method was not found.")>
     </it>
 
   </describe>
@@ -643,11 +643,11 @@
     <describe hint="bad types">
 
       <it should="provide a useful failure message if target.isPredicate() returns a non-boolean">
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected target.isInMood('happy',42) to return a boolean, got")>
+        <cfset $matcher.isMatch(stub(isInMood="foo")).shouldThrow("cfspec.fail", "BeInMood expected target.isInMood('happy',42) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if actual doesn't implement isPredicate">
-        <cfset $matcher.isMatch(stub(stubMissingMethod=false)).shouldThrow("cfspec.fail", "BeInMood expected target.isInMood('happy',42) to return a boolean, but the method was not found.")>
+        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "BeInMood expected target.isInMood('happy',42) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>

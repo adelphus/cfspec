@@ -5,13 +5,34 @@
 
 
 
-  <cfset __cfspecMethods = structNew()>
+  <cfset _stubbedMethods = structNew()>
+  <cfset _stubsMissingMethod = false>
 
 
 
   <cffunction name="__cfspecInit">
-    <cfset __cfspecMethods = structCopy(arguments)>
+    <cfset var method = "">
+    <cfloop collection="#arguments#" item="method">
+      <cfset stubs(method).returns(arguments[method])>
+    </cfloop>
     <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="stubs">
+    <cfargument name="method">
+    <cfif not structKeyExists(_stubbedMethods, method)>
+      <cfset _stubbedMethods[method] = createObject("component", "cfspec.lib.MockExpectations").init()>
+    </cfif>
+    <cfreturn _stubbedMethods[method]>
+  </cffunction>
+
+
+
+  <cffunction name="stubsMissingMethod">
+    <cfset _stubsMissingMethod = createObject("component", "cfspec.lib.MockExpectations").init()>
+    <cfreturn _stubsMissingMethod>
   </cffunction>
 
 
@@ -19,14 +40,13 @@
   <cffunction name="onMissingMethod">
     <cfargument name="missingMethodName">
     <cfargument name="missingMethodArguments">
-    <cfif structKeyExists(__cfspecMethods, missingMethodName)>
-      <cfreturn __cfspecMethods[missingMethodName]>
+    <cfif structKeyExists(_stubbedMethods, missingMethodName)>
+      <cfreturn _stubbedMethods[missingMethodName].getReturn()>
     </cfif>
-    <cfif not structKeyExists(__cfspecMethods, "stubMissingMethod") or __cfspecMethods.stubMissingMethod>
-      <cfreturn createObject("component", "Stub")>
-    <cfelse>
-      <cfthrow message="The method #missingMethodName# was not found.">
+    <cfif isObject(_stubsMissingMethod)>
+      <cfreturn _stubsMissingMethod.getReturn()>
     </cfif>
+    <cfthrow message="The method #missingMethodName# was not found.">
   </cffunction>
 
 

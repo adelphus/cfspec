@@ -110,37 +110,38 @@
 
   </describe>
 
-  <describe hint="partial stubbing">
+  <!---describe hint="partial stubbing">
 
     <before>
       <cfset widget = createObject("component", "cfspec.spec.assets.Widget")>
-      <cfset $stub = $(createObject("component", "cfspec.lib.Stub").__cfspecInit(widget))>
+      <cfset stub = createObject("component", "cfspec.lib.Stub").__cfspecInit(widget)>
+      <cfset $widget = $(widget)>
     </before>
 
     <it should="honor a call to the underlying object">
-      <cfset $stub.getName().shouldEqual("Widget")>
+      <cfset $widget.getName().shouldEqual("Widget")>
     </it>
 
     <it should="throw on call to a non-existant method">
-      <cfset $stub.getAge().shouldThrow()>
+      <cfset $widget.getAge().shouldThrow()>
     </it>
 
     <it should="stub a new method onto the underlying object">
-      <cfset $stub.stubs("getAge").returns(21)>
-      <cfset $stub.getAge().shouldEqual(21)>
+      <cfset stub.stubs("getAge").returns(21)>
+      <cfset $widget.getAge().shouldEqual(21)>
     </it>
 
     <it should="stub over an existing method on the underlying object">
-      <cfset $stub.stubs("getName").returns("New Name")>
-      <cfset $stub.getName().shouldEqual("New Name")>
+      <cfset stub.stubs("getName").returns("New Name")>
+      <cfset $widget.getName().shouldEqual("New Name")>
     </it>
 
     <it should="stub new and existing methods on the underlying object">
-      <cfset $stub.stubs(getName="New Name", getAge=21)>
-      <cfset $stub.getName().shouldEqual("New Name")>
-      <cfset $stub.getAge().shouldEqual(21)>
+      <cfset stub.stubs(getName="New Name", getAge=21)>
+      <cfset $widget.getName().shouldEqual("New Name")>
+      <cfset $widget.getAge().shouldEqual(21)>
     </it>
 
-  </describe>
+  </describe--->
 
 </describe>
