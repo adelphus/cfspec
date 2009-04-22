@@ -92,7 +92,7 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch(stub())>
-    <cfset $matcher.getFailureMessage().shouldMatch("expected to be a simple value, got &lt;(cfspec\.lib\.)?Stub:\?\?\?&gt;")>
+    <cfset $matcher.getFailureMessage().shouldMatch("expected to be a simple value, got &lt;(cfspec\.lib\.)?Mock:\?\?\?&gt;")>
   </it>
 
   <it should="provide a useful negative failure message">
@@ -217,7 +217,7 @@
 
   <it should="provide a useful negative failure message">
     <cfset $matcher.isMatch(stub())>
-    <cfset $matcher.getNegativeFailureMessage().shouldMatch("expected not to be an object, got &lt;(cfspec\.lib\.)?Stub:\?\?\?&gt;")>
+    <cfset $matcher.getNegativeFailureMessage().shouldMatch("expected not to be an object, got &lt;(cfspec\.lib\.)?Mock:\?\?\?&gt;")>
   </it>
 
   <it should="describe itself">
@@ -560,7 +560,7 @@
   <it should="provide a useful failure message">
     <cfset target = stub()>
     <cfset $matcher.isMatch(target)>
-    <cfset $matcher.getFailureMessage().shouldMatch("expected to be an instance of 'cfspec\.spec\.assets\.Widget', got '(cfspec\.lib\.)?Stub'")>
+    <cfset $matcher.getFailureMessage().shouldMatch("expected to be an instance of 'cfspec\.spec\.assets\.Widget', got '(cfspec\.lib\.)?Mock'")>
   </it>
 
   <it should="provide a useful negative failure message">

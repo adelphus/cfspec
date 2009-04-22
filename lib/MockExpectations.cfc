@@ -45,7 +45,7 @@
       </cfif>
       <cfreturn entry.eval()>
     </cfif>
-    <cfreturn createObject("component", "cfspec.lib.Stub").__cfspecInit()>
+    <cfreturn createObject("component", "cfspec.lib.Mock").__cfspecInit()>
   </cffunction>
 
 

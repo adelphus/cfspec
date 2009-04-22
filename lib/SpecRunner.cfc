@@ -207,7 +207,7 @@
 
 
   <cffunction name="stub">
-    <cfreturn createObject("component", "Stub").__cfspecInit(argumentCollection=arguments)>
+    <cfreturn createObject("component", "Mock").__cfspecInit(argumentCollection=arguments)>
   </cffunction>
 
 
