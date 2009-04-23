@@ -7,8 +7,8 @@
   </before>
 
   <it should="have a timer summary with between 0 and 1 seconds">
-    <cfset $specStats.getTimerSummary().shouldNotEqual("0.000 seconds")
-                                       .shouldMatch("^0.\d{3} seconds$")>
+    <cfset sleep(100)>
+    <cfset $specStats.getTimerSummary().shouldMatch("^0.\d+ seconds$")>
   </it>
 
   <describe hint="with no examples">
