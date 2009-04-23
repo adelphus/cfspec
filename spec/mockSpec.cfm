@@ -3,7 +3,7 @@
 <describe hint="Mock (basic stubbing)">
 
   <before>
-    <cfset $mock = $(createObject("component", "cfspec.lib.Mock").__cfspecInit())>
+    <cfset $mock = $(createObject("component", "cfspec.lib.Mock").__cfspecInit("myStub"))>
   </before>
 
   <it should="throw an exception on an unspecified method call">
@@ -115,7 +115,7 @@
 <describe hint="Mock (basic mocking)">
 
   <before>
-    <cfset $mock = $(createObject("component", "cfspec.lib.Mock").__cfspecInit())>
+    <cfset $mock = $(createObject("component", "cfspec.lib.Mock").__cfspecInit("myMock"))>
   </before>
 
   <it should="return the supplied value for a given method">
@@ -139,39 +139,39 @@
   </it>
 
   <it should="not report any failures when no expectations are set">
-    <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+    <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
   </it>
 
   <it should="report a failure if the method is never called">
     <cfset $mock.expects("foo")>
-    <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+    <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
   </it>
 
   <it should="not report a failure if the method is called exactly once">
     <cfset $mock.expects("foo")>
     <cfset $mock.foo()>
-    <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+    <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
   </it>
 
   <it should="report a failure if the method is called more than once">
     <cfset $mock.expects("foo")>
     <cfset $mock.foo()>
     <cfset $mock.foo()>
-    <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+    <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
   </it>
 
   <describe hint="times(3)">
 
     <it should="report a failure if the method is never called">
       <cfset $mock.expects("foo").times(3)>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
     <it should="report a failure if the method is called less than 3 times">
       <cfset $mock.expects("foo").times(3)>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
     <it should="not report a failure if the method is called exactly 3 times">
@@ -179,7 +179,7 @@
       <cfset $mock.foo()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
     </it>
 
     <it should="report a failure if the method is called more than 3 times">
@@ -188,7 +188,7 @@
       <cfset $mock.foo()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
   </describe>
@@ -197,14 +197,14 @@
 
     <it should="report a failure if the method is never called">
       <cfset $mock.expects("foo").times(3, 5)>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
     <it should="report a failure if the method is called less than 3 times">
       <cfset $mock.expects("foo").times(3, 5)>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
     <it should="not report a failure if the method is called exactly 3 times">
@@ -212,7 +212,7 @@
       <cfset $mock.foo()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
     </it>
 
     <it should="not report a failure if the method is called exactly 4 times">
@@ -221,7 +221,7 @@
       <cfset $mock.foo()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
     </it>
 
     <it should="not report a failure if the method is called exactly 5 times">
@@ -231,7 +231,7 @@
       <cfset $mock.foo()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
     </it>
 
     <it should="report a failure if the method is called more than 5 times">
@@ -242,7 +242,7 @@
       <cfset $mock.foo()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
   </describe>
@@ -251,13 +251,13 @@
 
     <it should="not report a failure if the method is never called">
       <cfset $mock.expects("foo").never()>
-      <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
     </it>
 
     <it should="report a failure if the method is called">
       <cfset $mock.expects("foo").never()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
   </describe>
@@ -266,28 +266,179 @@
 
     <it should="report a failure if the method is never called">
       <cfset $mock.expects("foo").once()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
     <it should="not report a failure if the method is called exactly once">
       <cfset $mock.expects("foo").once()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
     </it>
 
     <it should="report a failure if the method is called more than once">
       <cfset $mock.expects("foo").once()>
       <cfset $mock.foo()>
       <cfset $mock.foo()>
-      <cfset $mock.__cfspecFailures().shouldNotBeEmpty()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
     </it>
 
   </describe>
 
-  <describe hint="twice()"></describe>
-  <describe hint="atLeast(3)"></describe>
-  <describe hint="atLeastOnce()"></describe>
-  <describe hint="atMost(3)"></describe>
-  <describe hint="atMostOnce()"></describe>
+  <describe hint="twice()">
+
+    <it should="report a failure if the method is never called">
+      <cfset $mock.expects("foo").twice()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is called less than twice">
+      <cfset $mock.expects("foo").twice()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called exactly twice">
+      <cfset $mock.expects("foo").twice()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is called more than twice">
+      <cfset $mock.expects("foo").twice()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+  </describe>
+
+  <describe hint="atLeast(3)">
+
+    <it should="report a failure if the method is never called">
+      <cfset $mock.expects("foo").atLeast(3)>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is called less than 3 times">
+      <cfset $mock.expects("foo").atLeast(3)>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called exactly 3 times">
+      <cfset $mock.expects("foo").atLeast(3)>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called more than 3 times">
+      <cfset $mock.expects("foo").atLeast(3)>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called 100 times">
+      <cfset $mock.expects("foo").atLeast(3)>
+      <cfloop index="i" from="1" to="100">
+        <cfset $mock.foo()>
+      </cfloop>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+  </describe>
+
+  <describe hint="atLeastOnce()">
+
+    <it should="report a failure if the method is never called">
+      <cfset $mock.expects("foo").atLeastOnce()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called exactly once">
+      <cfset $mock.expects("foo").atLeastOnce()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called 100 times">
+      <cfset $mock.expects("foo").atLeastOnce()>
+      <cfloop index="i" from="1" to="100">
+        <cfset $mock.foo()>
+      </cfloop>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+  </describe>
+
+  <describe hint="atMost(3)">
+
+    <it should="not report a failure if the method is never called">
+      <cfset $mock.expects("foo").atMost(3)>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called exactly 3 times">
+      <cfset $mock.expects("foo").atMost(3)>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is called more than 3 times">
+      <cfset $mock.expects("foo").atMost(3)>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+  </describe>
+
+  <describe hint="atMostOnce()">
+
+    <it should="not report a failure if the method is never called">
+      <cfset $mock.expects("foo").atMostOnce()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="not report a failure if the method is called exactly once">
+      <cfset $mock.expects("foo").atMostOnce()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is called more than once">
+      <cfset $mock.expects("foo").atMostOnce()>
+      <cfset $mock.foo()>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldNotBeEmpty()>
+    </it>
+
+  </describe>
+
+  <describe hint="failure messages">
+
+    <it should="report a failure with meaningful details about the method involved">
+      <cfset $mock.expects("foo")>
+      <cfset $mock.__cfspecGetFailureMessages().shouldContain('myMock expected "foo" to be invoked once, but it was never invoked.')>
+    </it>
+
+    <it should="report a failure with meaningful details about the expected & actual number of times invoked">
+      <cfset $mock.expects("foo").times(3, 5).returns("bar")>
+      <cfset $mock.foo()>
+      <cfset $mock.__cfspecGetFailureMessages().shouldContain('myMock expected "foo" to be invoked 3 to 5 times, but it was invoked once.')>
+    </it>
+
+  </describe>
 
 </describe>
