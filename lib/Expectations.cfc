@@ -20,6 +20,16 @@
 
 
 
+  <cffunction name="stubs">
+    <cfargument name="method">
+    <cfif not isDefined("_target.__cfspecPartialMock")>
+      <cfset createObject("component", "cfspec.lib.PartialMock").init(_target)>
+    </cfif>
+    <cfreturn _target.__cfspecPartialMock.stubs(method)>
+  </cffunction>
+
+
+
   <cffunction name="__cfspecEvalMatcher">
     <cfargument name="matcher">
     <cfset var result = "">

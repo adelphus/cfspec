@@ -46,6 +46,9 @@
     <cfif isObject(_stubsMissingMethod)>
       <cfreturn _stubsMissingMethod.getReturn()>
     </cfif>
+    <cfif isDefined("_obj.__cfspecOriginalOnMissingMethod")>
+      <cfreturn _obj.__cfspecOriginalOnMissingMethod(missingMethodName, missingMethodArguments)>
+    </cfif>
     <cfthrow message="The method #missingMethodName# was not found.">
   </cffunction>
 
