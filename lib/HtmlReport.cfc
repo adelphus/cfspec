@@ -36,11 +36,16 @@
   <cffunction name="addExample">
     <cfargument name="status">
     <cfargument name="expectation">
-    <cfargument name="detail">
+    <cfargument name="exception" default="">
+    <cfset var s = '<div class="it #status#">#expectation#'>
     <cfif (_blockStatus[1] eq "pass") or (_blockStatus[1] eq "pend" and status neq "pass")>
       <cfset _blockStatus[1] = status>
     </cfif>
-    <cfset _block[1] = _block[1] & '<div class="it #status#">#expectation#</div>'>
+    <cfif not isSimpleValue(exception)>
+      <cfset s = s & '<br /><br />' & formatException(exception)>
+    </cfif>
+    <cfset s = s & '</div>'>
+    <cfset _block[1] = _block[1] & s>
   </cffunction>
 
 
@@ -77,133 +82,23 @@
     <cfreturn '<div class="header #_specStats.getStatus()#">#summary##timer##title#</div>'>
   </cffunction>
 
-<!---
 
 
-  <cffunction name="toString">
-    <cfreturn "<html>#getHead()##getBody()#</html>">
-  </cffunction>
-
-
-
-  <cffunction name="getHead">
-    <cfset var css = "">
-    <cffile action="read" file="#expandPath('/cfspec/includes/style.css')#" variable="css">
-    <cfset css = reReplace(css, "\s\s+", " ", "all")>
-    <cfreturn "<head><title>cfSpec</title><style>#css#</style></head>">
-  </cffunction>
-
-
-
-  <cffunction name="getBody">
-    <cfreturn "<body><div class='header #_specStats.getStatus()#'>" &
-              "<div class='summary'>#_specStats.getCounterSummary()#</div>" &
-              "<div class='timer'>Finished in <strong>#_specStats.getTimerSummary()#</strong></div>" &
-              "cfSpec Results</div>" & _output & "</body>">
-  </cffunction>
-
-
-
-  <cffunction name="reportException">
+  <cffunction name="formatException" access="private">
     <cfargument name="e">
     <cfset var context = "">
+    <cfset var s = "">
     <cfset var i = "">
-
-    <cfset _output = _output & "<div class='it fail'>should #getHint()#<br /><br />" &
-                     "<small><u>#e.type#</u><br />" &
-                     "Message: #e.message#<br />" &
-                     "Detail: #e.detail#<br />" &
-                     "Stack Trace:">
-
+    <cfset s = "<u>#e.type#</u><br />Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:">
     <cfloop index="i" from="1" to="#arrayLen(e.tagContext)#">
       <cfset context = e.tagContext[i]>
-      <cfset _output = _output & "<pre>  " & 
-                       iif(isDefined("context.id"), "context.id", de("???")) &
-                       " at #context.template#(#context.line#,#context.column#)</pre>">
+      <cfset s = s & "<pre>  ">
+      <cfset s = s & iif(isDefined("context.id"), "context.id", de("???"))>
+      <cfset s = s & " at #context.template#(#context.line#,#context.column#)</pre>">
     </cfloop>
-
-    <cfset _output = _output & "</small></div>">
+    <cfreturn "<small>#s#</small>">
   </cffunction>
 
 
 
-  <cffunction name="enterBlock">
-    <cfargument name="hint">
-    <cfset var htmlId = "desc_#_specRunner.getSuiteNumber()#_" &
-                        replace(_specRunner.getCurrent(), ",", "_", "all")>
-    <cfset _output = _output & "<h2 id='#htmlId#'>#htmlEditFormat(hint)#</h2><div>">
-  </cffunction>
-
-
-
-  <cffunction name="reportTest">
-    <cfargument name="hint">
-    <cfset _output = _output & "<div class='it pass'>should #htmlEditFormat(hint)#</div>")>
-  </cffunction>
-
-
-
-  <cffunction name="exitBlock">
-    <cfargument name="status">
-    <cfset var htmlId = "desc_#_specRunner.getSuiteNumber()#_" &
-                        replace(_specRunner.getCurrent(), ",", "_", "all") & "_0">
-    <cfset var css = "">
-
-    <cfswitch expression="#status#">
-      <cfcase value="fail">  <cfset css = "background:##CC0000">              </cfcase>
-      <cfcase value="pend">  <cfset css = "background:##FFFF00;color:black">  </cfcase>
-      <cfdefaultcase>        <cfset css = "background:##00CC00">       </cfdefaultcase>
-    </cfswitch>
-
-    <cfset _output = _output & "<style>###htmlId#{#css#}</style></div>">
-  </cffunction>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <cfloop condition="level gt 0">
-      <cfset css = "">
-      <cfif _context.__cfspecGetStatus() eq "pend">
-        <cfset css = "background:##FFFF00;color:black">
-      </cfif>
-      <cfset _context.__cfspecPop()>
-      <cfset popCurrent()>
-      <cfif css neq "">
-        <cfset htmlId = "desc_#_suiteNumber#_#replace(_current, ',', '_', 'all')#_0">
-        <cfset appendOutput("<style>###htmlId#{#css#}</style>")>
-      </cfif>
-      <cfset appendOutput("</div>")>
-      <cfset level = level - 1>
-    </cfloop>
-
-
-    --->
 </cfcomponent>

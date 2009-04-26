@@ -323,7 +323,7 @@
       <cfsilent>
         <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithoutExpectation.cfm"))>
       </cfsilent>
-      <cfset $(runner.getOutputAsHtml()).shouldHaveTag("div[@class='summary' and text()='1 example, 0 failures, 1 pending']")>
+      <cfset $(runner.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 0 failures, 1 pending']")>
     </it>
 
   </describe>
@@ -347,7 +347,7 @@
       <cfsilent>
         <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithPendingDelayedMatcher.cfm"))>
       </cfsilent>
-      <cfset $(runner.getOutputAsHtml()).shouldHaveTag("div[@class='summary' and text()='1 example, 1 failure, 0 pending']")>
+      <cfset $(runner.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 1 failure, 0 pending']")>
     </it>
 
   </describe>
