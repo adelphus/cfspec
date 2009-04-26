@@ -8,9 +8,9 @@
   <cffunction name="init">
     <cfset _fileUtils = createObject("component", "cfspec.lib.FileUtils").init()>
     <cfset _specStats = createObject("component", "cfspec.lib.SpecStats").init()>
+    <cfset _report = createObject("component", "cfspec.lib.HtmlReport").init(_specStats)>
     <cfset resetContext()>
     <cfset _suiteNumber = 0>
-    <cfset _output = "">
     <cfreturn this>
   </cffunction>
 
@@ -30,7 +30,7 @@
       </cfif>
     </cfloop>
     <cfif showOutput>
-      <cfset writeOutput(getOutputAsHtml())>
+      <cfset writeOutput(getOutput())>
     </cfif>
   </cffunction>
 
@@ -49,7 +49,7 @@
     <cfargument name="specPath">
     <cfset _specFile = _fileUtils.relativePath(specPath)>
     <cfset runSpec()>
-    <cfset writeOutput(getOutputAsHtml())>
+    <cfset writeOutput(getOutput())>
   </cffunction>
 
 
@@ -62,11 +62,11 @@
         <cfset _context.__cfspecRun(this, _specFile)>
         <cfset ensureNoDelayedMatchersArePending()>
         <cfcatch type="cfspec">
-          <cfset appendOutput("<div class='it #listLast(cfcatch.type, '.')#'>should #cfcatch.message#</div>")>
+          <cfset _report.addExample(listLast(cfcatch.type, '.'), "should #cfcatch.message#")>
           <cfset recoverFromException(listLast(cfcatch.type, "."))>
         </cfcatch>
         <cfcatch type="any">
-          <cfset appendOutput(formatException(cfcatch))>
+          <cfset _report.addExample("fail", "should #_hint#", cfcatch)>
           <cfset recoverFromException("fail")>
         </cfcatch>
       </cftry>
@@ -78,8 +78,6 @@
 
   <cffunction name="recoverFromException">
     <cfargument name="status">
-    <cfset var htmlId = "">
-    <cfset var css = "">
     <cfset var level = "">
 
     <cfif status eq "pend">
@@ -92,17 +90,9 @@
     <cfset _context.__cfspecMergeStatus(status)>
 
     <cfloop condition="level gt 0">
-      <cfset css = "">
-      <cfif _context.__cfspecGetStatus() eq "pend">
-        <cfset css = "background:##FFFF00;color:black">
-      </cfif>
       <cfset _context.__cfspecPop()>
       <cfset popCurrent()>
-      <cfif css neq "">
-        <cfset htmlId = "desc_#_suiteNumber#_#replace(_current, ',', '_', 'all')#_0">
-        <cfset appendOutput("<style>###htmlId#{#css#}</style>")>
-      </cfif>
-      <cfset appendOutput("</div>")>
+      <cfset _report.exitBlock()>
       <cfset level = level - 1>
     </cfloop>
   </cffunction>
@@ -139,51 +129,8 @@
 
 
 
-  <!--- output --->
-
-
-
-  <cffunction name="appendOutput">
-    <cfargument name="s">
-    <cfset _output = _output & s>
-  </cffunction>
-
-
-
-  <cffunction name="getOutputAsHtml">
-    <cfset var html = "">
-    <cfset var css = "">
-    <cffile action="read" file="#expandPath('/cfspec/includes/style.css')#" variable="css">
-    <cfset css = reReplace(css, "\s\s+", " ", "all")>
-    <cfset html = "<html><head><title>cfSpec</title>" &
-                  "<style>#css#</style>" &
-                  "</head><body>" &
-                  "<div class='header #_specStats.getStatus()#'>" &
-                  "<div class='summary'>#_specStats.getCounterSummary()#</div>" &
-                  "<div class='timer'>Finished in <strong>#_specStats.getTimerSummary()#</strong></div>" &
-                  "cfSpec Results</div>" & _output & "</body></html>">
-    <cfreturn html>
-  </cffunction>
-
-
-
-  <cffunction name="formatException">
-    <cfargument name="e">
-    <cfset var html = "">
-    <cfset var context = "">
-    <cfset var i = "">
-
-    <cfset html = "<div class='it fail'>should #_hint#<br /><br /><small><u>#e.type#</u><br />">
-    <cfset html = html & "Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:">
-    <cfloop index="i" from="1" to="#arrayLen(e.tagContext)#">
-      <cfset context = e.tagContext[i]>
-      <cfset html = html & "<pre>  ">
-      <cfset html = html & iif(isDefined("context.id"), "context.id", de("???"))>
-      <cfset html = html & " at #context.template#(#context.line#,#context.column#)</pre>">
-    </cfloop>
-    <cfset html = html & "</small></div>">
-
-    <cfreturn html>
+  <cffunction name="getOutput">
+    <cfreturn _report.getOutput()>
   </cffunction>
 
 
@@ -484,7 +431,7 @@
 
     <cfif isStartRunnable()>
       <cfset _context.__cfspecPush()>
-      <cfset appendOutput(describeStartHelper(attributes.hint))>
+      <cfset _report.enterBlock(attributes.hint)>
     </cfif>
 
     <cfreturn "exitTemplate">
@@ -557,7 +504,7 @@
       <cfset ensureNoDelayedMatchersArePending()>
       <cfif hadAnExpectation()>
         <cfset _specStats.incrementPassCount()>
-        <cfset appendOutput("<div class='it pass'>should #attributes.should#</div>")>
+        <cfset _report.addExample("pass", "should #attributes.should#")>
       <cfelse>
         <cfset pend("There were no expectations.")>
       </cfif>
@@ -618,30 +565,8 @@
     <cfset _context.__cfspecPop()>
     <cfset _context.__cfspecMergeStatus(status)>
 
-    <cfset appendOutput(describeEndHelper(status))>
+    <cfset _report.exitBlock()>
     <cfreturn "">
-  </cffunction>
-
-
-
-  <cffunction name="describeStartHelper">
-    <cfargument name="hint">
-    <cfset var htmlId = "desc_#_suiteNumber#_" & replace(_current, ",", "_", "all")>
-    <cfreturn "<h2 id='#htmlId#'>#htmlEditFormat(hint)#</h2><div>">
-  </cffunction>
-
-
-
-  <cffunction name="describeEndHelper">
-    <cfargument name="status">
-    <cfset var htmlId = "desc_#_suiteNumber#_" & replace(_current, ",", "_", "all") & "_0">
-    <cfset var css = "">
-    <cfswitch expression="#status#">
-      <cfcase value="fail">  <cfset css = "background:##CC0000">              </cfcase>
-      <cfcase value="pend">  <cfset css = "background:##FFFF00;color:black">  </cfcase>
-      <cfdefaultcase>        <cfset css = "background:##00CC00">       </cfdefaultcase>
-    </cfswitch>
-    <cfreturn "<style>###htmlId#{#css#}</style></div>">
   </cffunction>
 
 
