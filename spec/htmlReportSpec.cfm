@@ -53,6 +53,25 @@
     <cfset $report.getOutput().shouldEqual(expected)>
   </it>
 
+  <it should="output a failing report with one failing example (with exception)">
+    <cffile action="read" file="#expandPath('htmlReports/withOneFailingExampleWithException.html')#" variable="expected">
+    <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
+
+    <cfset exception = structNew()>
+    <cfset exception.type = "MyException">
+    <cfset exception.message = "My message">
+    <cfset exception.detail = "My detail">
+    <cfset exception.tagContext = arrayNew(1)>
+
+    <cfset stats.incrementExampleCount()>
+
+    <cfset $report.enterBlock("with one failing example")>
+    <cfset $report.addExample("fail", "should throw exception", exception)>
+    <cfset $report.exitBlock()>
+
+    <cfset $report.getOutput().shouldEqual(expected)>
+  </it>
+
   <it should="output a pending report with two passing and one pending example">
     <cffile action="read" file="#expandPath('htmlReports/withTwoPassingAndOnePendingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
