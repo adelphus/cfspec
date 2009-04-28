@@ -354,6 +354,17 @@
 
 
 
+  <cffunction name="getMatchers">
+    <cfif not isDefined("_matchers")>
+      <cffile action="read" file="#expandPath('/cfspec/config/matchers.json')#" variable="_matchers">
+      <cfset _matchers = deserializeJson(_matchers)>
+      <cfset _simpleMatchers = structNew()>
+    </cfif>
+    <cfreturn _matchers>
+  </cffunction>
+
+
+
   <cffunction name="registerMatcher">
     <cfargument name="pattern">
     <cfargument name="type">
@@ -567,46 +578,6 @@
 
     <cfset _report.exitBlock()>
     <cfreturn "">
-  </cffunction>
-
-
-
-  <!--- singletons --->
-
-
-
-  <cffunction name="getMatchers">
-    <cfif not isDefined("_matchers")>
-      <cffile action="read" file="#expandPath('/cfspec/config/matchers.json')#" variable="_matchers">
-      <cfset _matchers = deserializeJson(_matchers)>
-      <cfset _simpleMatchers = structNew()>
-    </cfif>
-    <cfreturn _matchers>
-  </cffunction>
-
-
-
-  <cffunction name="getInflector">
-    <cfif not isDefined("_inflector")>
-      <cfset _inflector = createObject("component", "cfspec.util.Inflector").init()>
-    </cfif>
-    <cfreturn _inflector>
-  </cffunction>
-
-
-
-  <cffunction name="getJavaLoader">
-    <cfset var classpath = "">
-    <cfset var i = "">
-    <cfif not isDefined("_javaLoader")>
-      <cffile action="read" file="#expandPath('/cfspec/config/classpath.json')#" variable="classpath">
-      <cfset classpath = deserializeJson(classpath)>
-      <cfloop index="i" from="1" to="#arrayLen(classpath)#">
-        <cfset classpath[i] = expandPath(classpath[i])>
-      </cfloop>
-      <cfset _javaLoader = createObject("component", "cfspec.external.javaloader.JavaLoader").init(classpath)>
-    </cfif>
-    <cfreturn _javaLoader>
   </cffunction>
 
 

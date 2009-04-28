@@ -1,6 +1,7 @@
 <cfsetting enableCfoutputOnly="true">
 
 <cfif not isDefined("caller.__cfspecRunner")>
+  <cfset request.singletons = createObject("component", "cfspec.lib.Singletons").init()>
   <cfset specRunner = createObject("component", "cfspec.lib.SpecRunner").init()>
   <cfset specRunner.runSpecFile(getBaseTemplatePath())>
   <cfabort>

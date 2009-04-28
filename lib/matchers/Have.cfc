@@ -111,7 +111,7 @@
       <cfif hasMethod(collectionOwner, "get#_collectionName#")>
         <cfreturn evaluate("collectionOwner.get#_collectionName#()")>
       </cfif>
-      <cfset pluralCollectionName = _runner.getInflector().pluralize(_collectionName)>
+      <cfset pluralCollectionName = request.singletons.getInflector().pluralize(_collectionName)>
       <cfif pluralCollectionName neq _collectionName and hasMethod(collectionOwner, "get#pluralCollectionName#")>
         <cfreturn evaluate("collectionOwner.get#pluralCollectionName#()")>
       <cfelseif hasMethod(collectionOwner, "length") or hasMethod(collectionOwner, "size")>

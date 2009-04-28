@@ -1,5 +1,6 @@
 <cfsetting enableCfoutputOnly="true">
 
+<cfset request.singletons = createObject("component", "cfspec.lib.Singletons").init()>
 <cfset specRunner = createObject("component", "cfspec.lib.SpecRunner").init()>
 <cfset suiteDirectory = getDirectoryFromPath(getBaseTemplatePath())>
 

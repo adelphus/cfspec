@@ -72,24 +72,11 @@
 
 
 
-  <cffunction name="initDocBuilder">
-    <cfset var loader = _runner.getJavaLoader()>
-    <cfset var tagSoup = loader.create("org.ccil.cowan.tagsoup.Parser").init()>
-    <cfset tagSoup.setFeature("http://xml.org/sax/features/namespace-prefixes", false)>
-    <cfset tagSoup.setFeature("http://xml.org/sax/features/namespaces", false)>
-    <cfset _docBuilder = loader.create("nu.xom.Builder").init(tagSoup)>
-  </cffunction>
-
-
-
   <cffunction name="buildDoc">
     <cfargument name="target">
     <cfset var targetAsBytes = createObject("java", "java.lang.String").init(target).getBytes()>
     <cfset var targetAsStream = createobject("java","java.io.ByteArrayInputStream").init(targetAsBytes)>
-    <cfif not isDefined("_docBuilder")>
-      <cfset initDocBuilder()>
-    </cfif>
-    <cfreturn _docBuilder.build(targetAsStream)>
+    <cfreturn request.singletons.getDocBuilder().build(targetAsStream)>
   </cffunction>
 
 
