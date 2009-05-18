@@ -1,4 +1,4 @@
-<cfsetting enableCfoutputOnly="true">
+<cfsilent>
 
 <cfif thisTag.executionMode eq "start">
   <cfset exitMethod = caller.__cfspecRunner.afterStartTag(attributes)>
@@ -11,3 +11,5 @@
     <cfexit method="#exitMethod#">
   </cfif>
 </cfif>
+
+</cfsilent>

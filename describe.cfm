@@ -1,4 +1,4 @@
-<cfsetting enableCfoutputOnly="true">
+<cfsilent>
 
 <cfif not isDefined("caller.__cfspecRunner")>
   <cfset request.singletons = createObject("component", "cfspec.lib.Singletons").init()>
@@ -18,3 +18,5 @@
     <cfexit method="#exitMethod#">
   </cfif>
 </cfif>
+
+</cfsilent>

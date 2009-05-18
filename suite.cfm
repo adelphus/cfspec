@@ -1,4 +1,4 @@
-<cfsetting enableCfoutputOnly="true">
+<cfsilent>
 
 <cfset request.singletons = createObject("component", "cfspec.lib.Singletons").init()>
 <cfset specRunner = createObject("component", "cfspec.lib.SpecRunner").init()>
@@ -6,3 +6,5 @@
 
 <cfset specRunner.runSpecSuite(suiteDirectory)>
 <cfabort>
+
+</cfsilent>
