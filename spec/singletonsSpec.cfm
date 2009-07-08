@@ -6,6 +6,12 @@
     <cfset singletons = createObject("component", "cfspec.lib.Singletons").init()>
   </before>
 
+  <it should="have a FileUtils singleton">
+    <cfset fileUtils = singletons.getFileUtils()>
+    <cfset $(fileUtils).shouldBe(singletons.getFileUtils())>
+    <cfset $(fileUtils).shouldBeAnInstanceOf("cfspec.lib.FileUtils")>
+  </it>
+
   <it should="have an Inflector singleton">
     <cfset inflector = singletons.getInflector()>
     <cfset $(inflector).shouldBe(singletons.getInflector())>

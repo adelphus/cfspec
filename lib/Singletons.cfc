@@ -6,13 +6,22 @@
 
 
 
-  <cffunction name="init">
+  <cffunction name="init" output="false">
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="getInflector">
+  <cffunction name="getFileUtils" output="false">
+    <cfif not isDefined("_fileUtils")>
+      <cfset _fileUtils = createObject("component", "cfspec.lib.FileUtils").init()>
+    </cfif>
+    <cfreturn _fileUtils>
+  </cffunction>
+
+
+
+  <cffunction name="getInflector" output="false">
     <cfif not isDefined("_inflector")>
       <cfset _inflector = createObject("component", "cfspec.util.Inflector").init()>
     </cfif>
@@ -21,7 +30,7 @@
 
 
 
-  <cffunction name="getJavaLoader">
+  <cffunction name="getJavaLoader" output="false">
     <cfset var classpath = "">
     <cfset var i = "">
     <cfif not isDefined("_javaLoader")>
@@ -37,7 +46,7 @@
 
 
 
-  <cffunction name="getDocBuilder">
+  <cffunction name="getDocBuilder" output="false">
     <cfset var tagSoup = "">
     <cfset var loader = "">
     <cfif not isDefined("_docBuilder")>

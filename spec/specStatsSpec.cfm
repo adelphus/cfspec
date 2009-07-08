@@ -103,4 +103,15 @@
 
   </describe>
 
+  <it should="reset all counters">
+    <cfset $specStats.incrementExampleCount()>
+    <cfset $specStats.incrementPassCount()>
+    <cfset $specStats.incrementExampleCount()>
+    <cfset $specStats.incrementPendCount()>
+    <cfset $specStats.incrementExampleCount()>
+    <cfset $specStats.reset()>
+    <cfset $specStats.getCounterSummary()
+                     .shouldEqual("0 examples, 0 failures, 0 pending")>
+  </it>
+
 </describe>

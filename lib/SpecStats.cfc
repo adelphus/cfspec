@@ -5,35 +5,40 @@
 
 
 
-  <cffunction name="init">
-    <cfset _startTime = getTickCount()>
-    <cfset _exampleCount = 0>
-    <cfset _passCount = 0>
-    <cfset _pendCount = 0>
+  <cffunction name="init" output="false">
+    <cfset reset()>
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="incrementExampleCount">
+  <cffunction name="reset" output="false">
+    <cfset _startTime = getTickCount()>
+    <cfset _exampleCount = 0>
+    <cfset _passCount = 0>
+    <cfset _pendCount = 0>
+  </cffunction>
+
+
+  <cffunction name="incrementExampleCount" output="false">
     <cfset _exampleCount = _exampleCount + 1>
   </cffunction>
 
 
 
-  <cffunction name="incrementPassCount">
+  <cffunction name="incrementPassCount" output="false">
     <cfset _passCount = _passCount + 1>
   </cffunction>
 
 
 
-  <cffunction name="incrementPendCount">
+  <cffunction name="incrementPendCount" output="false">
     <cfset _pendCount = _pendCount + 1>
   </cffunction>
 
 
 
-  <cffunction name="getStatus">
+  <cffunction name="getStatus" output="false">
     <cfset var failCount = _exampleCount - _passCount - _pendCount>
     <cfset var status = "pass">
     <cfif failCount>
@@ -46,7 +51,7 @@
 
 
 
-  <cffunction name="getCounterSummary">
+  <cffunction name="getCounterSummary" output="false">
     <cfset var failCount = _exampleCount - _passCount - _pendCount>
     <cfset var summary = "#_exampleCount# example">
     <cfif _exampleCount neq 1>
@@ -62,7 +67,7 @@
 
 
 
-  <cffunction name="getTimerSummary">
+  <cffunction name="getTimerSummary" output="false">
     <cfreturn ((getTickCount() - _startTime) / 1000) & " seconds">
   </cffunction>
 
