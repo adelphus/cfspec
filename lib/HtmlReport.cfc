@@ -29,7 +29,7 @@
 
 
   <cffunction name="getOutput" output="false">
-    <cfset var head = "<head><title>cfSpec</title>#getStyle()#</head>">
+    <cfset var head = "<head><title>cfSpec</title>#getStyle()##getScripts()#</head>">
     <cfset var body = "<body>#getSpecStatsSummary()##_block[1]#</body>">
     <cfreturn "<html>#head##body#</html>">
   </cffunction>
@@ -81,6 +81,19 @@
     <cffile action="read" file="#expandPath('/cfspec/includes/style.css')#" variable="style">
     <cfset style = trim(reReplace(style, "\s+", " ", "all"))>
     <cfreturn "<style> #style# </style>">
+  </cffunction>
+
+
+
+  <cffunction name="getScripts" access="private" output="false">
+    <cfset var scripts = "">
+    <cfset var script = "">
+    <cfset var jsFile = "">
+    <cfloop list="jquery-1.3.1.min,application" index="jsFile">
+      <cffile action="read" file="#expandPath('/cfspec/includes/#jsFile#.js')#" variable="script">
+      <cfset scripts = scripts & script>
+    </cfloop>
+    <cfreturn "<script language='JavaScript'>#scripts#</script>">
   </cffunction>
 
 

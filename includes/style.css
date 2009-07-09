@@ -74,3 +74,13 @@ h2 {
 pre {
   font: 9pt/4pt monospace;
 }
+
+a#togglePassingExamples {
+  display: block;
+  margin: -8px -8px 0px;
+  padding: 5px 15px 15px;
+  background: black;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}

@@ -201,4 +201,9 @@
 
 
 
+  <cffunction name="value" output="false">
+    <cfreturn _target>
+  </cffunction>
+
+
 </cfcomponent>

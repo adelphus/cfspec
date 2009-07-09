@@ -12,7 +12,8 @@
   <it should="output a passing report with no examples">
     <cffile action="read" file="#expandPath('htmlReports/withNoExamples.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a passing report with one passing example">
@@ -25,7 +26,8 @@
     <cfset $report.addExample("pass", "should pass")>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a pending report with one pending example">
@@ -38,7 +40,8 @@
     <cfset $report.addExample("pend", "should pend")>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a failing report with one failing example">
@@ -51,7 +54,8 @@
     <cfset $report.addExample("fail", "should fail")>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a failing report with one failing example (with exception)">
@@ -70,7 +74,8 @@
     <cfset $report.addExample("fail", "should throw exception", exception)>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a pending report with two passing and one pending example">
@@ -87,7 +92,8 @@
     <cfset $report.addExample("pass", "should pass")>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a failing report with two passing and one failing example">
@@ -104,7 +110,8 @@
     <cfset $report.addExample("pass", "should pass")>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a failing report with two pending and one failing example">
@@ -121,7 +128,8 @@
     <cfset $report.addExample("pend", "should pend")>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a failing report with many nested examples">
@@ -156,7 +164,8 @@
     <cfset $report.exitBlock()>
     <cfset $report.exitBlock()>
 
-    <cfset $report.getOutput().shouldEqual(expected)>
+    <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
+    <cfset $(output).shouldEqual(expected)>
   </it>
 
 </describe>
