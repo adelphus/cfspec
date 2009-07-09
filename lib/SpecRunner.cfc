@@ -245,6 +245,7 @@
     <cfargument name="attributes">
     <cfif not hasPendingException()>
       <cfset ensureNoDelayedMatchersArePending()>
+      <cfset ensureAllMockExpectationsArePassing()>
       <cfif hadAnExpectation()>
         <cfset _specStats.incrementPassCount()>
         <cfset _report.addExample("pass", "should #attributes.should#")>
@@ -449,6 +450,28 @@
 
   <cffunction name="hadAnExpectation" access="private" output="false">
     <cfreturn _hadAnExpectation>
+  </cffunction>
+
+
+
+  <cffunction name="ensureAllMockExpectationsArePassing" access="private" output="false">
+    <cfset var bindings = getBindings()>
+    <cfset var fullMessages = "">
+    <cfset var messages = "">
+    <cfset var key = "">
+    <cfset var i = "">
+    <cfloop collection="#bindings#" item="key">
+      <cfif isObject(bindings[key]) and structKeyExists(bindings[key], "__cfspecGetFailureMessages")>
+        <cfset flagExpectationEncountered()>
+        <cfset messages = bindings[key].__cfspecGetFailureMessages()>
+        <cfloop index="i" from="1" to="#arrayLen(messages)#">
+          <cfset fullMessages = listAppend(fullMessages, messages[i], "<br />")>
+        </cfloop>
+      </cfif>
+    </cfloop>
+    <cfif fullMessages neq "">
+      <cfset fail(fullMessages)>
+    </cfif>
   </cffunction>
 
 

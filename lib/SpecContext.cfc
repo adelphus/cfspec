@@ -133,12 +133,14 @@
 
 
   <cffunction name="stub" output="false">
+    <cfset arguments.__cfspecMockType = "stub">
     <cfreturn createObject("component", "Mock").__cfspecInit(argumentCollection=arguments)>
   </cffunction>
 
 
 
   <cffunction name="mock" output="false">
+    <cfset arguments.__cfspecMockType = "mock">
     <cfreturn createObject("component", "Mock").__cfspecInit(argumentCollection=arguments)>
   </cffunction>
 

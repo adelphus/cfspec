@@ -354,6 +354,16 @@
       <cfset $(report.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 1 failure, 0 pending']")>
     </it>
 
+    <it should="fail because there is a mock expectation that is never called">
+      <cfset runner = createObject("component", "cfspec.lib.SpecRunner").init()>
+      <cfset report = createObject("component", "cfspec.lib.HtmlReport").init()>
+      <cfset stats = createObject("component", "cfspec.lib.SpecStats").init()>
+      <cfset runner.setReport(report)>
+      <cfset runner.setSpecStats(stats)>
+      <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithFailingMockExpectation.cfm"))>
+      <cfset $(report.getOutput()).shouldHaveTag("div[@class='summary' and text()='6 examples, 4 failures, 0 pending']")>
+    </it>
+
   </describe>
 
   <describe hint="Exceptions">
