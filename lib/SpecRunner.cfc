@@ -121,6 +121,44 @@
 
 
 
+  <cffunction name="getBindings" output="false">
+    <cfargument name="includeHidden" default="false">
+    <cfreturn _context.__cfspecGetBindings(includeHidden)>
+  </cffunction>
+
+
+
+  <cffunction name="setBindings" output="false">
+    <cfargument name="bindings">
+    <cfset _context.__cfspecSetBindings(bindings)>
+  </cffunction>
+
+
+
+  <cffunction name="fail" output="false">
+    <cfargument name="msg" default="">
+    <cfif msg eq "">
+      <cfset msg = _hint>
+    <cfelse>
+      <cfset msg = "#_hint#: #msg#">
+    </cfif>
+    <cfthrow type="cfspec.fail" message="#msg#">
+  </cffunction>
+
+
+
+  <cffunction name="pend" output="false">
+    <cfargument name="msg" default="">
+    <cfif msg eq "">
+      <cfset msg = _hint>
+    <cfelse>
+      <cfset msg = "#_hint#: #msg#">
+    </cfif>
+    <cfthrow type="cfspec.pend" message="#msg#">
+  </cffunction>
+
+
+
   <cffunction name="describeStartTag" output="false">
     <cfargument name="attributes">
     <cfset pushCurrent()>
@@ -437,151 +475,6 @@
       <cfreturn true>
     </cfif>
     <cfreturn find(_current, _targets[1]) neq 1>
-  </cffunction>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!--- SpecContext methods --->
-
-
-
-  <cffunction name="$">
-    <cfargument name="obj">
-    <cfreturn createObject("component", "Expectations").__cfspecInit(this, obj)>
-  </cffunction>
-
-
-
-  <cffunction name="$eval">
-    <cfargument name="obj">
-    <cfreturn createObject("component", "EvalExpectations").__cfspecInit(this, obj)>
-  </cffunction>
-
-
-
-  <cffunction name="stub">
-    <cfreturn createObject("component", "Mock").__cfspecInit(argumentCollection=arguments)>
-  </cffunction>
-
-
-
-  <cffunction name="mock">
-    <cfreturn createObject("component", "Mock").init(argumentCollection=arguments)>
-  </cffunction>
-
-
-
-  <cffunction name="fail">
-    <cfargument name="msg" default="">
-    <cfif msg eq "">
-      <cfset msg = _hint>
-    <cfelse>
-      <cfset msg = "#_hint#: #msg#">
-    </cfif>
-    <cfthrow type="cfspec.fail" message="#msg#">
-  </cffunction>
-
-
-
-  <cffunction name="pend">
-    <cfargument name="msg" default="">
-    <cfif msg eq "">
-      <cfset msg = _hint>
-    <cfelse>
-      <cfset msg = "#_hint#: #msg#">
-    </cfif>
-    <cfthrow type="cfspec.pend" message="#msg#">
-  </cffunction>
-
-
-
-  <cffunction name="getBindings">
-    <cfargument name="includeHidden" default="false">
-    <cfreturn _context.__cfspecGetBindings(includeHidden)>
-  </cffunction>
-
-
-
-  <cffunction name="setBindings">
-    <cfargument name="bindings">
-    <cfset _context.__cfspecSetBindings(bindings)>
-  </cffunction>
-
-
-
-  <!--- custom matchers --->
-
-
-
-  <cffunction name="getMatchers">
-    <cfif not isDefined("_matchers")>
-      <cffile action="read" file="#expandPath('/cfspec/config/matchers.json')#" variable="_matchers">
-      <cfset _matchers = deserializeJson(_matchers)>
-      <cfset _simpleMatchers = structNew()>
-    </cfif>
-    <cfreturn _matchers>
-  </cffunction>
-
-
-
-  <cffunction name="registerMatcher">
-    <cfargument name="pattern">
-    <cfargument name="type">
-    <cfset var matcher = arrayNew(1)>
-    <cfset arrayAppend(matcher, pattern)>
-    <cfset arrayAppend(matcher, type)>
-    <cfset getMatchers()>
-    <cfset arrayPrepend(_matchers, matcher)>
-  </cffunction>
-
-
-
-  <cffunction name="simpleMatcher">
-    <cfargument name="pattern">
-    <cfargument name="expression">
-    <cfset var matcher = arrayNew(1)>
-    <cfset arrayAppend(matcher, "(#pattern#)")>
-    <cfset arrayAppend(matcher, "cfspec.lib.matchers.Simple")>
-    <cfset getMatchers()>
-    <cfset arrayPrepend(_matchers, matcher)>
-    <cfset _simpleMatchers[pattern] = expression>
-  </cffunction>
-
-
-
-  <cffunction name="getSimpleMatcherExpression">
-    <cfargument name="pattern">
-    <cfreturn _simpleMatchers[pattern]>
   </cffunction>
 
 

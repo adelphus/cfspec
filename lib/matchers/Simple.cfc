@@ -29,7 +29,8 @@
 
   <cffunction name="isMatch">
     <cfargument name="target">
-    <cfset var expression = _runner.getSimpleMatcherExpression(_pattern)>
+    <cfset var matchers = request.singletons.getMatcherManager()>
+    <cfset var expression = matchers.getSimpleMatcherExpression(_pattern)>
     <cfset var context = createObject("component", "cfspec.lib.EvalContext")>
     <cfset var bindings = structNew()>
     <cfset var result = "">

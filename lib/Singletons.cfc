@@ -12,6 +12,15 @@
 
 
 
+  <cffunction name="getMatcherManager" output="false">
+    <cfif not isDefined("_matcherManager")>
+      <cfset _matcherManager = createObject("component", "cfspec.lib.MatcherManager").init()>
+    </cfif>
+    <cfreturn _matcherManager>
+  </cffunction>
+
+
+
   <cffunction name="getFileUtils" output="false">
     <cfif not isDefined("_fileUtils")>
       <cfset _fileUtils = createObject("component", "cfspec.lib.FileUtils").init()>

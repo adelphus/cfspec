@@ -13,7 +13,7 @@
 
     <cfset _runner = runner>
     <cfset _target = target>
-    <cfset _matchers = _runner.getMatchers()>
+    <cfset _matchers = request.singletons.getMatcherManager().getMatchers()>
 
     <cfreturn this>
   </cffunction>
@@ -119,7 +119,7 @@
       <cfset result = evaluate("_target.#methodName#(#flatArgs(args)#)")>
       <cfcatch type="any" >
         <cfset _runner.setPendingException(cfcatch)>
-        <cfreturn _runner.$(this)>
+        <cfreturn createObject("component", "Expectations").__cfspecInit(_runner, this)>
       </cfcatch>
     </cftry>
 
@@ -127,7 +127,7 @@
       <cfset result = false>
     </cfif>
 
-    <cfreturn _runner.$(result)>
+    <cfreturn createObject("component", "Expectations").__cfspecInit(_runner, result)>
   </cffunction>
 
 

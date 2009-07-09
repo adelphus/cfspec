@@ -10,7 +10,8 @@
 
 
 
-  <cffunction name="__cfspecInit">
+  <cffunction name="__cfspecInit" output="false">
+    <cfset __cfspecMatchers = request.singletons.getMatcherManager()>
     <cfset __cfspecShared = arrayNew(1)>
     <cfset __cfspecStatus = arrayNew(1)>
     <cfset __cfspecPush()>
@@ -19,13 +20,13 @@
 
 
 
-  <cffunction name="__cfspecGetStatus">
+  <cffunction name="__cfspecGetStatus" output="false">
     <cfreturn __cfspecStatus[1]>
   </cffunction>
 
 
 
-  <cffunction name="__cfspecMergeStatus">
+  <cffunction name="__cfspecMergeStatus" output="false">
     <cfargument name="status">
     <cfif __cfspecStatus[1] neq "fail">
       <cfset __cfspecStatus[1] = status>
@@ -34,21 +35,21 @@
 
 
 
-  <cffunction name="__cfspecPush">
+  <cffunction name="__cfspecPush" output="false">
     <cfset arrayPrepend(__cfspecShared, "")>
     <cfset arrayPrepend(__cfspecStatus, "pass")>
   </cffunction>
 
 
 
-  <cffunction name="__cfspecPop">
+  <cffunction name="__cfspecPop" output="false">
     <cfset arrayDeleteAt(__cfspecShared, 1)>
     <cfset arrayDeleteAt(__cfspecStatus, 1)>
   </cffunction>
 
 
 
-  <cffunction name="__cfspecRun">
+  <cffunction name="__cfspecRun" output="false">
     <cfargument name="__cfspecRunner">
     <cfargument name="__cfspecSpecFile">
     <cfset variables.__cfspecRunner = arguments.__cfspecRunner>
@@ -57,7 +58,7 @@
 
 
 
-  <cffunction name="__cfspecGetBindings">
+  <cffunction name="__cfspecGetBindings" output="false">
     <cfargument name="includeHidden" default="false">
     <cfset var bindings = structNew()>
     <cfset var key = "">
@@ -74,14 +75,14 @@
 
 
 
-  <cffunction name="__cfspecSetBindings">
+  <cffunction name="__cfspecSetBindings" output="false">
     <cfargument name="bindings">
     <cfset structAppend(variables, bindings)>
   </cffunction>
 
 
 
-  <cffunction name="__cfspecScrub">
+  <cffunction name="__cfspecScrub" output="false">
     <cfset var bindings = __cfspecGetBindings()>
     <cfset var shared = "">
     <cfset var key = "">
@@ -98,7 +99,7 @@
 
 
 
-  <cffunction name="__cfspecSaveBindings">
+  <cffunction name="__cfspecSaveBindings" output="false">
     <cfset var bindings = __cfspecGetBindings()>
     <cfset var oldShared = "">
     <cfset var newShared = "">
@@ -117,56 +118,56 @@
 
 
 
-  <cffunction name="$">
+  <cffunction name="$" output="false">
     <cfargument name="obj">
-    <cfreturn __cfspecRunner.$(obj)>
+    <cfreturn createObject("component", "Expectations").__cfspecInit(__cfspecRunner, obj)>
   </cffunction>
 
 
 
-  <cffunction name="$eval">
+  <cffunction name="$eval" output="false">
     <cfargument name="obj">
-    <cfreturn __cfspecRunner.$eval(obj)>
+    <cfreturn createObject("component", "EvalExpectations").__cfspecInit(__cfspecRunner, obj)>
   </cffunction>
 
 
 
-  <cffunction name="stub">
-    <cfreturn __cfspecRunner.stub(argumentCollection=arguments)>
+  <cffunction name="stub" output="false">
+    <cfreturn createObject("component", "Mock").__cfspecInit(argumentCollection=arguments)>
   </cffunction>
 
 
 
-  <cffunction name="mock">
-    <cfreturn __cfspecRunner.mock(argumentCollection=arguments)>
+  <cffunction name="mock" output="false">
+    <cfreturn createObject("component", "Mock").__cfspecInit(argumentCollection=arguments)>
   </cffunction>
 
 
 
-  <cffunction name="fail">
+  <cffunction name="fail" output="false">
     <cfreturn __cfspecRunner.fail(argumentCollection=arguments)>
   </cffunction>
 
 
 
-  <cffunction name="pend">
+  <cffunction name="pend" output="false">
     <cfreturn __cfspecRunner.pend(argumentCollection=arguments)>
   </cffunction>
 
 
 
-  <cffunction name="registerMatcher">
+  <cffunction name="registerMatcher" output="false">
     <cfargument name="pattern">
     <cfargument name="type">
-    <cfreturn __cfspecRunner.registerMatcher(pattern, type)>
+    <cfreturn __cfspecMatchers.registerMatcher(pattern, type)>
   </cffunction>
 
 
 
-  <cffunction name="simpleMatcher">
+  <cffunction name="simpleMatcher" output="false">
     <cfargument name="pattern">
     <cfargument name="expression">
-    <cfreturn __cfspecRunner.simpleMatcher(pattern, expression)>
+    <cfreturn __cfspecMatchers.simpleMatcher(pattern, expression)>
   </cffunction>
 
 

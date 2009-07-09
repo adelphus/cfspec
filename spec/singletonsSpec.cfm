@@ -6,6 +6,12 @@
     <cfset singletons = createObject("component", "cfspec.lib.Singletons").init()>
   </before>
 
+  <it should="have a MatcherManager singleton">
+    <cfset matcherManager = singletons.getMatcherManager()>
+    <cfset $(matcherManager).shouldBe(singletons.getMatcherManager())>
+    <cfset $(matcherManager).shouldBeAnInstanceOf("cfspec.lib.MatcherManager")>
+  </it>
+
   <it should="have a FileUtils singleton">
     <cfset fileUtils = singletons.getFileUtils()>
     <cfset $(fileUtils).shouldBe(singletons.getFileUtils())>
