@@ -31,14 +31,6 @@
 
 
 
-  <cffunction name="runSpecFile" output="false">
-    <cfargument name="specPath">
-    <cfset _specFile = _fileUtils.relativePath(specPath)>
-    <cfset runSpec()>
-  </cffunction>
-
-
-
   <cffunction name="runSpecSuite" output="false">
     <cfargument name="specPath">
     <cfset var files = "">
@@ -47,29 +39,23 @@
       <cfif type eq "dir" and left(name, 1) neq ".">
         <cfset runSpecSuite("#specPath#/#name#")>
       <cfelseif type eq "file" and reFindNoCase("spec\.cfm$", name)>
-        <cfset nextInSuite("#specPath#/#name#")>
-        <cfset runSpec()>
+        <cfset _suiteNumber = _suiteNumber + 1>
+        <cfset resetContext()>
+        <cfset runSpecFile("#specPath#/#name#")>
       </cfif>
     </cfloop>
   </cffunction>
 
 
 
-  <cffunction name="nextInSuite" access="private" output="false">
+  <cffunction name="runSpecFile" output="false">
     <cfargument name="specPath">
-    <cfset _specFile = _fileUtils.relativePath(specPath)>
-    <cfset resetContext()>
-    <cfset _suiteNumber = _suiteNumber + 1>
-  </cffunction>
-
-
-
-  <cffunction name="runSpec" access="private" output="false">
+    <cfset var specFile = _fileUtils.relativePath(specPath)>
     <cfset resetCurrent()>
-    <cfset _context.__cfspecRun(this, _specFile)>
+    <cfset _context.__cfspecRun(this, specFile)>
     <cfloop condition="nextTarget()">
       <cftry>
-        <cfset _context.__cfspecRun(this, _specFile)>
+        <cfset _context.__cfspecRun(this, specFile)>
         <cfset ensureNoDelayedMatchersArePending()>
         <cfcatch type="cfspec">
           <cfset _report.addExample(listLast(cfcatch.type, '.'), "should #cfcatch.message#")>
