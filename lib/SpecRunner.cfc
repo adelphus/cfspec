@@ -5,38 +5,57 @@
 
 
 
-  <cffunction name="init">
-    <cfset _fileUtils = createObject("component", "cfspec.lib.FileUtils").init()>
-    <cfset _specStats = createObject("component", "cfspec.lib.SpecStats").init()>
-    <cfset _report = createObject("component", "cfspec.lib.HtmlReport").init(_specStats)>
-    <cfset resetContext()>
+  <cffunction name="init" output="false">
+    <cfset _fileUtils = request.singletons.getFileUtils()>
     <cfset _suiteNumber = 0>
+    <cfset resetContext()>
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="runSpecSuite">
-    <cfargument name="specPath">
-    <cfargument name="showOutput" default="true">
-    <cfset var files = "">
-    <cfdirectory action="list" directory="#specPath#" name="files">
-    <cfloop query="files">
-      <cfif type eq "dir" and left(name, 1) neq ".">
-        <cfset runSpecSuite("#specPath#/#name#", false)>
-      <cfelseif type eq "file" and reFindNoCase("spec\.cfm$", name)>
-        <cfset nextInSuite("#specPath#/#name#")>
-        <cfset runSpec()>
-      </cfif>
-    </cfloop>
-    <cfif showOutput>
-      <cfset writeOutput(getOutput())>
+  <cffunction name="setReport" output="false">
+    <cfargument name="report">
+    <cfset _report = report>
+  </cffunction>
+
+
+
+  <cffunction name="setSpecStats" output="false">
+    <cfargument name="specStats">
+    <cfset _specStats = specStats>
+    <cfif isDefined("_report")>
+      <cfset _report.setSpecStats(specStats)>
     </cfif>
   </cffunction>
 
 
 
-  <cffunction name="nextInSuite">
+  <cffunction name="runSpecFile" output="false">
+    <cfargument name="specPath">
+    <cfset _specFile = _fileUtils.relativePath(specPath)>
+    <cfset runSpec()>
+  </cffunction>
+
+
+
+  <cffunction name="runSpecSuite" output="false">
+    <cfargument name="specPath">
+    <cfset var files = "">
+    <cfdirectory action="list" directory="#specPath#" name="files">
+    <cfloop query="files">
+      <cfif type eq "dir" and left(name, 1) neq ".">
+        <cfset runSpecSuite("#specPath#/#name#")>
+      <cfelseif type eq "file" and reFindNoCase("spec\.cfm$", name)>
+        <cfset nextInSuite("#specPath#/#name#")>
+        <cfset runSpec()>
+      </cfif>
+    </cfloop>
+  </cffunction>
+
+
+
+  <cffunction name="nextInSuite" access="private" output="false">
     <cfargument name="specPath">
     <cfset _specFile = _fileUtils.relativePath(specPath)>
     <cfset resetContext()>
@@ -45,16 +64,7 @@
 
 
 
-  <cffunction name="runSpecFile">
-    <cfargument name="specPath">
-    <cfset _specFile = _fileUtils.relativePath(specPath)>
-    <cfset runSpec()>
-    <cfset writeOutput(getOutput())>
-  </cffunction>
-
-
-
-  <cffunction name="runSpec">
+  <cffunction name="runSpec" access="private" output="false">
     <cfset resetCurrent()>
     <cfset _context.__cfspecRun(this, _specFile)>
     <cfloop condition="nextTarget()">
@@ -125,12 +135,6 @@
       <cfset i = i + 1>
     </cfloop>
     <cfreturn listLen(_current) - i - 1>
-  </cffunction>
-
-
-
-  <cffunction name="getOutput">
-    <cfreturn _report.getOutput()>
   </cffunction>
 
 

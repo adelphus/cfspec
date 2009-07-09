@@ -5,19 +5,30 @@
 
 
 
-  <cffunction name="init">
-    <cfargument name="specStats">
-    <cfset _specStats = specStats>
-    <cfset _blockStatus = arrayNew(1)>
-    <cfset _block = arrayNew(1)>
-    <cfset arrayAppend(_blockStatus, "pass")>
-    <cfset arrayAppend(_block, "")>
+  <cffunction name="init" output="false">
+    <cfset reset()>
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="getOutput">
+  <cffunction name="reset" output="false">
+    <cfset _blockStatus = arrayNew(1)>
+    <cfset _block = arrayNew(1)>
+    <cfset arrayAppend(_blockStatus, "pass")>
+    <cfset arrayAppend(_block, "")>
+  </cffunction>
+
+
+
+  <cffunction name="setSpecStats" output="false">
+    <cfargument name="specStats">
+    <cfset _specStats = specStats>
+  </cffunction>
+
+
+
+  <cffunction name="getOutput" output="false">
     <cfset var head = "<head><title>cfSpec</title>#getStyle()#</head>">
     <cfset var body = "<body>#getSpecStatsSummary()##_block[1]#</body>">
     <cfreturn "<html>#head##body#</html>">
@@ -25,7 +36,7 @@
 
 
 
-  <cffunction name="enterBlock">
+  <cffunction name="enterBlock" output="false">
     <cfargument name="hint">
     <cfset arrayPrepend(_blockStatus, "pass")>
     <cfset arrayPrepend(_block, '#hint#</h2><div>')>
@@ -33,7 +44,7 @@
 
 
 
-  <cffunction name="addExample">
+  <cffunction name="addExample" output="false">
     <cfargument name="status">
     <cfargument name="expectation">
     <cfargument name="exception" default="">
@@ -50,7 +61,7 @@
 
 
 
-  <cffunction name="exitBlock">
+  <cffunction name="exitBlock" output="false">
     <cfset _block[2] = _block[2] & '<h2 class="#_blockStatus[1]#">#_block[1]#</div>'>
     <cfif (_blockStatus[2] eq "pass") or (_blockStatus[2] eq "pend" and _blockStatus[1] neq "pass")>
       <cfset _blockStatus[2] = _blockStatus[1]>
@@ -65,7 +76,7 @@
 
 
 
-  <cffunction name="getStyle" access="private">
+  <cffunction name="getStyle" access="private" output="false">
     <cfset var style = "">
     <cffile action="read" file="#expandPath('/cfspec/includes/style.css')#" variable="style">
     <cfset style = trim(reReplace(style, "\s+", " ", "all"))>
@@ -74,7 +85,7 @@
 
 
 
-  <cffunction name="getSpecStatsSummary" access="private">
+  <cffunction name="getSpecStatsSummary" access="private" output="false">
     <cfset var title = '<span>cfSpec Results</span>'>
     <cfset var summary = '<div class="summary">#_specStats.getCounterSummary()#</div>'>
     <cfset var timer = '<strong>#_specStats.getTimerSummary()#</strong>'>
@@ -84,7 +95,7 @@
 
 
 
-  <cffunction name="formatException" access="private">
+  <cffunction name="formatException" access="private" output="false">
     <cfargument name="e">
     <cfset var context = "">
     <cfset var s = "">

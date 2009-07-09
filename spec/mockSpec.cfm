@@ -112,7 +112,7 @@
 
 </describe>
 
-<describe hint="Mock (basic mocking)">
+<!---describe hint="Mock (basic mocking)">
 
   <before>
     <cfset $mock = $(createObject("component", "cfspec.lib.Mock").__cfspecInit("myMock"))>
@@ -441,4 +441,4 @@
 
   </describe>
 
-</describe>
+</describe--->

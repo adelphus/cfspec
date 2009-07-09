@@ -5,7 +5,8 @@
   <before>
     <cfset stats = createObject("component", "cfspec.lib.SpecStats").init()>
     <cfset $(stats).stubs("getTimerSummary").returns("0.123 seconds")>
-    <cfset $report = $(createObject("component", "cfspec.lib.HtmlReport").init(stats))>
+    <cfset $report = $(createObject("component", "cfspec.lib.HtmlReport").init())>
+    <cfset $report.setSpecStats(stats)>
   </before>
 
   <it should="output a passing report with no examples">

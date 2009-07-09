@@ -320,10 +320,12 @@
 
     <it should="pend because there are no expectations">
       <cfset runner = createObject("component", "cfspec.lib.SpecRunner").init()>
-      <cfsilent>
-        <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithoutExpectation.cfm"))>
-      </cfsilent>
-      <cfset $(runner.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 0 failures, 1 pending']")>
+      <cfset report = createObject("component", "cfspec.lib.HtmlReport").init()>
+      <cfset stats = createObject("component", "cfspec.lib.SpecStats").init()>
+      <cfset runner.setReport(report)>
+      <cfset runner.setSpecStats(stats)>
+      <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithoutExpectation.cfm"))>
+      <cfset $(report.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 0 failures, 1 pending']")>
     </it>
 
   </describe>
@@ -344,10 +346,12 @@
 
     <it should="fail because there is a delayed matcher without completion">
       <cfset runner = createObject("component", "cfspec.lib.SpecRunner").init()>
-      <cfsilent>
-        <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithPendingDelayedMatcher.cfm"))>
-      </cfsilent>
-      <cfset $(runner.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 1 failure, 0 pending']")>
+      <cfset report = createObject("component", "cfspec.lib.HtmlReport").init()>
+      <cfset stats = createObject("component", "cfspec.lib.SpecStats").init()>
+      <cfset runner.setReport(report)>
+      <cfset runner.setSpecStats(stats)>
+      <cfset runner.runSpecFile(expandPath("/cfspec/spec/assets/specWithPendingDelayedMatcher.cfm"))>
+      <cfset $(report.getOutput()).shouldHaveTag("div[@class='summary' and text()='1 example, 1 failure, 0 pending']")>
     </it>
 
   </describe>
