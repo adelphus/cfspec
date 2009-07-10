@@ -62,10 +62,10 @@
     <cfargument name="missingMethodName">
     <cfargument name="missingMethodArguments">
     <cfif structKeyExists(_stubbedMethods, missingMethodName)>
-      <cfreturn _stubbedMethods[missingMethodName].getReturn()>
+      <cfreturn _stubbedMethods[missingMethodName].getReturn(argumentCollection=missingMethodArguments)>
     </cfif>
     <cfif isObject(_stubsMissingMethod)>
-      <cfreturn _stubsMissingMethod.getReturn()>
+      <cfreturn _stubsMissingMethod.getReturn(argumentCollection=missingMethodArguments)>
     </cfif>
     <cfif isDefined("_obj.__cfspecOriginalOnMissingMethod")>
       <cfreturn _obj.__cfspecOriginalOnMissingMethod(missingMethodName, missingMethodArguments)>

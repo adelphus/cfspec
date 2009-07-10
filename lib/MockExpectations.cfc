@@ -47,25 +47,6 @@
     <cfargument name="maxCount" default="#minCount#">
     <cfset _minCount = minCount>
     <cfset _maxCount = maxCount>
-    <cfif minCount eq 0 and maxCount eq 0>
-      <cfset _expected = "never">
-    <cfelseif minCount eq 1 and maxCount eq 1>
-      <cfset _expected = "once">
-    <cfelseif minCount eq 2 and maxCount eq 2>
-      <cfset _expected = "twice">
-    <cfelseif minCount eq 1 and maxCount eq -1>
-      <cfset _expected = "at least once">
-    <cfelseif minCount gt 1 and maxCount eq -1>
-      <cfset _expected = "at least #minCount# times">
-    <cfelseif minCount eq 0 and maxCount eq 1>
-      <cfset _expected = "at most once">
-    <cfelseif minCount eq 0 and maxCount gt 1>
-      <cfset _expected = "at most #maxCount# times">
-    <cfelseif minCount gt 0 and maxCount eq minCount>
-      <cfset _expected = "#minCount# times">
-    <cfelse>
-      <cfset _expected = "#minCount# to #maxCount# times">
-    </cfif>
     <cfreturn this>
   </cffunction>
 
@@ -132,20 +113,64 @@
 
   <cffunction name="getFailureMessage" output="false">
     <cfset var message = "">
-    <cfset var actual = "">
     <cfif (_callCount lt _minCount) or (_maxCount ge 0 and _callCount gt _maxCount)>
-      <cfif _callCount eq 0>
-        <cfset actual = "never invoked">
-      <cfelseif _callCount eq 1>
-        <cfset actual = "invoked once">
-      <cfelseif _callCount eq 2>
-        <cfset actual = "invoked twice">
-      <cfelse>
-        <cfset actual = "invoked #_callCount# times">
-      </cfif>
-      <cfset message = 'expected "#_name#" to be invoked #_expected#, but it was #actual#.'>
+      <cfset message = 'expected "#_name#" to be invoked #expectedText()#, but it was #actualText()#.'>
     </cfif>
     <cfreturn message>
+  </cffunction>
+
+
+
+  <!--- PRIVATE --->
+
+
+
+  <cffunction name="expectedText" access="private" output="false">
+    <cfset var expected = "">
+    <cfif _minCount eq _maxCount>
+      <cfif _minCount eq 0>
+        <cfset expected = "never">
+      <cfelseif _minCount eq 1>
+        <cfset expected = "once">
+      <cfelseif _minCount eq 2>
+        <cfset expected = "twice">
+      <cfelse>
+        <cfset expected = "#_minCount# times">
+      </cfif>
+    <cfelseif _minCount lt _maxCount>
+      <cfif _maxCount eq 1>
+        <cfset expected = "at most once">
+      <cfelseif _minCount eq 0>
+        <cfset expected = "at most #_maxCount# times">
+      <cfelse>
+        <cfset expected = "#_minCount# to #_maxCount# times">
+      </cfif>
+    <cfelse>
+      <cfif _minCount eq 0>
+        <cfset expected = "any number of times">
+      <cfelseif _minCount eq 1>
+        <cfset expected = "at least once">
+      <cfelse>
+        <cfset expected = "at least #_minCount# times">
+      </cfif>
+    </cfif>
+    <cfreturn expected>
+  </cffunction>
+
+
+
+  <cffunction name="actualText" access="private" output="false">
+    <cfset var actual = "">
+    <cfif _callCount eq 0>
+      <cfset actual = "never invoked">
+    <cfelseif _callCount eq 1>
+      <cfset actual = "invoked once">
+    <cfelseif _callCount eq 2>
+      <cfset actual = "invoked twice">
+    <cfelse>
+      <cfset actual = "invoked #_callCount# times">
+    </cfif>
+    <cfreturn actual>
   </cffunction>
 
 
