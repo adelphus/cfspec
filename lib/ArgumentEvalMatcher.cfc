@@ -12,21 +12,21 @@
 
 
 
-  <cffunction name="setArguments" output="false">
-    <cfset _args = arguments>
+  <cffunction name="setExpression" output="false">
+    <cfargument name="expression">
+    <cfset _expression = expression>
   </cffunction>
 
 
 
   <cffunction name="isMatch" output="false">
-    <cfset var match = compare(asString(), serializeJson(arguments)) eq 0>
-    <cfreturn match>
+    <cfreturn not not evaluate(_expression)>
   </cffunction>
 
 
 
   <cffunction name="asString" output="false">
-    <cfreturn serializeJson(_args)>
+    <cfreturn "EVAL:#serializeJson(_expression)#">
   </cffunction>
 
 

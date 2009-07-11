@@ -34,6 +34,15 @@
 
 
 
+  <cffunction name="withEval" output="false">
+    <cfargument name="expression">
+    <cfset _argumentMatcher = createObject("component", "cfspec.lib.ArgumentEvalMatcher").init()>
+    <cfset _argumentMatcher.setExpression(expression)>
+    <cfreturn this>
+  </cffunction>
+
+
+
   <cffunction name="isMatch" output="false">
     <cfif isDefined("_argumentMatcher")>
       <cfreturn _argumentMatcher.isMatch(argumentCollection=arguments)>

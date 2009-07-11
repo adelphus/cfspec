@@ -35,4 +35,13 @@
     <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
   </it>
 
+  <it should="recognize an eval-based argument matcher">
+    <cfset $mock.stubs("foo").withEval("arrayLen(arguments) mod 2 eq 0").returns("even")>
+    <cfset $mock.stubs("foo").withEval("arrayLen(arguments) mod 2 eq 1").returns("odd")>
+    <cfset $mock.foo().shouldEqual("even")>
+    <cfset $mock.foo(0).shouldEqual("odd")>
+    <cfset $mock.foo(0, 0).shouldEqual("even")>
+    <cfset $mock.foo(0, 0, 0).shouldEqual("odd")>
+  </it>
+
 </describe>
