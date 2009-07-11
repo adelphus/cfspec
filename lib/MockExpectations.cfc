@@ -4,17 +4,57 @@
 --->
 <cfcomponent output="false">
 
-
+  <cffunction name="vars">
+  <cfreturn variables>
+  </cffunction>
 
   <cffunction name="init" output="false">
+    <cfargument name="parent" default="">
     <cfargument name="name" default="(missing method)">
-    <cfargument name="minCount" default="0">
-    <cfargument name="maxCount" default="-1">
+    <cfargument name="isExpected" default="false">
+    <cfset _parent = parent>
     <cfset _name = name>
     <cfset _callCount = 0>
     <cfset _returns = arrayNew(1)>
-    <cfset times(minCount, maxCount)>
+    <cfif isExpected>
+      <cfset once()>
+    <cfelse>
+      <cfset times(0, -1)>
+    </cfif>
     <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="with" output="false">
+    <cfset _argumentMatcher = createObject("component", "cfspec.lib.ArgumentMatcher").init()>
+    <cfset _argumentMatcher.setArguments(argumentCollection=arguments)>
+    <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="isMatch" output="false">
+    <cfif isDefined("_argumentMatcher")>
+      <cfreturn _argumentMatcher.isMatch(argumentCollection=arguments)>
+    </cfif>
+    <cfreturn true>
+  </cffunction>
+
+
+
+  <cffunction name="asString" output="false">
+    <cfif isDefined("_argumentMatcher")>
+      <cfreturn _argumentMatcher.asString()>
+    </cfif>
+    <cfreturn "">
+  </cffunction>
+
+
+
+  <cffunction name="isEqualTo" output="false">
+    <cfargument name="expectations">
+    <cfreturn compare(asString(), expectations.asString()) eq 0>
   </cffunction>
 
 
@@ -22,6 +62,18 @@
   <cffunction name="returns" output="false">
     <cfset var i = "">
     <cfset var entry = "">
+    <cfset var intern = this>
+    <cfif isObject(_parent)>
+      <cfset intern = _parent.__cfspecInternExpectations(_name, this)>
+    </cfif>
+    <cfreturn intern.__cfspecReturns(argumentCollection=arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecReturns" output="false">
+    <cfset var entry = "">
+    <cfset var i = "">
     <cfloop index="i" from="1" to="#arrayLen(arguments)#">
       <cfset entry = createObject("component", "MockReturnValue").init(arguments[i])>
       <cfset arrayAppend(_returns, entry)>
@@ -32,6 +84,19 @@
 
 
   <cffunction name="throws" output="false">
+    <cfargument name="type">
+    <cfargument name="message" default="">
+    <cfargument name="detail" default="">
+    <cfset var intern = this>
+    <cfif isObject(_parent)>
+      <cfset intern = _parent.__cfspecInternExpectations(_name, this)>
+    </cfif>
+    <cfreturn intern.__cfspecThrows(type, message, detail)>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecThrows" output="false">
     <cfargument name="type">
     <cfargument name="message" default="">
     <cfargument name="detail" default="">
@@ -96,9 +161,14 @@
 
 
 
+  <cffunction name="incrementCallCount" output="false">
+    <cfset _callCount = _callCount + 1>
+  </cffunction>
+
+
+
   <cffunction name="getReturn" output="false">
     <cfset var entry = "">
-    <cfset _callCount = _callCount + 1>
     <cfif not arrayIsEmpty(_returns)>
       <cfset entry = _returns[1]>
       <cfif arrayLen(_returns) gt 1>
