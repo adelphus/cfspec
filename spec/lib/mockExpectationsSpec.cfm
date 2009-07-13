@@ -20,7 +20,7 @@
 
   <it should="render the argument matcher as a string">
     <cfset $expectations.with("foo", 42, true)>
-    <cfset $expectations.asString().shouldEqual("{1='foo',2=42,3=true}")>
+    <cfset $expectations.asString().shouldEqual("(missing method)({1='foo',2=42,3=true})")>
   </it>
 
   <it should="be equal to other expectations with the same argument matcher">

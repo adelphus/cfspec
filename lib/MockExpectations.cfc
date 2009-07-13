@@ -14,6 +14,7 @@
     <cfset _name = name>
     <cfset _callCount = 0>
     <cfset _returns = arrayNew(1)>
+    <cfset _sequences = arrayNew(1)>
     <cfif isExpected>
       <cfset once()>
     <cfelse>
@@ -51,10 +52,13 @@
 
 
   <cffunction name="asString" output="false">
+    <cfset var s = _name>
     <cfif isDefined("_argumentMatcher")>
-      <cfreturn _argumentMatcher.asString()>
+      <cfset s = s & "(" & _argumentMatcher.asString() & ")">
+    <cfelse>
+      <cfset s = s & "()">
     </cfif>
-    <cfreturn "">
+    <cfreturn s>
   </cffunction>
 
 
@@ -169,13 +173,32 @@
 
 
   <cffunction name="inSequence" output="false">
+    <cfargument name="sequence">
+    <cfset arrayAppend(_sequences, sequence)>
+    <cfset sequence.addExpectation(this)>
     <cfreturn this>
   </cffunction>
 
 
 
   <cffunction name="incrementCallCount" output="false">
+    <cfset var i = "">
     <cfset _callCount = _callCount + 1>
+    <cfloop index="i" from="1" to="#arrayLen(_sequences)#">
+      <cfset _sequences[i].called(this)>
+    </cfloop>
+  </cffunction>
+
+
+
+  <cffunction name="getMinCallCount" output="false">
+    <cfreturn _minCount>
+  </cffunction>
+
+
+
+  <cffunction name="getMaxCallCount" output="false">
+    <cfreturn _maxCount>
   </cffunction>
 
 
@@ -200,6 +223,15 @@
       <cfset message = 'expected "#_name#" to be invoked #expectedText()#, but it was #actualText()#.'>
     </cfif>
     <cfreturn message>
+  </cffunction>
+
+
+
+  <cffunction name="getMockName" output="false">
+    <cfif isObject(_parent)>
+      <cfreturn _parent.__cfspecGetName()>
+    </cfif>
+    <cfreturn "(unknown)">
   </cffunction>
 
 

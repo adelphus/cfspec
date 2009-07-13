@@ -140,4 +140,10 @@
 
 
 
+  <cffunction name="__cfspecGetName" output="false">
+    <cfreturn _name>
+  </cffunction>
+
+
+
 </cfcomponent>
