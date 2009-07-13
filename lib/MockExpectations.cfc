@@ -4,9 +4,7 @@
 --->
 <cfcomponent output="false">
 
-  <cffunction name="vars">
-  <cfreturn variables>
-  </cffunction>
+
 
   <cffunction name="init" output="false">
     <cfargument name="parent" default="">
