@@ -1,11 +1,11 @@
 <!---
   This holds a return value that a mock will supply in its execution chain.
 --->
-<cfcomponent>
+<cfcomponent output="false">
 
 
 
-  <cffunction name="init">
+  <cffunction name="init" output="false">
     <cfargument name="value">
     <cfset _value = value>
     <cfreturn this>
@@ -13,7 +13,7 @@
 
 
 
-  <cffunction name="eval">
+  <cffunction name="eval" output="false">
     <cfreturn _value>
   </cffunction>
 

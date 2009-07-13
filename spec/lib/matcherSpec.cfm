@@ -3,17 +3,69 @@
 <describe hint="Matcher (base object)">
 
   <before>
+    <cfset runner = stub("runner")>
+    <cfset runner.stubsMissingMethod()>
     <cfset $matcher = $(createObject("component", "cfspec.lib.Matcher").init())>
-    <cfset $matcher.setRunner(__cfspecRunner)>
+    <cfset $matcher.setRunner(runner)>
   </before>
 
   <it should="not be delayed">
+    <cfset runner.expects("flagDelayedMatcher").with(false)>
     <cfset $matcher.shouldNotBeDelayed()>
   </it>
 
   <it should="not be chained">
     <cfset $matcher.shouldNotBeChained()>
   </it>
+
+  <describe hint="requireArgs">
+
+    <before>
+      <cfset args = listToArray("foo,bar,baz")>
+    </before>
+
+    <it should="do nothing when the correct number of arguments are supplied">
+      <cfset $matcher.requireArgs(args, 3).shouldNotThrow()>
+    </it>
+
+    <it should="throw when an incorrect number of arguments are supplied">
+      <cfset $matcher.requireArgs(args, 4).shouldThrow("Application",
+                                                       "matcher expected 4 argument(s), got 3.")>
+    </it>
+
+    <it should="do nothing when the correct number of arguments are supplied (at least)">
+      <cfset $matcher.requireArgs(args, 2, "at least").shouldNotThrow()>
+    </it>
+
+    <it should="throw when an incorrect number of arguments are supplied (at least)">
+      <cfset $matcher.requireArgs(args, 4, "at least").shouldThrow("Application",
+                                                       "matcher expected at least 4 argument(s), got 3.")>
+    </it>
+
+
+    <it should="do nothing when the correct number of arguments are supplied (at most)">
+      <cfset $matcher.requireArgs(args, 4, "at most").shouldNotThrow()>
+    </it>
+
+    <it should="throw when an incorrect number of arguments are supplied (at most)">
+      <cfset $matcher.requireArgs(args, 2, "at most").shouldThrow("Application",
+                                                       "matcher expected at most 2 argument(s), got 3.")>
+    </it>
+
+  </describe>
+
+  <describe hint="verifyArg">
+
+    <it should="do nothing it verified">
+      <cfset $matcher.verifyArg(true, "foo", "is bar").shouldNotThrow()>
+    </it>
+
+    <it should="throw when it is not verified">
+      <cfset $matcher.verifyArg(false, "foo", "is bar").shouldThrow("Application",
+                                   "The FOO parameter to the Matcher matcher is bar.")>
+    </it>
+
+  </describe>
 
   <describe hint="inspect">
 

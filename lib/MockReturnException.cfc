@@ -1,11 +1,11 @@
 <!---
   This holds an exception that will be thrown within a mocks execution chain.
 --->
-<cfcomponent>
+<cfcomponent output="false">
 
 
 
-  <cffunction name="init">
+  <cffunction name="init" output="false">
     <cfargument name="type">
     <cfargument name="message">
     <cfargument name="detail">
@@ -17,7 +17,7 @@
 
 
 
-  <cffunction name="eval">
+  <cffunction name="eval" output="false">
     <cfthrow type="#_type#" message="#_message#" detail="#_detail#">
   </cffunction>
 

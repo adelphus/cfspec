@@ -6,7 +6,8 @@
 
 
 
-  <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher">
+  <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher," &
+                            "sequence">
 
 
 
@@ -170,6 +171,13 @@
     <cfargument name="pattern">
     <cfargument name="expression">
     <cfreturn __cfspecMatchers.simpleMatcher(pattern, expression)>
+  </cffunction>
+
+
+
+  <cffunction name="sequence" output="false">
+    <cfargument name="name" default="(sequence)">
+    <cfreturn "">
   </cffunction>
 
 

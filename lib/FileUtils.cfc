@@ -5,13 +5,13 @@
 
 
 
-  <cffunction name="init">
+  <cffunction name="init" output="false">
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="relativePath">
+  <cffunction name="relativePath" output="false">
     <cfargument name="path">
     <cfset var webRoot = normalizePath(expandPath("/"))>
     <cfset var relativePath = relativePathFromMapping(path, "/", webRoot)>
@@ -29,7 +29,7 @@
 
 
 
-  <cffunction name="normalizePath">
+  <cffunction name="normalizePath" output="false">
     <cfargument name="path">
     <cfreturn reReplace(path, "[/\\]+", "/", "all")>
   </cffunction>
@@ -40,7 +40,7 @@
 
 
 
-  <cffunction name="relativePathFromRuntimeMappings" access="private">
+  <cffunction name="relativePathFromRuntimeMappings" access="private" output="false">
     <cfargument name="path">
     <cfset var serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
     <cfset var mappings = serviceFactory.getRuntimeService().getMappings()>
@@ -59,7 +59,7 @@
 
 
 
-  <cffunction name="relativePathFromMapping" access="private">
+  <cffunction name="relativePathFromMapping" access="private" output="false">
     <cfargument name="path">
     <cfargument name="mapping">
     <cfargument name="root">

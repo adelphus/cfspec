@@ -6,46 +6,46 @@
 
 
 
-  <cffunction name="init">
+  <cffunction name="init" output="false">
     <cfset _matcherName = listLast(getMetaData(this).name, ".")>
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="setRunner">
+  <cffunction name="setRunner" output="false">
     <cfargument name="runner">
     <cfset _runner = runner>
   </cffunction>
 
 
 
-  <cffunction name="setExpectations">
+  <cffunction name="setExpectations" output="false">
     <cfargument name="expectations">
     <cfset _expectations = expectations>
   </cffunction>
 
 
 
-  <cffunction name="setArguments">
+  <cffunction name="setArguments" output="false">
   </cffunction>
 
 
 
-  <cffunction name="isDelayed">
+  <cffunction name="isDelayed" output="false">
     <cfset _runner.flagDelayedMatcher(false)>
     <cfreturn false>
   </cffunction>
 
 
 
-  <cffunction name="isChained">
+  <cffunction name="isChained" output="false">
     <cfreturn false>
   </cffunction>
 
 
 
-  <cffunction name="requireArgs">
+  <cffunction name="requireArgs" output="false">
     <cfargument name="args">
     <cfargument name="count">
     <cfargument name="relation" default="">
@@ -61,7 +61,7 @@
 
 
 
-  <cffunction name="verifyArg">
+  <cffunction name="verifyArg" output="false">
     <cfargument name="verified">
     <cfargument name="argName">
     <cfargument name="message">
@@ -72,7 +72,7 @@
 
 
 
-  <cffunction name="inspect">
+  <cffunction name="inspect" output="false">
     <cfargument name="value">
     <cfif isSimpleValue(value)>  <cfreturn inspectSimpleValue(value)>  </cfif>
     <cfif isObject(value)>       <cfreturn inspectObject(value)>       </cfif>
@@ -84,7 +84,7 @@
 
 
 
-  <cffunction name="inspectSimpleValue">
+  <cffunction name="inspectSimpleValue" output="false">
     <cfargument name="value">
     <cfif isNumeric(value)>
       <cfreturn value>
@@ -100,7 +100,7 @@
 
 
 
-  <cffunction name="inspectObject">
+  <cffunction name="inspectObject" output="false">
     <cfargument name="value">
     <cftry>
       <cfset value = value.inspect()>
@@ -114,7 +114,7 @@
 
 
 
-  <cffunction name="inspectStruct">
+  <cffunction name="inspectStruct" output="false">
     <cfargument name="value">
     <cfset var keys = listToArray(listSort(structKeyList(value), "textnocase"))>
     <cfset var s = "">
@@ -127,7 +127,7 @@
 
 
 
-  <cffunction name="inspectArray">
+  <cffunction name="inspectArray" output="false">
     <cfargument name="value">
     <cfset var s = "">
     <cfset var i = "">
@@ -139,7 +139,7 @@
 
 
 
-  <cffunction name="inspectQuery">
+  <cffunction name="inspectQuery" output="false">
     <cfargument name="value">
     <cfset var keys = listToArray(listSort(value.columnList, "textnocase"))>
     <cfset var cols = "">
@@ -162,7 +162,7 @@
 
 
 
-  <cffunction name="prettyPrint">
+  <cffunction name="prettyPrint" output="false">
     <cfargument name="value">
     <cfset var s = inspect(value[1])>
     <cfset var l = arrayLen(value)>

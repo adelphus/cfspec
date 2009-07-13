@@ -170,6 +170,12 @@
 
 
 
+  <cffunction name="inSequence" output="false">
+    <cfreturn this>
+  </cffunction>
+
+
+
   <cffunction name="incrementCallCount" output="false">
     <cfset _callCount = _callCount + 1>
   </cffunction>

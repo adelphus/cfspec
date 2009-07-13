@@ -7,17 +7,18 @@
     <cfset $(stats).stubs("getTimerSummary").returns("0.123 seconds")>
     <cfset $report = $(createObject("component", "cfspec.lib.HtmlReport").init())>
     <cfset $report.setSpecStats(stats)>
+    <cfset assetPath = "/cfspec/spec/lib/htmlReports">
   </before>
 
   <it should="output a passing report with no examples">
-    <cffile action="read" file="#expandPath('htmlReports/withNoExamples.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withNoExamples.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
     <cfset output = reReplace($report.getOutput().value(), "<style>.*?</script>", "")>
     <cfset $(output).shouldEqual(expected)>
   </it>
 
   <it should="output a passing report with one passing example">
-    <cffile action="read" file="#expandPath('htmlReports/withOnePassingExample.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withOnePassingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()><cfset stats.incrementPassCount()>
@@ -31,7 +32,7 @@
   </it>
 
   <it should="output a pending report with one pending example">
-    <cffile action="read" file="#expandPath('htmlReports/withOnePendingExample.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withOnePendingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()><cfset stats.incrementPendCount()>
@@ -45,7 +46,7 @@
   </it>
 
   <it should="output a failing report with one failing example">
-    <cffile action="read" file="#expandPath('htmlReports/withOneFailingExample.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withOneFailingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()>
@@ -59,7 +60,7 @@
   </it>
 
   <it should="output a failing report with one failing example (with exception)">
-    <cffile action="read" file="#expandPath('htmlReports/withOneFailingExampleWithException.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withOneFailingExampleWithException.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset exception = structNew()>
@@ -79,7 +80,7 @@
   </it>
 
   <it should="output a pending report with two passing and one pending example">
-    <cffile action="read" file="#expandPath('htmlReports/withTwoPassingAndOnePendingExample.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withTwoPassingAndOnePendingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()><cfset stats.incrementPassCount()>
@@ -97,7 +98,7 @@
   </it>
 
   <it should="output a failing report with two passing and one failing example">
-    <cffile action="read" file="#expandPath('htmlReports/withTwoPassingAndOneFailingExample.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withTwoPassingAndOneFailingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()><cfset stats.incrementPassCount()>
@@ -115,7 +116,7 @@
   </it>
 
   <it should="output a failing report with two pending and one failing example">
-    <cffile action="read" file="#expandPath('htmlReports/withTwoPendingAndOneFailingExample.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withTwoPendingAndOneFailingExample.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()><cfset stats.incrementPendCount()>
@@ -133,7 +134,7 @@
   </it>
 
   <it should="output a failing report with many nested examples">
-    <cffile action="read" file="#expandPath('htmlReports/withManyNestedExamples.html')#" variable="expected">
+    <cffile action="read" file="#expandPath('#assetPath#/withManyNestedExamples.html')#" variable="expected">
     <cfset expected = trim(reReplace(reReplace(expected, ">\s+<", "><", "all"), "\s+", " ", "all"))>
 
     <cfset stats.incrementExampleCount()>

@@ -6,7 +6,7 @@
 
 
 
-  <cffunction name="__cfspecEval">
+  <cffunction name="__cfspecEval" output="false">
     <cfargument name="__cfspecEvalBindings">
     <cfargument name="__cfspecEvalExpression">
     <cfset var __cfspecEvalResult = "">

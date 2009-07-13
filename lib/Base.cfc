@@ -5,7 +5,7 @@
 
 
 
-  <cffunction name="hasMethod">
+  <cffunction name="hasMethod" output="false">
     <cfargument name="obj">
     <cfargument name="methodName">
     <cfset var metaData = getMetaData(obj)>
