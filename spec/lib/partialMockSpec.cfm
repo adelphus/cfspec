@@ -123,3 +123,43 @@
   </describe>
 
 </describe>
+
+<describe hint="PartialMock (basic mocking)">
+
+  <describe hint="on a plain object">
+
+    <before>
+      <cfset mockee = createObject("component", "cfspec.spec.assets.Widget")>
+      <cfset mocker = createObject("component", "cfspec.lib.PartialMock").init(mockee)>
+      <cfset $mockee = $(mockee)>
+    </before>
+
+    <it should="not report any failures when no expectations are set">
+      <cfset $(mocker.__cfspecGetFailureMessages()).shouldBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is never called">
+      <cfset mocker.expects("foo")>
+      <cfset $(mocker.__cfspecGetFailureMessages()).shouldNotBeEmpty()>
+      <!--- next line prevents the framework from reporting the mock's failed expectations --->
+      <cfset $(mocker).stubs("__cfspecGetFailureMessages")>
+    </it>
+
+    <it should="not report a failure if the method is called exactly once">
+      <cfset mocker.expects("foo")>
+      <cfset $mockee.foo()>
+      <cfset $(mocker.__cfspecGetFailureMessages()).shouldBeEmpty()>
+    </it>
+
+    <it should="report a failure if the method is called more than once">
+      <cfset mocker.expects("foo")>
+      <cfset $mockee.foo()>
+      <cfset $mockee.foo()>
+      <cfset $(mocker.__cfspecGetFailureMessages()).shouldNotBeEmpty()>
+      <!--- next line prevents the framework from reporting the mock's failed expectations --->
+      <cfset $(mocker).stubs("__cfspecGetFailureMessages")>
+    </it>
+
+  </describe>
+
+</describe>
