@@ -27,7 +27,7 @@
 
   <cffunction name="with" output="false">
     <cfset _argumentMatcher = createObject("component", "cfspec.lib.ArgumentMatcher").init()>
-    <cfset _argumentMatcher.setArguments(argumentCollection=arguments)>
+    <cfset _argumentMatcher.setArguments(arguments)>
     <cfreturn this>
   </cffunction>
 
@@ -37,82 +37,6 @@
     <cfargument name="expression">
     <cfset _argumentMatcher = createObject("component", "cfspec.lib.ArgumentEvalMatcher").init()>
     <cfset _argumentMatcher.setExpression(expression)>
-    <cfreturn this>
-  </cffunction>
-
-
-
-  <cffunction name="isMatch" output="false">
-    <cfif isDefined("_argumentMatcher")>
-      <cfreturn _argumentMatcher.isMatch(argumentCollection=arguments)>
-    </cfif>
-    <cfreturn true>
-  </cffunction>
-
-
-
-  <cffunction name="asString" output="false">
-    <cfset var s = _name>
-    <cfif isDefined("_argumentMatcher")>
-      <cfset s = s & "(" & _argumentMatcher.asString() & ")">
-    <cfelse>
-      <cfset s = s & "()">
-    </cfif>
-    <cfreturn s>
-  </cffunction>
-
-
-
-  <cffunction name="isEqualTo" output="false">
-    <cfargument name="expectations">
-    <cfreturn compare(asString(), expectations.asString()) eq 0>
-  </cffunction>
-
-
-
-  <cffunction name="returns" output="false">
-    <cfset var i = "">
-    <cfset var entry = "">
-    <cfset var intern = this>
-    <cfif isObject(_parent)>
-      <cfset intern = _parent.__cfspecInternExpectations(_name, this)>
-    </cfif>
-    <cfreturn intern.__cfspecReturns(argumentCollection=arguments)>
-  </cffunction>
-
-
-
-  <cffunction name="__cfspecReturns" output="false">
-    <cfset var entry = "">
-    <cfset var i = "">
-    <cfloop index="i" from="1" to="#arrayLen(arguments)#">
-      <cfset entry = createObject("component", "MockReturnValue").init(arguments[i])>
-      <cfset arrayAppend(_returns, entry)>
-    </cfloop>
-    <cfreturn this>
-  </cffunction>
-
-
-
-  <cffunction name="throws" output="false">
-    <cfargument name="type">
-    <cfargument name="message" default="">
-    <cfargument name="detail" default="">
-    <cfset var intern = this>
-    <cfif isObject(_parent)>
-      <cfset intern = _parent.__cfspecInternExpectations(_name, this)>
-    </cfif>
-    <cfreturn intern.__cfspecThrows(type, message, detail)>
-  </cffunction>
-
-
-
-  <cffunction name="__cfspecThrows" output="false">
-    <cfargument name="type">
-    <cfargument name="message" default="">
-    <cfargument name="detail" default="">
-    <cfset var entry = createObject("component", "MockReturnException").init(type, message, detail)>
-    <cfset arrayAppend(_returns, entry)>
     <cfreturn this>
   </cffunction>
 
@@ -178,6 +102,130 @@
     <cfset sequence.addExpectation(this)>
     <cfreturn this>
   </cffunction>
+
+
+
+  <cffunction name="when" output="false">
+    <cfargument name="condition">
+    <cfset _stateMachineCondition = condition>
+  </cffunction>
+
+
+
+  <cffunction name="returns" output="false">
+    <cfset var i = "">
+    <cfset var entry = "">
+    <cfset var intern = this>
+    <cfif isObject(_parent)>
+      <cfset intern = _parent.__cfspecInternExpectations(_name, this)>
+    </cfif>
+    <cfreturn intern.__cfspecReturns(arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecReturns" output="false">
+    <cfargument name="args">
+    <cfset var entry = "">
+    <cfset var i = "">
+    <cfloop index="i" from="1" to="#arrayLen(args)#">
+      <cfset entry = createObject("component", "MockReturnValue").init(args[i])>
+      <cfset arrayAppend(_returns, entry)>
+    </cfloop>
+    <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="throws" output="false">
+    <cfargument name="type">
+    <cfargument name="message" default="">
+    <cfargument name="detail" default="">
+    <cfset var intern = this>
+    <cfif isObject(_parent)>
+      <cfset intern = _parent.__cfspecInternExpectations(_name, this)>
+    </cfif>
+    <cfreturn intern.__cfspecThrows(type, message, detail)>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecThrows" output="false">
+    <cfargument name="type">
+    <cfargument name="message" default="">
+    <cfargument name="detail" default="">
+    <cfset var entry = createObject("component", "MockReturnException").init(type, message, detail)>
+    <cfset arrayAppend(_returns, entry)>
+    <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="isActive" output="false">
+    <cfset var active = true>
+    <cfif isDefined("_argumentMatcher")>
+      <cfset active = active and _argumentMatcher.isMatch(arguments)>
+    </cfif>
+    <cfif isDefined("_stateMachineCondition")>
+      <cfset active = active and _stateMachineCondition.isActive()>
+    </cfif>
+    <cfreturn active>
+  </cffunction>
+
+
+
+  <cffunction name="asString" output="false">
+    <cfset var s = _name>
+    <cfif isDefined("_argumentMatcher")>
+      <cfset s = s & "(" & _argumentMatcher.asString() & ")">
+    <cfelse>
+      <cfset s = s & "()">
+    </cfif>
+    <cfif isDefined("_stateMachineCondition")>
+      <cfset s = s & "[" & _stateMachineCondition.asString() & "]">
+    </cfif>
+    <cfreturn s>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualTo" output="false">
+    <cfargument name="expectations">
+    <cfreturn compare(asString(), expectations.asString()) eq 0>
+  </cffunction>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

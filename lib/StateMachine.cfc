@@ -3,8 +3,16 @@
 
 
   <cffunction name="init" output="false">
+    <cfargument name="name" default="(state machine)">
+    <cfset _name = name>
     <cfset _state = "">
     <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="getName" output="false">
+    <cfreturn _name>
   </cffunction>
 
 

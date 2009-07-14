@@ -14,14 +14,16 @@
 
 
   <cffunction name="setArguments" output="false">
-    <cfset _args = structCopy(arguments)>
+    <cfargument name="args">
+    <cfset _args = structCopy(args)>
     <cfset equalMatcher.setArguments(_args)>
   </cffunction>
 
 
 
   <cffunction name="isMatch" output="false">
-    <cfreturn equalMatcher.isMatch(structCopy(arguments))>
+    <cfargument name="args">
+    <cfreturn equalMatcher.isMatch(structCopy(args))>
   </cffunction>
 
 

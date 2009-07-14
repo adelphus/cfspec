@@ -8,11 +8,15 @@
   </before>
 
   <it should="match when expression evaluates to true">
-    <cfset $matcher.isMatch("foo", "bar").shouldBeTrue()>
+    <cfset args = structNew()>
+    <cfset args[1] = "foo"><cfset args[2] = "bar">
+    <cfset $matcher.isMatch(args).shouldBeTrue()>
   </it>
 
   <it should="match when expression evaluates to false">
-    <cfset $matcher.isMatch("bar", "none").shouldBeFalse()>
+    <cfset args = structNew()>
+    <cfset args[1] = "bar"><cfset args[2] = "none">
+    <cfset $matcher.isMatch(args).shouldBeFalse()>
   </it>
 
   <it should="flatten to a unique string for the expression">

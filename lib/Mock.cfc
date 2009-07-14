@@ -31,30 +31,20 @@
 
   <cffunction name="stubs" output="false">
     <cfargument name="method">
-    <cfset var matcher = createObject("component", "cfspec.lib.MockExpectations").init(this, method)>
-    <cfif not structKeyExists(_stubbedMethods, method)>
-      <cfset _stubbedMethods[method] = arrayNew(1)>
-    </cfif>
-    <cfset arrayPrepend(_stubbedMethods[method], matcher)>
-    <cfreturn matcher>
+    <cfreturn __cfspecAddExpectations(method, false)>
   </cffunction>
 
 
 
   <cffunction name="expects" output="false">
     <cfargument name="method">
-    <cfset var matcher = createObject("component", "cfspec.lib.MockExpectations").init(this, method, true)>
-    <cfif not structKeyExists(_stubbedMethods, method)>
-      <cfset _stubbedMethods[method] = arrayNew(1)>
-    </cfif>
-    <cfset arrayPrepend(_stubbedMethods[method], matcher)>
-    <cfreturn matcher>
+    <cfreturn __cfspecAddExpectations(method, true)>
   </cffunction>
 
 
 
   <cffunction name="stubsMissingMethod" output="false">
-    <cfset _stubsMissingMethod = createObject("component", "cfspec.lib.MockExpectations").init()>
+    <cfset _stubsMissingMethod = createObject("component", "cfspec.lib.MockExpectations").init(this)>
     <cfreturn _stubsMissingMethod>
   </cffunction>
 
@@ -63,17 +53,17 @@
   <cffunction name="onMissingMethod">
     <cfargument name="missingMethodName">
     <cfargument name="missingMethodArguments">
-    <cfset var matchers = "">
+    <cfset var expectations = "">
     <cfset var result = "">
     <cfset var isDone = false>
     <cfset var i = "">
     <cfif structKeyExists(_stubbedMethods, missingMethodName)>
-      <cfset matchers = _stubbedMethods[missingMethodName]>
-      <cfloop index="i" from="1" to="#arrayLen(matchers)#">
-        <cfif matchers[i].isMatch(argumentCollection=missingMethodArguments)>
-          <cfset matchers[i].incrementCallCount()>
+      <cfset expectations = _stubbedMethods[missingMethodName]>
+      <cfloop index="i" from="1" to="#arrayLen(expectations)#">
+        <cfif expectations[i].isActive(argumentCollection=missingMethodArguments)>
+          <cfset expectations[i].incrementCallCount()>
           <cfif not isDone>
-            <cfset result = matchers[i].getReturn()>
+            <cfset result = expectations[i].getReturn()>
             <cfset isDone = true>
           </cfif>
         </cfif>
@@ -94,14 +84,15 @@
 
 
   <cffunction name="__cfspecGetFailureMessages" output="false">
-    <cfset var matchers = "">
+    <cfset var expectations = "">
     <cfset var messages = arrayNew(1)>
     <cfset var message = "">
     <cfset var method = "">
+    <cfset var i = "">
     <cfloop collection="#_stubbedMethods#" item="method">
-      <cfset matchers = _stubbedMethods[method]>
-      <cfloop index="i" from="1" to="#arrayLen(matchers)#">
-        <cfset message = matchers[i].getFailureMessage()>
+      <cfset expectations = _stubbedMethods[method]>
+      <cfloop index="i" from="1" to="#arrayLen(expectations)#">
+        <cfset message = expectations[i].getFailureMessage()>
         <cfif message neq "">
           <cfset arrayAppend(messages, "#_name#: #message#")>
         </cfif>
@@ -115,17 +106,17 @@
   <cffunction name="__cfspecInternExpectations" output="false">
     <cfargument name="method">
     <cfargument name="expectations">
-    <cfset var matchers = "">
+    <cfset var existingExpectations = "">
     <cfset var previous = "">
     <cfset var garbage = "">
     <cfset var i = "">
     <cfif not structKeyExists(_stubbedMethods, method)>
       <cfreturn expectations>
     </cfif>
-    <cfset matchers = _stubbedMethods[method]>
-    <cfloop index="i" from="1" to="#arrayLen(matchers)#">
-      <cfif matchers[i].isEqualTo(expectations)>
-        <cfset expectations = matchers[i]>
+    <cfset existingExpectations = _stubbedMethods[method]>
+    <cfloop index="i" from="1" to="#arrayLen(existingExpectations)#">
+      <cfif existingExpectations[i].isEqualTo(expectations)>
+        <cfset expectations = existingExpectations[i]>
         <cfset garbage = listPrepend(garbage, previous)>
         <cfset previous = i>
       </cfif>
@@ -142,6 +133,24 @@
 
   <cffunction name="__cfspecGetName" output="false">
     <cfreturn _name>
+  </cffunction>
+
+
+
+  <!--- PRIVATE --->
+
+
+
+  <cffunction name="__cfspecAddExpectations" access="private" output="false">
+    <cfargument name="method">
+    <cfargument name="isExpected">
+    <cfset var expectations = createObject("component", "cfspec.lib.MockExpectations")
+                              .init(this, method, isExpected)>
+    <cfif not structKeyExists(_stubbedMethods, method)>
+      <cfset _stubbedMethods[method] = arrayNew(1)>
+    </cfif>
+    <cfset arrayPrepend(_stubbedMethods[method], expectations)>
+    <cfreturn expectations>
   </cffunction>
 
 

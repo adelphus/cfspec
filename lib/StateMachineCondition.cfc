@@ -19,4 +19,10 @@
 
 
 
+  <cffunction name="asString" output="false">
+    <cfreturn _stateMachine.getName() & "=" & _testState>
+  </cffunction>
+
+
+
 </cfcomponent>

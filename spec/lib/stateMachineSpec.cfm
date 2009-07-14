@@ -10,6 +10,10 @@
     <cfset $machine.getState().shouldEqual("")>
   </it>
 
+  <it should="have the name given">
+    <cfset $machine.getName().shouldEqual("power")>
+  </it>
+
   <describe hint="setState">
 
     <it should="change the state">

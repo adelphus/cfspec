@@ -3,7 +3,7 @@
 <describe hint="StateMachineCondition">
 
   <before>
-    <cfset machine = stub("state machine")>
+    <cfset machine = stub("myStateMachine")>
     <cfset condition = createObject("component", "cfspec.lib.StateMachineCondition")
 		                      .init(machine, "test")>
   </before>
@@ -16,6 +16,11 @@
   <it should="verify that the condition is not active">
     <cfset machine.stubs("getState").returns("other")>
     <cfset $(condition).shouldNotBeActive()>
+  </it>
+
+  <it should="print as a string">
+    <cfset machine.stubs("getName").returns("myStateMachine")>
+    <cfset $(condition).asString().shouldEqual("myStateMachine=test")>
   </it>
 
 </describe>
