@@ -172,11 +172,17 @@
 
   <cffunction name="isActive" output="false">
     <cfset var active = true>
+    <cfset var i = "">
     <cfif isDefined("_argumentMatcher")>
-      <cfset active = active and _argumentMatcher.isMatch(arguments)>
+      <cfset active = _argumentMatcher.isMatch(arguments)>
     </cfif>
-    <cfif isDefined("_stateMachineCondition")>
-      <cfset active = active and _stateMachineCondition.isActive()>
+    <cfif active and isDefined("_stateMachineCondition")>
+      <cfset active = _stateMachineCondition.isActive()>
+    </cfif>
+    <cfif active and arrayLen(_sequences)>
+      <cfloop index="i" from="1" to="#arrayLen(_sequences)#">
+        <cfset active = active and _sequences[i].isPossible(this)>
+      </cfloop>
     </cfif>
     <cfreturn active>
   </cffunction>
@@ -184,7 +190,9 @@
 
 
   <cffunction name="asString" output="false">
+    <cfargument name="useSequences" default="true">
     <cfset var s = _name>
+    <cfset var i = "">
     <cfif isDefined("_argumentMatcher")>
       <cfset s = s & "(" & _argumentMatcher.asString() & ")">
     <cfelse>
@@ -193,6 +201,11 @@
     <cfif isDefined("_stateMachineCondition")>
       <cfset s = s & "[" & _stateMachineCondition.asString() & "]">
     </cfif>
+    <cfif useSequences and arrayLen(_sequences) gt 0>
+      <cfloop index="i" from="1" to="#arrayLen(_sequences)#">
+        <cfset s = s & "[" & _sequences[i].asString(this) & "]">
+      </cfloop>
+    </cfif>
     <cfreturn s>
   </cffunction>
 
@@ -200,7 +213,8 @@
 
   <cffunction name="isEqualTo" output="false">
     <cfargument name="expectations">
-    <cfreturn compare(asString(), expectations.asString()) eq 0>
+    <cfargument name="useSequences" default="true">
+    <cfreturn compare(asString(useSequences), expectations.asString(useSequences)) eq 0>
   </cffunction>
 
 
@@ -259,6 +273,21 @@
       <cfreturn _parent.__cfspecGetName()>
     </cfif>
     <cfreturn "(unknown)">
+  </cffunction>
+
+
+
+  <cffunction name="isInSequence" output="false">
+    <cfset var i = "">
+    <cfif arrayLen(_sequences) eq 0>
+      <cfreturn false>
+    </cfif>
+    <cfloop index="i" from="1" to="#arrayLen(_sequences)#">
+      <cfif not _sequences[i].isPossible(this)>
+        <cfreturn false>
+      </cfif>
+    </cfloop>
+    <cfreturn true>
   </cffunction>
 
 

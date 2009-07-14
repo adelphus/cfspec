@@ -54,22 +54,36 @@
     <cfargument name="missingMethodName">
     <cfargument name="missingMethodArguments">
     <cfset var expectations = "">
+    <cfset var updates = arrayNew(1)>
     <cfset var result = "">
+    <cfset var resultIndex = "">
     <cfset var isDone = false>
     <cfset var i = "">
     <cfif structKeyExists(_stubbedMethods, missingMethodName)>
       <cfset expectations = _stubbedMethods[missingMethodName]>
       <cfloop index="i" from="1" to="#arrayLen(expectations)#">
         <cfif expectations[i].isActive(argumentCollection=missingMethodArguments)>
-          <cfset expectations[i].incrementCallCount()>
-          <cfif not isDone>
-            <cfset result = expectations[i].getReturn()>
+          <cfset arrayAppend(updates, expectations[i])>
+          <cfif isDone>
+            <cfif result.isEqualTo(expectations[i], false) and expectations[i].isInSequence()>
+              <cfif result.isInSequence()>
+                <cfset arrayDeleteAt(updates, resultIndex)>
+                <cfset resultIndex = arrayLen(updates)>
+              </cfif>
+              <cfset result = expectations[i]>
+            </cfif>
+          <cfelse>
+            <cfset result = expectations[i]>
+            <cfset resultIndex = arrayLen(updates)>
             <cfset isDone = true>
           </cfif>
         </cfif>
       </cfloop>
       <cfif isDone>
-        <cfreturn result>
+        <cfloop index="i" from="1" to="#arrayLen(updates)#">
+          <cfset updates[i].incrementCallCount()>
+        </cfloop>
+        <cfreturn result.getReturn()>
       </cfif>
     </cfif>
     <cfif isObject(_stubsMissingMethod)>
