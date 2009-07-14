@@ -9,16 +9,29 @@
 
 
 
-  <cffunction name="startsAs" output="false">
+  <cffunction name="getState" output="false">
+    <cfreturn _state>
+  </cffunction>
+
+
+
+  <cffunction name="setState" output="false">
     <cfargument name="state">
     <cfset _state = state>
   </cffunction>
 
 
 
+  <cffunction name="startsAs" output="false">
+    <cfargument name="state">
+    <cfset setState(state)>
+  </cffunction>
+
+
+
   <cffunction name="is" output="false">
     <cfargument name="state">
-    <cfreturn compare(state, _state) eq 0>
+    <cfreturn createObject("component", "cfspec.lib.StateMachineCondition").init(this, state)>
   </cffunction>
 
 

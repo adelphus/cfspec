@@ -4,16 +4,17 @@
 
   <cffunction name="init" output="false">
     <cfargument name="stateMachine">
-    <cfargument name="nextState">
+    <cfargument name="testState">
     <cfset _stateMachine = stateMachine>
-    <cfset _nextState = nextState>
+    <cfset _testState = testState>
     <cfreturn this>
   </cffunction>
 
 
 
-  <cffunction name="run" output="false">
-    <cfset _stateMachine.setState(_nextState)>
+  <cffunction name="isActive" output="false">
+    <cfset var state = _stateMachine.getState()>
+    <cfreturn compare(state, _testState) eq 0>
   </cffunction>
 
 

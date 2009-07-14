@@ -4,16 +4,48 @@
 
   <before>
     <cfset $machine = $(createObject("component", "cfspec.lib.StateMachine").init("power"))>
-    <cfset $machine.startsAs("off")>
   </before>
 
-  <it should="start in it's initial state">
-    <cfset $machine.is("off").shouldBeTrue()>
+  <it should="start in a blank state">
+    <cfset $machine.getState().shouldEqual("")>
   </it>
 
-  <it should="not be in a different state">
-    <cfset $machine.is("on").shouldBeFalse()>
-  </it>
+  <describe hint="setState">
+
+    <it should="change the state">
+      <cfset $machine.setState("new")>
+      <cfset $machine.getState().shouldEqual("new")>
+    </it>
+
+  </describe>
+
+
+  <describe hint="startsAs">
+
+    <it should="change the state">
+      <cfset $machine.startsAs("first")>
+      <cfset $machine.getState().shouldEqual("first")>
+    </it>
+
+  </describe>
+
+  <describe hint="is">
+
+    <it should="return a StateMachineCondition">
+      <cfset $machine.is("on").shouldBeAnInstanceOf("cfspec.lib.StateMachineCondition")>
+    </it>
+
+    <it should="return a non-active condition">
+      <cfset $machine.is("on").shouldNotBeActive()>
+    </it>
+
+    <it should="return an active condition">
+      <cfset $condition = $machine.is("on")>
+      <cfset $machine.setState("on")>
+      <cfset $condition.shouldBeActive()>
+    </it>
+
+  </describe>
 
   <describe hint="becomes">
 
@@ -23,12 +55,12 @@
 
     <it should="not change the current state">
       <cfset $machine.becomes("on")>
-      <cfset $machine.is("on").shouldBeFalse()>
+      <cfset $machine.getState().shouldNotEqual("on")>
     </it>
 
     <it should="change to the transition state when the transition is run">
       <cfset $machine.becomes("on").run()>
-      <cfset $machine.is("on").shouldBeTrue()>
+      <cfset $machine.getState().shouldEqual("on")>
     </it>
 
   </describe>
