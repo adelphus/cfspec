@@ -33,6 +33,7 @@
   <cffunction name="startsAs" output="false">
     <cfargument name="state">
     <cfset setState(state)>
+    <cfreturn this>
   </cffunction>
 
 

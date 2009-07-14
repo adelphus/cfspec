@@ -108,6 +108,15 @@
   <cffunction name="when" output="false">
     <cfargument name="condition">
     <cfset _stateMachineCondition = condition>
+    <cfreturn this>
+  </cffunction>
+
+
+
+  <cffunction name="then" output="false">
+    <cfargument name="transition">
+    <cfset _stateMachineTransition = transition>
+    <cfreturn this>
   </cffunction>
 
 
@@ -196,45 +205,15 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   <cffunction name="incrementCallCount" output="false">
     <cfset var i = "">
     <cfset _callCount = _callCount + 1>
     <cfloop index="i" from="1" to="#arrayLen(_sequences)#">
       <cfset _sequences[i].called(this)>
     </cfloop>
+    <cfif isDefined("_stateMachineTransition")>
+      <cfset _stateMachineTransition.run()>
+    </cfif>
   </cffunction>
 
 

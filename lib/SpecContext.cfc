@@ -7,7 +7,7 @@
 
 
   <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher," &
-                            "sequence">
+                            "sequence,stateMachine">
 
 
 
@@ -177,7 +177,14 @@
 
   <cffunction name="sequence" output="false">
     <cfargument name="name" default="(sequence)">
-    <cfreturn "">
+    <cfreturn createObject("component", "cfspec.lib.Sequence").init(name)>
+  </cffunction>
+
+
+
+  <cffunction name="stateMachine" output="false">
+    <cfargument name="name" default="(state machine)">
+    <cfreturn createObject("component", "cfspec.lib.StateMachine").init(name)>
   </cffunction>
 
 
