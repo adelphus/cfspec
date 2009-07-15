@@ -180,7 +180,8 @@
     </before>
 
     <it should="match an object">
-      <cfset $mock.foo(this).shouldEqual("object")>
+      <cfset obj = createObject("component", "cfspec.spec.assets.Widget")>
+      <cfset $mock.foo(obj).shouldEqual("object")>
     </it>
 
     <it should="not match a simple value">
@@ -207,7 +208,8 @@
     </it>
 
     <it should="not match an instance of something else">
-      <cfset $mock.foo(this).shouldEqual("unknown")>
+      <cfset obj = createObject("component", "cfspec.spec.assets.Simon")>
+      <cfset $mock.foo(obj).shouldEqual("unknown")>
     </it>
 
   </describe>
@@ -279,7 +281,7 @@
     </it>
 
     <it should="not match a simpleValue">
-      <cfset $mock.foo(1, this).shouldEqual("doubleUnknown")>
+      <cfset $mock.foo(1, structNew()).shouldEqual("doubleUnknown")>
     </it>
 
   </describe>
