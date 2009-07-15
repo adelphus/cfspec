@@ -30,8 +30,13 @@
       <cfreturn structIsEmpty(args)>
     </cfif>
     <cfset argsLeft = duplicate(args)>
-    <cfset argKey = listFirst(listSort(structKeyList(argsLeft), "textnocase"))>
-    <cfset arg = argsLeft[argKey]>
+    <cfif structIsEmpty(argsLeft)>
+      <cfset argKey = "">
+      <cfset arg = "">
+    <cfelse>
+      <cfset argKey = listFirst(listSort(structKeyList(argsLeft), "textnocase"))>
+      <cfset arg = argsLeft[argKey]>
+    </cfif>
     <cfloop list="#listSort(structKeyList(_args), "textnocase")#" index="key">
       <cfif isArgMatch(_args[key], argsLeft, arg)>
         <cfset structDelete(argsLeft, argKey)>

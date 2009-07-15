@@ -7,7 +7,7 @@
 
 
   <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher," &
-                            "anything,anyOf," &
+                            "anyArguments,anything,anyOf," &
                             "sequence,stateMachine">
 
 
@@ -176,18 +176,20 @@
 
 
 
+  <cffunction name="anyArguments" output="false">
+    <cfreturn __cfspecArgMatcher("AnyArguments", arguments)>
+  </cffunction>
+
+
+
   <cffunction name="anything" output="false">
-    <cfset var matcher = createObject("component", "cfspec.lib.argumentMatchers.Anything").init()>
-    <cfset matcher.setArguments(arguments)>
-    <cfreturn matcher>
+    <cfreturn __cfspecArgMatcher("Anything", arguments)>
   </cffunction>
 
 
 
   <cffunction name="anyOf" output="false">
-    <cfset var matcher = createObject("component", "cfspec.lib.argumentMatchers.AnyOf").init()>
-    <cfset matcher.setArguments(arguments)>
-    <cfreturn matcher>
+    <cfreturn __cfspecArgMatcher("AnyOf", arguments)>
   </cffunction>
 
 
@@ -202,6 +204,20 @@
   <cffunction name="stateMachine" output="false">
     <cfargument name="name" default="(state machine)">
     <cfreturn createObject("component", "cfspec.lib.StateMachine").init(name)>
+  </cffunction>
+
+
+
+  <!--- PRIVATE --->
+
+
+
+  <cffunction name="__cfspecArgMatcher" access="private" output="false">
+    <cfargument name="type">
+    <cfargument name="args">
+    <cfset var matcher = createObject("component", "cfspec.lib.argumentMatchers.#type#").init()>
+    <cfset matcher.setArguments(args)>
+    <cfreturn matcher>
   </cffunction>
 
 
