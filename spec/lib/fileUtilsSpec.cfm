@@ -14,25 +14,34 @@
     </it>
 
     <it should="find a relative path based on coldfusion runtime mappings">
-      <cfset serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
-      <cfset mappings = serviceFactory.getRuntimeService().getMappings()>
-      <cfset key = "/cfspec-relativePath-test-mapping">
-      <cfset mappings[key] = "/cfspec-relativePath-test-path">
-      <cfset exception = "">
+      <cfswitch expression="#server.coldfusion.productName#">
+        <cfcase value="Railo">
+          <!--- Railo doesn't allow manipulation of mappings without a password,
+                so skip this test--->
+          <cfset $(true).shouldBeTrue()>
+        </cfcase>
+        <cfdefaultcase>
+          <cfset serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
+          <cfset mappings = serviceFactory.getRuntimeService().getMappings()>
+          <cfset key = "/cfspec-relativePath-test-mapping">
+          <cfset mappings[key] = "/cfspec-relativePath-test-path">
+          <cfset exception = "">
 
-      <cftry>
-        <cfset $fileUtils.relativePath("\\cfspec-relativePath-test-path\to\Component.cfc")
-                         .shouldEqual("/cfspec-relativePath-test-mapping/to/Component.cfc")>
-        <cfcatch type="any">
-          <cfset exception = cfcatch>
-        </cfcatch>
-      </cftry>
+          <cftry>
+            <cfset $fileUtils.relativePath("\\cfspec-relativePath-test-path\to\Component.cfc")
+                             .shouldEqual("/cfspec-relativePath-test-mapping/to/Component.cfc")>
+            <cfcatch type="any">
+              <cfset exception = cfcatch>
+            </cfcatch>
+          </cftry>
 
-      <cfset structDelete(mappings, key)>
+          <cfset structDelete(mappings, key)>
 
-      <cfif not isSimpleValue(exception)>
-        <cfthrow object="#exception#">
-      </cfif>
+          <cfif not isSimpleValue(exception)>
+            <cfthrow object="#exception#">
+          </cfif>
+        </cfdefaultcase>
+      </cfswitch>
     </it>
 
     <it should="throw an exception when the relative path cannot be determined">

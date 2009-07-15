@@ -74,8 +74,22 @@
 
 
   <cffunction name="getMappings" access="private" output="false">
-    <cfset var serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
-    <cfset var mappings = serviceFactory.getRuntimeService().getMappings()>
+    <cfset var serviceFactory = "">
+    <cfset var qMappings = "">
+    <cfset var mappings = "">
+    <cfswitch expression="#server.coldfusion.productName#">
+      <cfcase value="Railo">
+        <cfinclude template="_FileUtilsRailo.cfm">
+        <cfset mappings = structNew()>
+        <cfloop query="qMappings">
+          <cfset mappings[virtual] = physical>
+        </cfloop>
+      </cfcase>
+      <cfdefaultcase>
+        <cfset serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
+        <cfset mappings = serviceFactory.getRuntimeService().getMappings()>
+      </cfdefaultcase>
+    </cfswitch>
     <cfreturn mappings>
   </cffunction>
 
