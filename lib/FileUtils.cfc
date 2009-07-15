@@ -42,8 +42,7 @@
 
   <cffunction name="relativePathFromRuntimeMappings" access="private" output="false">
     <cfargument name="path">
-    <cfset var serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
-    <cfset var mappings = serviceFactory.getRuntimeService().getMappings()>
+    <cfset var mappings = getMappings()>
     <cfset var relativePath = "">
     <cfset var mapping = "">
     <cfset var root = "">
@@ -70,6 +69,14 @@
       <cfreturn mapping & right(path, len(path) - len(root))>
     </cfif>
     <cfreturn "">
+  </cffunction>
+
+
+
+  <cffunction name="getMappings" access="private" output="false">
+    <cfset var serviceFactory = createObject("java", "coldfusion.server.ServiceFactory")>
+    <cfset var mappings = serviceFactory.getRuntimeService().getMappings()>
+    <cfreturn mappings>
   </cffunction>
 
 

@@ -119,11 +119,11 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("abcde")>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected 3 items, got 5.")>
+    <cfset $matcher.getFailureMessage().shouldEqualNoCase("expected 3 items, got 5.")>
   </it>
 
   <it should="describe itself">
-    <cfset $matcher.getDescription().shouldEqual("have 3 items")>
+    <cfset $matcher.getDescription().shouldEqualNoCase("have 3 items")>
   </it>
 
   <describe hint="bad types">
@@ -260,11 +260,11 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("ab")>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected at least 3 items, got 2.")>
+    <cfset $matcher.getFailureMessage().shouldEqualNoCase("expected at least 3 items, got 2.")>
   </it>
 
   <it should="describe itself">
-    <cfset $matcher.getDescription().shouldEqual("have at least 3 items")>
+    <cfset $matcher.getDescription().shouldEqualNoCase("have at least 3 items")>
   </it>
 
 </describe>
@@ -388,11 +388,11 @@
 
   <it should="provide a useful failure message">
     <cfset $matcher.isMatch("abcde")>
-    <cfset $matcher.getFailureMessage().shouldEqual("expected at most 3 items, got 5.")>
+    <cfset $matcher.getFailureMessage().shouldEqualNoCase("expected at most 3 items, got 5.")>
   </it>
 
   <it should="describe itself">
-    <cfset $matcher.getDescription().shouldEqual("have at most 3 items")>
+    <cfset $matcher.getDescription().shouldEqualNoCase("have at most 3 items")>
   </it>
 
 </describe>

@@ -193,7 +193,7 @@
     </it>
 
     <it should="expect shouldEqualDate to return true">
-      <cfset $(createDate(1999, 12, 31)).shouldEqualDate("December 31, 1999")>
+      <cfset $(createDate(1999, 12, 31)).shouldEqualDate("1999-12-31")>
     </it>
 
     <it should="expect shouldEqualBoolean to return true">

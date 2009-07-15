@@ -367,7 +367,7 @@
     <it should="convert arguments to dates when Date is specified">
       <cfset $matcher = $(createObject("component", "cfspec.lib.matchers.Equal").init("Date", ""))>
       <cfset $matcher.setArguments("1/1/01")>
-      <cfset $matcher.isMatch("January 1, 2001").shouldBeTrue()>
+      <cfset $matcher.isMatch("2001-01-01").shouldBeTrue()>
     </it>
 
     <it should="convert arguments to booleans when Boolean is specified">

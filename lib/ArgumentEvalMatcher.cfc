@@ -22,7 +22,7 @@
   <cffunction name="isMatch" output="false">
     <cfargument name="args">
     <cfset arguments = structCopy(args)>
-    <cfreturn not not evaluate(_expression)>
+    <cfreturn not (not evaluate(_expression))>
   </cffunction>
 
 

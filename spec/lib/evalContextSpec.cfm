@@ -29,7 +29,7 @@
 
   <it should="not see a variable not passed as part of the binding">
     <cfset foo = "bar">
-    <cfset $context.__cfspecEval(bindings, "foo").shouldThrow("Expression", "foo is undefined")>
+    <cfset $context.__cfspecEval(bindings, "foo").shouldThrow("Expression", "foo")>
   </it>
 
   <it should="not see any variables except '__cfspecEval' & 'this'">

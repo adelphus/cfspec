@@ -57,7 +57,7 @@
 
     <it should="return the value from the underlying object's onMM handler">
       <cfset mocker.stubs("foo").returns("bar")>
-      <cfset $mockee.nonExistantMethod().shouldEqual("You called nonExistantMethod!")>
+      <cfset $mockee.nonExistantMethod().shouldEqualNoCase("You called nonExistantMethod!")>
     </it>
 
   </describe>
@@ -117,7 +117,7 @@
 
     <it should="return the value from the underlying object's onMM handler">
       <cfset mocker.stubs("foo").returns("bar")>
-      <cfset $mockee.nonExistantMethod().shouldEqual("You called nonExistantMethod!")>
+      <cfset $mockee.nonExistantMethod().shouldEqualNoCase("You called nonExistantMethod!")>
     </it>
 
   </describe>
