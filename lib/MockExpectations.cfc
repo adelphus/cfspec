@@ -171,10 +171,11 @@
 
 
   <cffunction name="isActive" output="false">
+    <cfargument name="args">
     <cfset var active = true>
     <cfset var i = "">
     <cfif isDefined("_argumentMatcher")>
-      <cfset active = _argumentMatcher.isMatch(arguments)>
+      <cfset active = _argumentMatcher.isMatch(args)>
     </cfif>
     <cfif active and isDefined("_stateMachineCondition")>
       <cfset active = _stateMachineCondition.isActive()>

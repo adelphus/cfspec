@@ -8,14 +8,22 @@
 
   <it should="create a new argument matcher using arguments supplied to 'with'">
     <cfset $expectations.with("foo", 42, true)>
-    <cfset $expectations.shouldBeActive("foo", 42, true)>
-    <cfset $expectations.shouldNotBeActive("foo", 43, true)>
+    <cfset args = structNew()>
+    <cfset args[1] = "foo"><cfset args[2] = 42><cfset args[3] = true>
+    <cfset $expectations.shouldBeActive(args)>
+    <cfset args = structNew()>
+    <cfset args[1] = "foo"><cfset args[2] = 43><cfset args[3] = true>
+    <cfset $expectations.shouldNotBeActive(args)>
   </it>
 
   <it should="create a new argument matcher using the expression supplied to 'withEval'">
-    <cfset $expectations.withEval("arrayLen(arguments) eq 3")>
-    <cfset $expectations.shouldBeActive("foo", "bar", "baz")>
-    <cfset $expectations.shouldNotBeActive("foo", "bar")>
+    <cfset $expectations.withEval("structCount(arguments) eq 3")>
+    <cfset args = structNew()>
+    <cfset args[1] = "foo"><cfset args[2] = "bar"><cfset args[3] = "baz">
+    <cfset $expectations.shouldBeActive(args)>
+    <cfset args = structNew()>
+    <cfset args[1] = "foo"><cfset args[2] = "bar">
+    <cfset $expectations.shouldNotBeActive(args)>
   </it>
 
   <it should="render the argument matcher as a string">

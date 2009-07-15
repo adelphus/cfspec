@@ -20,7 +20,7 @@
   </it>
 
   <it should="flatten to a unique string for the expression">
-    <cfset $matcher.asString().shouldEqual("EVAL:#chr(34)#arguments[1] eq 'foo'#chr(34)#")>
+    <cfset $matcher.asString().shouldEqual("eval(#chr(34)#arguments[1] eq 'foo'#chr(34)#)")>
   </it>
 
 </describe>

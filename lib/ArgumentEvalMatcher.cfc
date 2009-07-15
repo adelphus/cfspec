@@ -28,7 +28,7 @@
 
 
   <cffunction name="asString" output="false">
-    <cfreturn "EVAL:#serializeJson(_expression)#">
+    <cfreturn "eval(#serializeJson(_expression)#)">
   </cffunction>
 
 

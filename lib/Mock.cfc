@@ -62,7 +62,7 @@
     <cfif structKeyExists(_stubbedMethods, missingMethodName)>
       <cfset expectations = _stubbedMethods[missingMethodName]>
       <cfloop index="i" from="1" to="#arrayLen(expectations)#">
-        <cfif expectations[i].isActive(argumentCollection=missingMethodArguments)>
+        <cfif expectations[i].isActive(missingMethodArguments)>
           <cfset arrayAppend(updates, expectations[i])>
           <cfif isDone>
             <cfif result.isEqualTo(expectations[i], false) and expectations[i].isInSequence()>
