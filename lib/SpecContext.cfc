@@ -7,7 +7,9 @@
 
 
   <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher," &
-                            "anyArguments,anything,anyOf," &
+                            "anyArguments,anything,anyOf,allOf,except,optionally,anyInstanceOf," &
+                            "anySimpleValue,anyBoolean,anyNumeric,anyDate,anyString," &
+                            "anyObject,anyStruct,anyArray,anyQuery,anyBinary,anyGUID,anyUUID," &
                             "sequence,stateMachine">
 
 
@@ -190,6 +192,90 @@
 
   <cffunction name="anyOf" output="false">
     <cfreturn __cfspecArgMatcher("AnyOf", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="allOf" output="false">
+    <cfreturn __cfspecArgMatcher("AllOf", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyInstanceOf" output="false">
+    <cfreturn __cfspecArgMatcher("AnyInstanceOf", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anySimpleValue" output="false">
+    <cfreturn __cfspecArgMatcher("AnySimpleValue", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyBoolean" output="false">
+    <cfreturn __cfspecArgMatcher("AnyBoolean", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyNumeric" output="false">
+    <cfreturn __cfspecArgMatcher("AnyNumeric", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyDate" output="false">
+    <cfreturn __cfspecArgMatcher("AnyDate", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyString" output="false">
+    <cfreturn __cfspecArgMatcher("AnySimpleValue", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyObject" output="false">
+    <cfreturn __cfspecArgMatcher("AnyObject", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyStruct" output="false">
+    <cfreturn __cfspecArgMatcher("AnyStruct", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyArray" output="false">
+    <cfreturn __cfspecArgMatcher("AnyArray", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyQuery" output="false">
+    <cfreturn __cfspecArgMatcher("AnyQuery", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyBinary" output="false">
+    <cfreturn __cfspecArgMatcher("AnyBinary", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyGUID" output="false">
+    <cfreturn __cfspecArgMatcher("AnyGUID", arguments)>
+  </cffunction>
+
+
+
+  <cffunction name="anyUUID" output="false">
+    <cfreturn __cfspecArgMatcher("AnyUUID", arguments)>
   </cffunction>
 
 
