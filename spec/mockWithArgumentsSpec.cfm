@@ -44,6 +44,34 @@
     <cfset $mock.foo(0, 0, 0).shouldEqual("odd")>
   </it>
 
+  <describe hint="anything">
+
+    <it should="return different values for different arguments">
+      <cfset $mock.stubs("foo").with(anything()).returns("one")>
+      <cfset $mock.stubs("foo").with(anything(), anything()).returns("two")>
+      <cfset $mock.foo(1, 2).shouldEqual("two")>
+      <cfset $mock.foo(1).shouldEqual("one")>
+    </it>
+
+    <it should="throw an exception if too many arguments">
+      <cfset $mock.stubs("foo").with(anything()).returns("one")>
+      <cfset $mock.foo(2, true).shouldThrow()>
+    </it>
+
+    <it should="throw an exception if too few arguments">
+      <cfset $mock.stubs("foo").with(anything()).returns("one")>
+      <cfset $mock.foo().shouldThrow()>
+    </it>
+
+    <it should="meet multiple expectations when called with more specific arguments">
+      <cfset $mock.expects("foo").returns("bar")>
+      <cfset $mock.expects("foo").with(anything()).returns("baz")>
+      <cfset $mock.foo(2).shouldEqual("baz")>
+      <cfset $mock.__cfspecGetFailureMessages().shouldBeEmpty()>
+    </it>
+
+  </describe>
+
   <describe hint="anyOf">
 
     <it should="return different values for different arguments">

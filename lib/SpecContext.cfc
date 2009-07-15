@@ -7,7 +7,7 @@
 
 
   <cfset __cfspecKeywords = "this,$,$eval,stub,mock,fail,pend,registerMatcher,simpleMatcher," &
-                            "anyOf," &
+                            "anything,anyOf," &
                             "sequence,stateMachine">
 
 
@@ -172,6 +172,14 @@
     <cfargument name="pattern">
     <cfargument name="expression">
     <cfreturn __cfspecMatchers.simpleMatcher(pattern, expression)>
+  </cffunction>
+
+
+
+  <cffunction name="anything" output="false">
+    <cfset var matcher = createObject("component", "cfspec.lib.argumentMatchers.Anything").init()>
+    <cfset matcher.setArguments(arguments)>
+    <cfreturn matcher>
   </cffunction>
 
 
