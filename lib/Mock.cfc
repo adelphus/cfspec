@@ -14,6 +14,8 @@
     <cfargument name="__cfspecMockName" default="(unknown)">
     <cfargument name="__cfspecMockType" default="stub">
     <cfset var method = "">
+    <cfset var system = createObject("java", "java.lang.System")>
+    <cfset this.__cfspecIdentityHashCode = system.identityHashCode(this)>
     <cfset _name = __cfspecMockName>
     <cfloop collection="#arguments#" item="method">
       <cfif len(method) lt 8 or left(method, 8) neq "__cfspec">
@@ -147,6 +149,16 @@
 
   <cffunction name="__cfspecGetName" output="false">
     <cfreturn _name>
+  </cffunction>
+
+
+
+  <cffunction name="isEqualTo" output="false">
+    <cfargument name="other">
+    <cfif not structKeyExists(other, "__cfspecIdentityHashCode")>
+      <cfreturn false>
+    </cfif>
+    <cfreturn this.__cfspecIdentityHashCode eq other.__cfspecIdentityHashCode>
   </cffunction>
 
 

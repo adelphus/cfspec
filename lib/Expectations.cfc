@@ -30,6 +30,52 @@
 
 
 
+  <cffunction name="expects">
+    <cfargument name="method">
+    <cfif not isDefined("_target.__cfspecPartialMock")>
+      <cfset createObject("component", "cfspec.lib.PartialMock").init(_target)>
+    </cfif>
+    <cfreturn _target.__cfspecPartialMock.expects(method)>
+  </cffunction>
+
+
+
+  <cffunction name="injectVariable">
+    <cfargument name="name">
+    <cfargument name="value">
+    <cfset _target.__cfspecInjectVariable = __cfspecInjectVariable>
+    <cfset _target.__cfspecInjectVariable(name, value)>
+  </cffunction>
+
+
+
+  <cffunction name="extractVariable">
+    <cfargument name="name">
+    <cfset _target.__cfspecExtractVariable = __cfspecExtractVariable>
+    <cfreturn _target.__cfspecExtractVariable(name)>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecInjectVariable">
+    <cfargument name="name">
+    <cfargument name="value">
+    <cfset variables[name] = value>
+  </cffunction>
+
+
+
+  <cffunction name="__cfspecExtractVariable">
+    <cfargument name="name">
+    <cfif structKeyExists(variables, name)>
+      <cfreturn variables[name]>
+    <cfelse>
+      <cfreturn "">
+    </cfif>
+  </cffunction>
+
+
+
   <cffunction name="__cfspecEvalMatcher">
     <cfargument name="matcher">
     <cfset var result = "">

@@ -195,6 +195,10 @@
   <cffunction name="isEqualObject">
     <cfargument name="a">
     <cfargument name="b">
+    <cfset var system = createObject("java", "java.lang.System")>
+    <cfif system.identityHashCode(a) eq system.identityHashCode(b)>
+      <cfreturn true>
+    </cfif>
     <cfreturn a.isEqualTo(b)>
   </cffunction>
 

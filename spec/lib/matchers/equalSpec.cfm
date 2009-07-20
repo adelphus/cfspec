@@ -199,11 +199,13 @@
       </it>
 
       <it should="provide a useful failure message if target.isEqualTo() returns a non-boolean">
-        <cfset $matcher.isMatch(stub(isEqualTo="foo")).shouldThrow("cfspec.fail", "EqualObject expected target.isEqualTo(expected) to return a boolean, got")>
+        <cfset obj = stub()><cfset $(obj).stubs("isEqualTo").returns("foo")>
+        <cfset $matcher.isMatch(obj).shouldThrow("cfspec.fail", "EqualObject expected target.isEqualTo(expected) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if target.isEqualTo() is not implemented">
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "EqualObject expected target.isEqualTo(expected) to return a boolean, but the method was not found.")>
+        <cfset obj = createObject("component", "cfspec.spec.assets.Widget")>
+        <cfset $matcher.isMatch(obj).shouldThrow("cfspec.fail", "EqualObject expected target.isEqualTo(expected) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>
@@ -501,13 +503,15 @@
       <it should="provide a useful failure message if target.isEqualTo() returns a non-boolean">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
         <cfset $matcher.setArguments(obj)>
-        <cfset $matcher.isMatch(stub(isEqualTo="foo")).shouldThrow("cfspec.fail", "Equal expected target.isEqualTo(expected) to return a boolean, got")>
+        <cfset obj = stub()><cfset $(obj).stubs("isEqualTo").returns("foo")>
+        <cfset $matcher.isMatch(obj).shouldThrow("cfspec.fail", "Equal expected target.isEqualTo(expected) to return a boolean, got")>
       </it>
 
       <it should="provide a useful failure message if target.isEqualTo() is not implemented">
         <cfset obj = createObject("component", "cfspec.spec.assets.SupportsEquals").init("John Doe")>
         <cfset $matcher.setArguments(obj)>
-        <cfset $matcher.isMatch(stub()).shouldThrow("cfspec.fail", "Equal expected target.isEqualTo(expected) to return a boolean, but the method was not found.")>
+        <cfset obj = createObject("component", "cfspec.spec.assets.Widget")>
+        <cfset $matcher.isMatch(obj).shouldThrow("cfspec.fail", "Equal expected target.isEqualTo(expected) to return a boolean, but the method was not found.")>
       </it>
 
     </describe>

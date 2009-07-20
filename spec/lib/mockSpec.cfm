@@ -115,7 +115,8 @@
 <describe hint="Mock (basic mocking)">
 
   <before>
-    <cfset $mock = $(createObject("component", "cfspec.lib.Mock").__cfspecInit("myMock"))>
+    <cfset mock = createObject("component", "cfspec.lib.Mock").__cfspecInit("myMock")>
+    <cfset $mock = $(mock)>
   </before>
 
   <it should="return the supplied value for a given method">
@@ -429,13 +430,13 @@
   <describe hint="failure messages">
 
     <it should="report a failure with meaningful details about the method involved">
-      <cfset $mock.expects("foo")>
+      <cfset mock.expects("foo")>
       <cfset $mock.__cfspecGetFailureMessages().shouldContain('myMock: expected "foo" to be invoked once, but it was never invoked.')>
     </it>
 
     <it should="report a failure with meaningful details about the expected & actual number of times invoked">
-      <cfset $mock.expects("foo").times(3, 5).returns("bar")>
-      <cfset $mock.foo()>
+      <cfset mock.expects("foo").times(3, 5).returns("bar")>
+      <cfset mock.foo()>
       <cfset $mock.__cfspecGetFailureMessages().shouldContain('myMock: expected "foo" to be invoked 3 to 5 times, but it was invoked once.')>
     </it>
 

@@ -85,6 +85,16 @@
       <cfset $mockee.getName().shouldEqual("bar")>
     </it>
 
+    <!---it should="return the supplied value by overriding an underlying proxied method">
+      <cfset mocker.stubs("getSpecial").returns("bar")>
+      <cfset $mockee.proxyGetSpecial().shouldEqual("bar")>
+    </it>
+
+    <it should="return the supplied value by overriding an underlying proxied method of a super-class">
+      <cfset mocker.stubs("getName").returns("bar")>
+      <cfset $mockee.proxyGetName().shouldEqual("bar")>
+    </it--->
+
     <it should="throw a method not found exception">
       <cfset mocker.stubs("foo").returns("bar")>
       <cfset $mockee.nonExistantMethod().shouldThrow("Application", "The method nonExistantMethod was not found")>
@@ -142,7 +152,7 @@
       <cfset mocker.expects("foo")>
       <cfset $(mocker.__cfspecGetFailureMessages()).shouldNotBeEmpty()>
       <!--- next line prevents the framework from reporting the mock's failed expectations --->
-      <cfset $(mocker).stubs("__cfspecGetFailureMessages")>
+      <cfset $(mocker).stubs("__cfspecGetFailureMessages").returns(arrayNew(1))>
     </it>
 
     <it should="not report a failure if the method is called exactly once">
@@ -157,7 +167,7 @@
       <cfset $mockee.foo()>
       <cfset $(mocker.__cfspecGetFailureMessages()).shouldNotBeEmpty()>
       <!--- next line prevents the framework from reporting the mock's failed expectations --->
-      <cfset $(mocker).stubs("__cfspecGetFailureMessages")>
+      <cfset $(mocker).stubs("__cfspecGetFailureMessages").returns(arrayNew(1))>
     </it>
 
   </describe>
