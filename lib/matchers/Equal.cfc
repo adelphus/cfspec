@@ -258,8 +258,8 @@
       <cfreturn false>
     </cfif>
     <cfset keys = listToArray(keys)>
-    <cfloop index="i" from="1" to="#a.recordCount#">
-      <cfloop index="j" from="1" to="#arrayLen(keys)#">
+    <cfloop index="j" from="1" to="#a.recordCount#">
+      <cfloop index="i" from="1" to="#arrayLen(keys)#">
         <cfif not isEqual(a[keys[i]][j], b[keys[i]][j])>
           <cfreturn false>
         </cfif>
