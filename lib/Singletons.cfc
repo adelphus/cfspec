@@ -70,4 +70,23 @@
 
 
 
+  <cffunction name="getSelenium" output="false">
+    <cfargument name="serverHost" default="localhost">
+    <cfargument name="serverPort" default="4444">
+    <cfargument name="browserStartCommand" default="*mock">
+    <cfargument name="browserURL" default="http://localhost/">
+    <cfset var key = hash("#serverHost#:#serverPort# #browserStartCommand# #browserURL#")>
+    <cfset var loader = "">
+    <cfif not isDefined("_selenium")>
+      <cfset _selenium = structNew()>
+    </cfif>
+    <cfif not structKeyExists(_selenium, key)>
+      <cfset loader = getJavaLoader()>
+      <cfset _selenium[key] = loader.create("com.thoughtworks.selenium.DefaultSelenium").init(serverHost, serverPort, browserStartCommand, browserURL)>
+    </cfif>
+    <cfreturn _selenium[key]>
+  </cffunction>
+
+
+
 </cfcomponent>

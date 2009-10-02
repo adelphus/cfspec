@@ -1,4 +1,5 @@
 [
   "/cfspec/external/jars/tagsoup-1.2.jar",
-  "/cfspec/external/jars/xom-1.1.jar"
+  "/cfspec/external/jars/xom-1.1.jar",
+  "/cfspec/external/jars/selenium-java-client-driver.jar"
 ]
