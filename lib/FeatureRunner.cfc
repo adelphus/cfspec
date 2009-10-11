@@ -65,145 +65,181 @@
 
   <cffunction name="runFeature" output="false">
     <cfargument name="specPath">
-    <cfset var story = "">
-    <cfset var line = "">
-    <cfset var matchData = "">
-    <cfset var result = "">
-    <cfset var title = "">
-    <cfset var background = arrayNew(1)>
+    <cfset var story = structNew()>
     <cfset var i = "">
-    <cffile action="read" file="#specPath#" variable="story">
-    <cfset story = listToArray(story, chr(10))>
+    <cffile action="read" file="#specPath#" variable="story.fullText">
+    <cfset story.lines = listToArray(replace(story.fullText, chr(10), " #chr(10)#", "all"), chr(10))>
+    <cfset story.lineNumber = 1>
+    <cfset story.lineCount = arrayLen(story.lines)>
 
-    <!--- extract the story title --->
-    <cfloop condition="arrayLen(story) and not reFindNoCase('^\s*Feature:', story[1])">
-      <cfset arrayDeleteAt(story, 1)>
+    <cfset parseOptionalBlankLines(story)>
+    <cfif story.lineNumber gt story.lineCount><cfreturn></cfif>
+    <cfset parseFeatureIntroduction(story)>
+    <cfif story.lineNumber gt story.lineCount><cfreturn></cfif>
+    <cfset parseOptionalBackground(story)>
+    <cfif story.lineNumber gt story.lineCount><cfreturn></cfif>
+
+    <cfloop condition="story.lineNumber le story.lineCount">
+      <cfset parseScenario(story)>
     </cfloop>
-    <cfif not arrayLen(story)><cfthrow message="Feature missing title (#specPath#)"></cfif>
-    <cfset title = trim(reReplaceNoCase(story[1], "^\s*Feature:(.*)$", "\1"))>
-    <cfset arrayDeleteAt(story, 1)>
-    <cfset _report.enterBlock(title)>
 
-    <!--- extract the background --->
-    <cfloop condition="arrayLen(story) and not reFindNoCase('^\s*(Background|Scenario):', story[1])">
-      <cfset arrayDeleteAt(story, 1)>
-    </cfloop>
-    <cfif arrayLen(story) and reFind("^\s*Background:", story[1])>
-      <cfset arrayDeleteAt(story, 1)>
-      <cfloop condition="arrayLen(story) and not reFindNoCase('^\s*Scenario:', story[1])">
-        <cfif reFindNoCase("^\s*(Given|When|Then|And)", story[1])>
-          <cfset arrayAppend(background, story[1])>
-        </cfif>
-        <cfset arrayDeleteAt(story, 1)>
-      </cfloop>
-    </cfif>
-
-    <cfloop condition="arrayLen(story)">
-
-      <!--- extract scenario --->
-      <cfloop condition="arrayLen(story) and not reFindNoCase('^\s*Scenario:', story[1])">
-        <cfset arrayDeleteAt(story, 1)>
-      </cfloop>
-      <cfif not arrayLen(story)><cfbreak></cfif>
-      <cfset title = trim(reReplaceNoCase(story[1], "^\s*Scenario:(.*)$", "\1"))>
-      <cfset arrayDeleteAt(story, 1)>
-      <cfset _report.enterBlock(title)>
-
-      <cfset resetContext()>
-      <!--- run background steps --->
-      <cfif not arrayIsEmpty(background)>
-        <cfloop index="i" from="1" to="#arrayLen(background)#">
-          <cfset title = trim(reReplaceNoCase(background[i], "^\s*((?:Given|When|Then|And)\s+.*)$", "\1"))>
-          <cfset result = runStep(trim(reReplaceNoCase(title, "^(Given|When|Then|And)", "")))>
-          <cfset title = "Background: " & title>
-          <cfif isObject(result)>
-            <cfif find("cfspec", result.type)>
-              <cfset _report.addExample(listLast(result.type, "."), title & result.message)>
-            <cfelse>
-              <cfset _report.addExample("fail", title, result)>
-            </cfif>
-          <cfelse>
-            <cfset _report.addExample(result, title)>
-          </cfif>
-        </cfloop>
-      </cfif>
-      <!--- run scenario steps --->
-      <cfloop condition="arrayLen(story) and not reFindNoCase('^\s*Scenario:', story[1])">
-        <cfloop condition="arrayLen(story) and not reFindNoCase('^\s*(Scenario:|Given|When|Then|And)', story[1])">
-          <cfset arrayDeleteAt(story, 1)>
-        </cfloop>
-        <cfif arrayLen(story) and not reFindNoCase("^\s*Scenario:", story[1])>
-          <cfset title = trim(reReplaceNoCase(story[1], "^\s*((?:Given|When|Then|And)\s+.*)$", "\1"))>
-          <cfset arrayDeleteAt(story, 1)>
-          <cfset result = runStep(trim(reReplaceNoCase(title, "^(Given|When|Then|And)", "")))>
-          <cfif isObject(result)>
-            <cfif find("cfspec", result.type)>
-              <cfset _report.addExample(listLast(result.type, "."), title & result.message)>
-            <cfelse>
-              <cfset _report.addExample("fail", title, result)>
-            </cfif>
-          <cfelse>
-            <cfset _report.addExample(result, title)>
-          </cfif>
-        </cfif>
-      </cfloop>
-      <cftry>
-        <cfset ensureAllMockExpectationsArePassing()>
-        <cfcatch type="cfspec.fail">
-          <cfset _specStats.incrementExampleCount()>
-          <cfset _report.addExample("fail", reReplace(cfcatch.message, "^: ", ""))>
-        </cfcatch>
-      </cftry>
-
-      <cfset _report.exitBlock()>
+    <cfset _report.enterBlock(story.title)>
+    <cfloop index="i" from="1" to="#arrayLen(story.scenarios)#">
+      <cfset runScenario(story.scenarios[i])>
     </cfloop>
     <cfset _report.exitBlock()>
   </cffunction>
 
+  <cffunction name="runScenario" access="private" output="false">
+    <cfargument name="scenario">
+    <cfset _report.enterBlock(scenario.title)>
+    <cfset resetContext()>
+    <cfset runSteps(scenario.story.background, "Background")>
+    <cfset runSteps(scenario.steps)>
+    <cftry>
+      <cfset ensureAllMockExpectationsArePassing()>
+      <cfcatch type="cfspec.fail">
+        <cfset _specStats.incrementExampleCount()>
+        <cfset _report.addExample("fail", reReplace(cfcatch.message, "^: ", ""))>
+      </cfcatch>
+    </cftry>
+    <cfset _report.exitBlock()>
+  </cffunction>
 
+  <cffunction name="runSteps" access="private" output="false">
+    <cfargument name="steps">
+    <cfargument name="context" default="">
+    <cfset var title = "">
+    <cfset var step = "">
+    <cfset var stepDefinition = "">
+    <cfloop condition="not arrayIsEmpty(steps)">
+      <cfset title = trim(reReplaceNoCase(steps[1], "^\s*((?:Given|When|Then|And|But)\s+.*)$", "\1"))>
+      <cfset step = trim(reReplaceNoCase(title, "^(Given|When|Then|And|But)", ""))>
+      <cfif step eq "">
+        <cfthrow message="Expected a feature step, but got '#steps[1]#'">
+      </cfif>
+      <cfset stepDefinition = findStepDefinition(step)>
+      <cfif not isStruct(stepDefinition)>
+        <cfthrow message="Expected a feature step, but got '#steps[1]#'">
+      </cfif>
+      <cfset arrayDeleteAt(steps, 1)>
+      <cfif context neq "">
+        <cfset title = "(#context#) #title#">
+      </cfif>
+      <cfset stepDefinition.title = title>
+      <cfif structKeyExists(stepDefinition, "multilineBinding")>
+        <!---TODO: handle multi-line steps --->
+      </cfif>
+      <cfset runStep(stepDefinition)>
+    </cfloop>
+  </cffunction>
 
-  <cffunction name="runStep" output="false">
+  <cffunction name="runStep" access="private" output="false">
     <cfargument name="step">
-    <cfset var regexp = "">
+    <cfset _specStats.incrementExampleCount()>
+    <cfset resetCurrent()>
+    <cfset _target = step.target>
+    <cftry>
+      <cfset _context.__cfspecSetBindings(step.bindings)>
+      <cfset flagDelayedMatcher(false)>
+      <cfset _context.__cfspecRun(this, step.file)>
+      <cfset ensureNoDelayedMatchersArePending()>
+      <cfcatch type="cfspec">
+        <cfset _report.addExample(listLast(cfcatch.type, "."), step.title & cfcatch.message)>
+        <cfif cfcatch.type eq "cfspec.pend">
+          <cfset _specStats.incrementPendCount()>
+        </cfif>
+        <cfreturn>
+      </cfcatch>
+      <cfcatch type="any">
+        <cfset _report.addExample("fail", step.title, cfcatch)>
+        <cfreturn>
+      </cfcatch>
+    </cftry>
+    <cfset _report.addExample("pass", step.title)>
+    <cfset _specStats.incrementPassCount()>
+  </cffunction>
+
+  <cffunction name="findStepDefinition" access="private" output="false">
+    <cfargument name="step">
+    <cfset var pattern = "">
     <cfset var matchData = "">
     <cfset var stepTarget = "">
-    <cfset var bindings = structNew()>
     <cfset var key = "">
     <cfset var i = "">
-    <cfset _specStats.incrementExampleCount()>
-    <cfloop collection="#_steps#" item="regexp">
-      <cfset matchData = reFindNoCase("^\s*#regexp#\s*$", step, 1, true)>
+    <cfloop collection="#_steps#" item="pattern">
+      <cfset matchData = reFindNoCase("^#pattern#$", step, 1, true)>
       <cfif matchData.pos[1]>
-        <cfset stepTarget = _steps[regexp]>
-        <cfset resetCurrent()>
-        <cfset _target = stepTarget.target>
-
+        <cfset stepTarget = structCopy(_steps[pattern])>
+        <cfset stepTarget.bindings = structNew()>
         <cfset i = 2>
         <cfloop list="#stepTarget.keys#" index="key">
-          <cfset bindings[key] = "">
-          <cfif matchData.len[i]>
-            <cfset bindings[key] = mid(step, matchData.pos[i], matchData.len[i])>
+          <cfset stepTarget.bindings[key] = "">
+          <cfif i gt arrayLen(matchData.len)>
+            <cfset stepTarget.multilineBinding = key>
+          <cfelseif matchData.len[i]>
+            <cfset stepTarget.bindings[key] = mid(step, matchData.pos[i], matchData.len[i])>
           </cfif>
           <cfset i = i + 1>
         </cfloop>
-
-        <cftry>
-          <cfset _context.__cfspecSetBindings(bindings)>
-          <cfset flagDelayedMatcher(false)>
-          <cfset _context.__cfspecRun(this, stepTarget.file)>
-
-          <cfset ensureNoDelayedMatchersArePending()>
-
-          <cfcatch type="any">
-            <cfreturn cfcatch>
-          </cfcatch>
-        </cftry>
-        <cfset _specStats.incrementPassCount()>
-        <cfreturn "pass">
+        <cfreturn stepTarget>
       </cfif>
     </cfloop>
-    <cfset _specStats.incrementPendCount()>
-    <cfreturn "pend">
+    <cfreturn false>
+  </cffunction>
+
+  <cffunction name="parseOptionalBlankLines" access="private" output="false">
+    <cfargument name="story">
+    <cfloop condition="story.lineNumber le story.lineCount and reFind('^\s*$', story.lines[story.lineNumber])">
+      <cfset story.lineNumber = story.lineNumber + 1>
+    </cfloop>
+  </cffunction>
+
+  <cffunction name="parseFeatureIntroduction" access="private" output="false">
+    <cfargument name="story">
+    <cfset var line = story.lines[story.lineNumber]>
+    <cfset story.title = trim(reReplaceNoCase(line, "^\s*Feature:(.+)$", "\1"))>
+    <cfif story.title eq "">
+      <cfthrow message="Expected 'Feature: TITLE', but got '#line#'">
+    </cfif>
+    <cfset story.lineNumber = story.lineNumber + 1>
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+      <cfset story.lineNumber = story.lineNumber + 1>
+    </cfloop>
+    <cfset parseOptionalBlankLines(story)>
+    <cfset story.background = arrayNew(1)>
+    <cfset story.scenarios = arrayNew(1)>
+  </cffunction>
+
+  <cffunction name="parseOptionalBackground" access="private" output="false">
+    <cfargument name="story">
+    <cfset var line = story.lines[story.lineNumber]>
+    <cfif not reFindNoCase("^\s*Background:\s*$", line)><cfreturn></cfif>
+    <cfset story.lineNumber = story.lineNumber + 1>
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+      <cfset arrayAppend(story.background, story.lines[story.lineNumber])>
+      <cfset story.lineNumber = story.lineNumber + 1>
+    </cfloop>
+    <cfset parseOptionalBlankLines(story)>
+  </cffunction>
+
+  <cffunction name="parseScenario" access="private" output="false">
+    <cfargument name="story">
+    <cfset var scenario = structNew()>
+    <cfset var line = story.lines[story.lineNumber]>
+    <cfset scenario.story = story>
+    <cfset scenario.title = trim(reReplaceNoCase(line, "^\s*Scenario:(.+)$", "\1"))>
+    <cfif scenario.title eq "">
+      <cfthrow message="Expected 'Scenario: TITLE', but got '#line#'">
+    </cfif>
+    <cfset story.lineNumber = story.lineNumber + 1>
+    <cfset scenario.steps = arrayNew(1)>
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+      <cfset arrayAppend(scenario.steps, story.lines[story.lineNumber])>
+      <cfset story.lineNumber = story.lineNumber + 1>
+    </cfloop>
+    <cfset arrayAppend(story.scenarios, scenario)>
+    <cfset parseOptionalBlankLines(story)>
   </cffunction>
 
 
