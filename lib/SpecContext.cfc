@@ -10,7 +10,7 @@
                             "anyArguments,anything,anyOf,allOf,except,optionally,anyInstanceOf," &
                             "anySimpleValue,anyBoolean,anyNumeric,anyDate,anyString," &
                             "anyObject,anyStruct,anyArray,anyQuery,anyBinary,anyGUID,anyUUID," &
-                            "sequence,stateMachine">
+                            "sequence,stateMachine,selenium">
 
 
 
@@ -290,6 +290,13 @@
   <cffunction name="stateMachine" output="false">
     <cfargument name="name" default="(state machine)">
     <cfreturn createObject("component", "cfspec.lib.StateMachine").init(name)>
+  </cffunction>
+
+
+
+  <cffunction name="selenium" output="false">
+    <cfargument name="browser" default="*firefox">
+    <cfreturn request.singletons.getSelenium(browserStartCommand=browser)>
   </cffunction>
 
 

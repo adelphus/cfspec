@@ -59,6 +59,7 @@
         <cfset runFeature("#specPath#/#name#")>
       </cfif>
     </cfloop>
+    <cfset request.singletons.stopSelenium()>
   </cffunction>
 
 

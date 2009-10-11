@@ -83,8 +83,24 @@
     <cfif not structKeyExists(_selenium, key)>
       <cfset loader = getJavaLoader()>
       <cfset _selenium[key] = loader.create("com.thoughtworks.selenium.DefaultSelenium").init(serverHost, serverPort, browserStartCommand, browserURL)>
+      <cfset _selenium[key].start()>
     </cfif>
     <cfreturn _selenium[key]>
+  </cffunction>
+
+
+
+  <cffunction name="stopSelenium" output="false">
+    <cfset var key = "">
+    <cfif isDefined("_selenium")>
+      <cfloop collection="#_selenium#" item="key">
+        <cftry>
+          <cfset _selenium[key].stop()>
+          <cfcatch></cfcatch>
+        </cftry>
+      </cfloop>
+      <cfset structClear(_selenium)>
+    </cfif>
   </cffunction>
 
 
