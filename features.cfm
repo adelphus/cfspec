@@ -6,6 +6,7 @@
 <cfset specStats = createObject("component", "cfspec.lib.SpecStats").init()>
 <cfset featureRunner.setReport(htmlReport)>
 <cfset featureRunner.setSpecStats(specStats)>
+<cfset featureRunner.loadStepDefinitions(getDirectoryFromPath(getBaseTemplatePath()) & "stepDefinitions")>
 <cfset featureRunner.runFeatureSuite(getDirectoryFromPath(getBaseTemplatePath()))>
 <cfset writeOutput(htmlReport.getOutput())>
 <cfabort>
