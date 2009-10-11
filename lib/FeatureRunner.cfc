@@ -114,6 +114,9 @@
     <cfset var stepDefinition = "">
     <cfset var value = "">
     <cfset var indent = "">
+    <cfset var fields = "">
+    <cfset var field = "">
+    <cfset var row = "">
     <cfloop condition="not arrayIsEmpty(steps)">
       <cfset title = trim(reReplaceNoCase(steps[1], "^\s*((?:Given|When|Then|And|But)\s+.*)$", "\1"))>
       <cfset step = trim(reReplaceNoCase(title, "^(Given|When|Then|And|But)", ""))>
@@ -130,6 +133,7 @@
       </cfif>
       <cfif structKeyExists(stepDefinition, "multilineBinding")>
         <cfif reFind('^\s*"""\s*$', steps[1])>
+          <!--- multi-line string --->
           <cfset indent = reReplace(steps[1], "^(\s*).*$", "\1")>
           <cfset arrayDeleteAt(steps, 1)>
           <cfloop condition="not arrayIsEmpty(steps)">
@@ -142,6 +146,31 @@
           <cfset value = reReplace(value, " (\n|$)", "\1", "all")>
           <cfset title = listAppend(title, '"""#chr(10)##value##chr(10)#"""', chr(10))>
           <cfset title = replace(title, chr(10), "<br />", "all")>
+        <cfelseif reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])>
+        <!--- multi-line table --->
+          <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
+          <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
+          <cfset fields = listChangeDelims(row, ",", "|")>
+          <cfset value = queryNew(fields)>
+          <cfset arrayDeleteAt(steps, 1)>
+          <cfset title = title & "<br /><table class='step-table'><tr><th>#replace(fields, ',', '</th><th>', 'all')#</th></tr>">
+          <cfloop condition="not arrayIsEmpty(steps)">
+            <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])><cfbreak></cfif>
+            <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
+            <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
+            <cfif listLen(row, "|") neq listLen(fields)>
+              <cfthrow message="Expected a table row with #listLen(fields)# column(s), but got '#steps[1]#'">
+            </cfif>
+            <cfset queryAddRow(value)>
+            <cfset indent = 1>
+            <cfloop list="#fields#" index="field">
+              <cfset querySetCell(value, field, listGetAt(row, indent, "|"))>
+              <cfset indent = indent + 1>
+            </cfloop>
+            <cfset title = title & "<tr><td>#replace(row, '|', '</td><td>', 'all')#</td></tr>">
+            <cfset arrayDeleteAt(steps, 1)>
+          </cfloop>
+          <cfset title = title & "</table>">
         <cfelse>
           <cfthrow message="Expected a multi-line feature step, but got '#steps[1]#'">
         </cfif>

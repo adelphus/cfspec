@@ -74,6 +74,16 @@ h2 {
 pre {
   font: 9pt/4pt monospace;
 }
+.step-table, .step-table th, .step-table td {
+  border: 1px solid;
+  border-collapse: collapse;
+  padding: 4px 12px;
+  font: 9pt monospace;
+  color: inherit;
+}
+.step-table th {
+  font: bold 9pt monospace;
+}
 
 a#togglePassingExamples {
   display: block;
