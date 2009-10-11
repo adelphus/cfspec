@@ -112,6 +112,8 @@
     <cfset var title = "">
     <cfset var step = "">
     <cfset var stepDefinition = "">
+    <cfset var value = "">
+    <cfset var indent = "">
     <cfloop condition="not arrayIsEmpty(steps)">
       <cfset title = trim(reReplaceNoCase(steps[1], "^\s*((?:Given|When|Then|And|But)\s+.*)$", "\1"))>
       <cfset step = trim(reReplaceNoCase(title, "^(Given|When|Then|And|But)", ""))>
@@ -126,10 +128,26 @@
       <cfif context neq "">
         <cfset title = "(#context#) #title#">
       </cfif>
-      <cfset stepDefinition.title = title>
       <cfif structKeyExists(stepDefinition, "multilineBinding")>
-        <!---TODO: handle multi-line steps --->
+        <cfif reFind('^\s*"""\s*$', steps[1])>
+          <cfset indent = reReplace(steps[1], "^(\s*).*$", "\1")>
+          <cfset arrayDeleteAt(steps, 1)>
+          <cfloop condition="not arrayIsEmpty(steps)">
+            <cfif reFind('^\s*"""\s*$', steps[1])><cfbreak></cfif>
+            <cfset value = listAppend(value, steps[1], chr(10))>
+            <cfset arrayDeleteAt(steps, 1)>
+          </cfloop>
+          <cfset arrayDeleteAt(steps, 1)>
+          <cfset value = reReplace(value, "(^|\n)#indent#", "\1", "all")>
+          <cfset value = reReplace(value, " (\n|$)", "\1", "all")>
+          <cfset title = listAppend(title, '"""#chr(10)##value##chr(10)#"""', chr(10))>
+          <cfset title = replace(title, chr(10), "<br />", "all")>
+        <cfelse>
+          <cfthrow message="Expected a multi-line feature step, but got '#steps[1]#'">
+        </cfif>
+        <cfset stepDefinition.bindings[stepDefinition.multilineBinding] = value>
       </cfif>
+      <cfset stepDefinition.title = title>
       <cfset runStep(stepDefinition)>
     </cfloop>
   </cffunction>
