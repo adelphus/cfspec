@@ -51,8 +51,26 @@
 
 
 
+  <cffunction name="getExampleCount" output="false">
+    <cfreturn _exampleCount>
+  </cffunction>
+
+
+
+  <cffunction name="getFailureCount" output="false">
+    <cfreturn _exampleCount - _passCount - _pendCount>
+  </cffunction>
+
+
+
+  <cffunction name="getTimer" output="false">
+    <cfreturn ((getTickCount() - _startTime) / 1000)>
+  </cffunction>
+
+
+
   <cffunction name="getCounterSummary" output="false">
-    <cfset var failCount = _exampleCount - _passCount - _pendCount>
+    <cfset var failCount = getFailureCount()>
     <cfset var summary = "#_exampleCount# example">
     <cfif _exampleCount neq 1>
       <cfset summary = summary & "s">
@@ -68,7 +86,7 @@
 
 
   <cffunction name="getTimerSummary" output="false">
-    <cfreturn ((getTickCount() - _startTime) / 1000) & " seconds">
+    <cfreturn "#getTimer()# seconds">
   </cffunction>
 
 
