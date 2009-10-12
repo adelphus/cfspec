@@ -67,9 +67,14 @@
   <cffunction name="runFeature" output="false">
     <cfargument name="specPath">
     <cfset var story = structNew()>
+    <cfset var lines = "">
     <cfset var i = "">
     <cffile action="read" file="#specPath#" variable="story.fullText">
-    <cfset story.lines = listToArray(replace(story.fullText, chr(10), " #chr(10)#", "all"), chr(10))>
+    <cfset lines = story.fullText.split("\n")>
+    <cfset story.lines = arrayNew(1)>
+    <cfloop index="i" from="1" to="#arrayLen(lines)#">
+      <cfset arrayAppend(story.lines, lines[i])>
+    </cfloop>
     <cfset story.lineNumber = 1>
     <cfset story.lineCount = arrayLen(story.lines)>
 
@@ -142,7 +147,6 @@
             </cfloop>
             <cfset arrayDeleteAt(steps, 1)>
             <cfset value = reReplace(value, "(^|\n)#indent#", "\1", "all")>
-            <cfset value = reReplace(value, " (\n|$)", "\1", "all")>
             <cfset title = listAppend(title, '"""#chr(10)##value##chr(10)#"""', chr(10))>
             <cfset title = replace(title, chr(10), "<br />", "all")>
           <cfelseif reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])>
@@ -157,16 +161,17 @@
               <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])><cfbreak></cfif>
               <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
               <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
-              <cfif listLen(row, "|") neq listLen(fields)>
+              <cfset row = row.split("\|")>
+              <cfif arrayLen(row) neq listLen(fields)>
                 <cfthrow message="Expected a table row with #listLen(fields)# column(s), but got '#steps[1]#'">
               </cfif>
               <cfset queryAddRow(value)>
               <cfset indent = 1>
               <cfloop list="#fields#" index="field">
-                <cfset querySetCell(value, field, listGetAt(row, indent, "|"))>
+                <cfset querySetCell(value, field, row[indent])>
                 <cfset indent = indent + 1>
               </cfloop>
-              <cfset title = title & "<tr><td>#replace(row, '|', '</td><td>', 'all')#</td></tr>">
+              <cfset title = title & "<tr><td>#arrayToList(row, '</td><td>')#</td></tr>">
               <cfset arrayDeleteAt(steps, 1)>
             </cfloop>
             <cfset title = title & "</table>">
@@ -179,6 +184,7 @@
         <cfset runStep(stepDefinition)>
       <cfelse>
         <cfset _report.addExample("pend", title)>
+        <cfset _specStats.incrementExampleCount()>
         <cfset _specStats.incrementPendCount()>
       </cfif>
     </cfloop>
@@ -240,7 +246,7 @@
 
   <cffunction name="parseOptionalBlankLines" access="private" output="false">
     <cfargument name="story">
-    <cfloop condition="story.lineNumber le story.lineCount and reFind('^\s*$', story.lines[story.lineNumber])">
+    <cfloop condition="story.lineNumber le story.lineCount and reFind('^\s*$', story.lines[story.lineNumber] & ' ')">
       <cfset story.lineNumber = story.lineNumber + 1>
     </cfloop>
   </cffunction>
@@ -253,7 +259,7 @@
     </cfif>
     <cfset story.title = trim(reReplaceNoCase(line, "^\s*Feature:(.+)$", "\1"))>
     <cfset story.lineNumber = story.lineNumber + 1>
-    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber] & ' ')">
       <cfset story.lineNumber = story.lineNumber + 1>
     </cfloop>
     <cfset parseOptionalBlankLines(story)>
@@ -266,7 +272,7 @@
     <cfset var line = story.lines[story.lineNumber]>
     <cfif not reFindNoCase("^\s*Background:\s*$", line)><cfreturn></cfif>
     <cfset story.lineNumber = story.lineNumber + 1>
-    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber] & ' ')">
       <cfset arrayAppend(story.background, story.lines[story.lineNumber])>
       <cfset story.lineNumber = story.lineNumber + 1>
     </cfloop>
@@ -281,7 +287,7 @@
     <cfset var isOutline = false>
     <cfset var examples = "">
     <cfset var i = "">
-    <cfif not reFindNoCase("^\s*Scenario( Outline):", line)>
+    <cfif not reFindNoCase("^\s*Scenario( Outline)?:", line)>
       <cfthrow message="Expected 'Scenario: TITLE', but got '#line#'">
     </cfif>
     <cfset isOutline = reFindNoCase("^\s*Scenario Outline:", line)>
@@ -289,7 +295,7 @@
     <cfset scenario.title = trim(reReplaceNoCase(line, "^\s*Scenario:(.+)$", "\1"))>
     <cfset story.lineNumber = story.lineNumber + 1>
     <cfset scenario.steps = arrayNew(1)>
-    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber] & ' ')">
       <cfset arrayAppend(scenario.steps, story.lines[story.lineNumber])>
       <cfset story.lineNumber = story.lineNumber + 1>
     </cfloop>
@@ -331,7 +337,7 @@
       <cfthrow message="Expected 'Examples:', but got '#line#'">
     </cfif>
     <cfset story.lineNumber = story.lineNumber + 1>
-    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber] & ' ')">
       <cfset arrayAppend(steps, story.lines[story.lineNumber])>
       <cfset story.lineNumber = story.lineNumber + 1>
     </cfloop>
@@ -348,13 +354,14 @@
       <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])><cfbreak></cfif>
       <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
       <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
-      <cfif listLen(row, "|") neq listLen(fields)>
+      <cfset row = row.split("\|")>
+      <cfif arrayLen(row) neq listLen(fields)>
         <cfthrow message="Expected a table row with #listLen(fields)# column(s), but got '#steps[1]#'">
       </cfif>
       <cfset queryAddRow(value)>
       <cfset indent = 1>
       <cfloop list="#fields#" index="field">
-        <cfset querySetCell(value, field, listGetAt(row, indent, "|"))>
+        <cfset querySetCell(value, field, row[indent])>
         <cfset indent = indent + 1>
       </cfloop>
       <cfset arrayDeleteAt(steps, 1)>
