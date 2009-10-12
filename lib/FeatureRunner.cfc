@@ -49,17 +49,28 @@
 
   <cffunction name="runFeatureSuite" output="false">
     <cfargument name="specPath">
+    <cfargument name="isTopLevel" default="true">
     <cfset var files = "">
+    <cfif isTopLevel>
+      <cfif fileExists("#specPath#/support/env.cfm")>
+        <cfset _context.__cfspecRun(this, _fileUtils.relativePath(specPath & '/support/env.cfm'))>
+        <cfset _context.__cfspecSaveBindings()>
+      </cfif>
+    </cfif>
     <cfdirectory action="list" directory="#specPath#" name="files">
     <cfloop query="files">
       <cfif type eq "dir" and left(name, 1) neq ".">
-        <cfset runFeatureSuite("#specPath#/#name#")>
+        <cfset runFeatureSuite("#specPath#/#name#", false)>
       <cfelseif type eq "file" and reFindNoCase("\.feature$", name)>
-        <cfset _suiteNumber = _suiteNumber + 1>
-        <cfset runFeature("#specPath#/#name#")>
+        <cfif cgi.query_string eq "" or listFirst(name, ".") eq cgi.query_string>
+          <cfset _suiteNumber = _suiteNumber + 1>
+          <cfset runFeature("#specPath#/#name#")>
+        </cfif>
       </cfif>
     </cfloop>
-    <cfset request.singletons.stopSelenium()>
+    <cfif isTopLevel>
+      <cfset request.singletons.stopSelenium()>
+    </cfif>
   </cffunction>
 
 
@@ -98,8 +109,17 @@
 
   <cffunction name="runScenario" access="private" output="false">
     <cfargument name="scenario">
+    <cfset var selenium = "">
+    <cfset var binding = structNew()>
     <cfset _report.enterBlock(scenario.title)>
-    <cfset resetContext()>
+    <cfif structKeyExists(request, "selenium")>
+      <cfset selenium = request.singletons.getSelenium(argumentCollection=request.selenium)>
+      <cfset binding.selenium = selenium>
+      <cfset _context.__cfspecSetBindings(binding)>
+    </cfif>
+    <cfif structKeyExists(request, "beforeEachScenario")>
+      <cfset evaluate(request.beforeEachScenario)>
+    </cfif>
     <cfset runSteps(scenario.story.background, "Background")>
     <cfset runSteps(scenario.steps)>
     <cftry>
@@ -109,6 +129,7 @@
         <cfset _report.addExample("fail", reReplace(cfcatch.message, "^: ", ""))>
       </cfcatch>
     </cftry>
+    <cfset _context.__cfspecScrub()>
     <cfset _report.exitBlock()>
   </cffunction>
 

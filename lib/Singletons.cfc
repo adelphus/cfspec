@@ -94,10 +94,7 @@
     <cfset var key = "">
     <cfif isDefined("_selenium")>
       <cfloop collection="#_selenium#" item="key">
-        <cftry>
-          <cfset _selenium[key].stop()>
-          <cfcatch></cfcatch>
-        </cftry>
+        <cfset _selenium[key].stop()>
       </cfloop>
       <cfset structClear(_selenium)>
     </cfif>
