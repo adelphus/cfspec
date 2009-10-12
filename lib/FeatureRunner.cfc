@@ -119,66 +119,68 @@
     <cfset var field = "">
     <cfset var row = "">
     <cfloop condition="not arrayIsEmpty(steps)">
+      <cfif not reFindNoCase("^\s*((?:Given|When|Then|And|But)\s+.*)$", steps[1])>
+        <cfthrow message="Expected a feature step, but got '#steps[1]#'">
+      </cfif>
       <cfset title = trim(reReplaceNoCase(steps[1], "^\s*((?:Given|When|Then|And|But)\s+.*)$", "\1"))>
       <cfset step = trim(reReplaceNoCase(title, "^(Given|When|Then|And|But)", ""))>
-      <cfif step eq "">
-        <cfthrow message="Expected a feature step, but got '#steps[1]#'">
-      </cfif>
       <cfset stepDefinition = findStepDefinition(step)>
-      <cfif not isStruct(stepDefinition)>
-        <cfthrow message="Expected a feature step, but got '#steps[1]#'">
-      </cfif>
       <cfset arrayDeleteAt(steps, 1)>
       <cfif context neq "">
         <cfset title = "(#context#) #title#">
       </cfif>
-      <cfif structKeyExists(stepDefinition, "multilineBinding")>
-        <cfif reFind('^\s*"""\s*$', steps[1])>
-          <!--- multi-line string --->
-          <cfset indent = reReplace(steps[1], "^(\s*).*$", "\1")>
-          <cfset arrayDeleteAt(steps, 1)>
-          <cfloop condition="not arrayIsEmpty(steps)">
-            <cfif reFind('^\s*"""\s*$', steps[1])><cfbreak></cfif>
-            <cfset value = listAppend(value, steps[1], chr(10))>
+      <cfif isStruct(stepDefinition)>
+        <cfif structKeyExists(stepDefinition, "multilineBinding")>
+          <cfif reFind('^\s*"""\s*$', steps[1])>
+            <!--- multi-line string --->
+            <cfset indent = reReplace(steps[1], "^(\s*).*$", "\1")>
             <cfset arrayDeleteAt(steps, 1)>
-          </cfloop>
-          <cfset arrayDeleteAt(steps, 1)>
-          <cfset value = reReplace(value, "(^|\n)#indent#", "\1", "all")>
-          <cfset value = reReplace(value, " (\n|$)", "\1", "all")>
-          <cfset title = listAppend(title, '"""#chr(10)##value##chr(10)#"""', chr(10))>
-          <cfset title = replace(title, chr(10), "<br />", "all")>
-        <cfelseif reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])>
-        <!--- multi-line table --->
-          <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
-          <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
-          <cfset fields = listChangeDelims(row, ",", "|")>
-          <cfset value = queryNew(fields)>
-          <cfset arrayDeleteAt(steps, 1)>
-          <cfset title = title & "<br /><table class='step-table'><tr><th>#replace(fields, ',', '</th><th>', 'all')#</th></tr>">
-          <cfloop condition="not arrayIsEmpty(steps)">
-            <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])><cfbreak></cfif>
+            <cfloop condition="not arrayIsEmpty(steps)">
+              <cfif reFind('^\s*"""\s*$', steps[1])><cfbreak></cfif>
+              <cfset value = listAppend(value, steps[1], chr(10))>
+              <cfset arrayDeleteAt(steps, 1)>
+            </cfloop>
+            <cfset arrayDeleteAt(steps, 1)>
+            <cfset value = reReplace(value, "(^|\n)#indent#", "\1", "all")>
+            <cfset value = reReplace(value, " (\n|$)", "\1", "all")>
+            <cfset title = listAppend(title, '"""#chr(10)##value##chr(10)#"""', chr(10))>
+            <cfset title = replace(title, chr(10), "<br />", "all")>
+          <cfelseif reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])>
+          <!--- multi-line table --->
             <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
             <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
-            <cfif listLen(row, "|") neq listLen(fields)>
-              <cfthrow message="Expected a table row with #listLen(fields)# column(s), but got '#steps[1]#'">
-            </cfif>
-            <cfset queryAddRow(value)>
-            <cfset indent = 1>
-            <cfloop list="#fields#" index="field">
-              <cfset querySetCell(value, field, listGetAt(row, indent, "|"))>
-              <cfset indent = indent + 1>
-            </cfloop>
-            <cfset title = title & "<tr><td>#replace(row, '|', '</td><td>', 'all')#</td></tr>">
+            <cfset fields = listChangeDelims(row, ",", "|")>
+            <cfset value = queryNew(fields)>
             <cfset arrayDeleteAt(steps, 1)>
-          </cfloop>
-          <cfset title = title & "</table>">
-        <cfelse>
-          <cfthrow message="Expected a multi-line feature step, but got '#steps[1]#'">
+            <cfset title = title & "<br /><table class='step-table'><tr><th>#replace(fields, ',', '</th><th>', 'all')#</th></tr>">
+            <cfloop condition="not arrayIsEmpty(steps)">
+              <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])><cfbreak></cfif>
+              <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
+              <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
+              <cfif listLen(row, "|") neq listLen(fields)>
+                <cfthrow message="Expected a table row with #listLen(fields)# column(s), but got '#steps[1]#'">
+              </cfif>
+              <cfset queryAddRow(value)>
+              <cfset indent = 1>
+              <cfloop list="#fields#" index="field">
+                <cfset querySetCell(value, field, listGetAt(row, indent, "|"))>
+                <cfset indent = indent + 1>
+              </cfloop>
+              <cfset title = title & "<tr><td>#replace(row, '|', '</td><td>', 'all')#</td></tr>">
+              <cfset arrayDeleteAt(steps, 1)>
+            </cfloop>
+            <cfset title = title & "</table>">
+          <cfelse>
+            <cfthrow message="Expected a multi-line feature step, but got '#steps[1]#'">
+          </cfif>
+          <cfset stepDefinition.bindings[stepDefinition.multilineBinding] = value>
         </cfif>
-        <cfset stepDefinition.bindings[stepDefinition.multilineBinding] = value>
+        <cfset stepDefinition.title = title>
+        <cfset runStep(stepDefinition)>
+      <cfelse>
+        <cfset _report.addExample("pend", title)>
+        <cfset _specStats.incrementPendCount()>
       </cfif>
-      <cfset stepDefinition.title = title>
-      <cfset runStep(stepDefinition)>
     </cfloop>
   </cffunction>
 
@@ -246,10 +248,10 @@
   <cffunction name="parseFeatureIntroduction" access="private" output="false">
     <cfargument name="story">
     <cfset var line = story.lines[story.lineNumber]>
-    <cfset story.title = trim(reReplaceNoCase(line, "^\s*Feature:(.+)$", "\1"))>
-    <cfif story.title eq "">
+    <cfif not reFindNoCase("^\s*Feature:", line)>
       <cfthrow message="Expected 'Feature: TITLE', but got '#line#'">
     </cfif>
+    <cfset story.title = trim(reReplaceNoCase(line, "^\s*Feature:(.+)$", "\1"))>
     <cfset story.lineNumber = story.lineNumber + 1>
     <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
       <cfset story.lineNumber = story.lineNumber + 1>
@@ -273,21 +275,92 @@
 
   <cffunction name="parseScenario" access="private" output="false">
     <cfargument name="story">
+    <cfset var scenarioOutline = structNew()>
     <cfset var scenario = structNew()>
     <cfset var line = story.lines[story.lineNumber]>
-    <cfset scenario.story = story>
-    <cfset scenario.title = trim(reReplaceNoCase(line, "^\s*Scenario:(.+)$", "\1"))>
-    <cfif scenario.title eq "">
+    <cfset var isOutline = false>
+    <cfset var examples = "">
+    <cfset var i = "">
+    <cfif not reFindNoCase("^\s*Scenario( Outline):", line)>
       <cfthrow message="Expected 'Scenario: TITLE', but got '#line#'">
     </cfif>
+    <cfset isOutline = reFindNoCase("^\s*Scenario Outline:", line)>
+    <cfset scenario.story = story>
+    <cfset scenario.title = trim(reReplaceNoCase(line, "^\s*Scenario:(.+)$", "\1"))>
     <cfset story.lineNumber = story.lineNumber + 1>
     <cfset scenario.steps = arrayNew(1)>
     <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
       <cfset arrayAppend(scenario.steps, story.lines[story.lineNumber])>
       <cfset story.lineNumber = story.lineNumber + 1>
     </cfloop>
-    <cfset arrayAppend(story.scenarios, scenario)>
     <cfset parseOptionalBlankLines(story)>
+    <cfif isOutline>
+      <cfset scenarioOutline = scenario>
+      <cfset scenarioOutline.title = replace(scenarioOutline.title, "##", "####", "all")>
+      <cfset scenarioOutline.title = reReplace(scenarioOutline.title, "<(\w+)>", "##\1##", "all")>
+      <cfloop index="i" from="1" to="#arrayLen(scenarioOutline.steps)#">
+        <cfset scenarioOutline.steps[i] = replace(scenarioOutline.steps[i], "##", "####", "all")>
+        <cfset scenarioOutline.steps[i] = reReplace(scenarioOutline.steps[i], "<(\w+)>", "##\1##", "all")>
+      </cfloop>
+      <cfset examples = parseScenarioOutlineExamples(story)>
+      <cfloop query="examples">
+        <cfset scenario = structCopy(scenarioOutline)>
+        <cfset scenario.title = evaluate(de(scenario.title))>
+        <cfloop index="i" from="1" to="#arrayLen(scenario.steps)#">
+          <cfset scenario.steps[i] = evaluate(de(scenario.steps[i]))>
+        </cfloop>
+        <cfset arrayAppend(story.scenarios, scenario)>
+      </cfloop>
+    <cfelse>
+      <cfset arrayAppend(story.scenarios, scenario)>
+    </cfif>
+  </cffunction>
+
+
+
+  <cffunction name="parseScenarioOutlineExamples" access="private" output="false">
+    <cfargument name="story">
+    <cfset var line = story.lines[story.lineNumber]>
+    <cfset var steps = arrayNew(1)>
+    <cfset var row = "">
+    <cfset var fields = "">
+    <cfset var field = "">
+    <cfset var indent = "">
+    <cfset var value = "">
+    <cfif not reFindNoCase("^\s*Examples:\s*$", line)>
+      <cfthrow message="Expected 'Examples:', but got '#line#'">
+    </cfif>
+    <cfset story.lineNumber = story.lineNumber + 1>
+    <cfloop condition="story.lineNumber le story.lineCount and not reFind('^\s*$', story.lines[story.lineNumber])">
+      <cfset arrayAppend(steps, story.lines[story.lineNumber])>
+      <cfset story.lineNumber = story.lineNumber + 1>
+    </cfloop>
+    <cfif arrayIsEmpty(steps)><cfreturn queryNew("")></cfif>
+    <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])>
+      <cfthrow message="Expected a table of examples, but got '#steps[1]#'">
+    </cfif>
+    <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
+    <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
+    <cfset fields = listChangeDelims(row, ",", "|")>
+    <cfset value = queryNew(fields)>
+    <cfset arrayDeleteAt(steps, 1)>
+    <cfloop condition="not arrayIsEmpty(steps)">
+      <cfif not reFind("^\s*(\|\s*[^|]+\s*)+\|\s*$", steps[1])><cfbreak></cfif>
+      <cfset row = trim(reReplace(steps[1], "^\s*\|(.+)\|\s*$", "\1"))>
+      <cfset row = reReplace(row, "\s*\|\s*", "|", "all")>
+      <cfif listLen(row, "|") neq listLen(fields)>
+        <cfthrow message="Expected a table row with #listLen(fields)# column(s), but got '#steps[1]#'">
+      </cfif>
+      <cfset queryAddRow(value)>
+      <cfset indent = 1>
+      <cfloop list="#fields#" index="field">
+        <cfset querySetCell(value, field, listGetAt(row, indent, "|"))>
+        <cfset indent = indent + 1>
+      </cfloop>
+      <cfset arrayDeleteAt(steps, 1)>
+    </cfloop>
+    <cfset parseOptionalBlankLines(story)>
+    <cfreturn value>
   </cffunction>
 
 
