@@ -2,6 +2,8 @@
 
 <cfif not isDefined("caller.__cfspecRunner")>
   <cfparam name="url.format" default="html">
+  <cfparam name="url.output" default="">
+
   <cfswitch expression="#url.format#">
     <cfcase value="xml">
       <cfset report = createObject("component", "cfspec.lib.XmlReport").init()>
@@ -17,7 +19,14 @@
   <cfset specRunner.setReport(report)>
   <cfset specRunner.setSpecStats(specStats)>
   <cfset specRunner.runSpecFile(getBaseTemplatePath())>
-  <cfset writeOutput(report.getOutput())>
+
+  <cfif url.output eq "">
+    <cfset writeOutput(report.getOutput())>
+  <cfelse>
+    <cffile action="write" file="#expandPath(url.output)#.#url.format#" output="#report.getOutput()#">
+    <cfset writeOutput("Report saved to: #url.output#")>
+  </cfif>
+
   <cfabort>
 </cfif>
 
