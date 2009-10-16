@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  if ($('div.it.fail, div.it.pend').size() > 0) hidePassingExamples();
+  if ($('div.it.fail, div.it.error, div.it.pend').size() > 0) hidePassingExamples();
 });
 
 function hidePassingExamples() {

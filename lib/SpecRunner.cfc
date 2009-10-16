@@ -51,6 +51,7 @@
   <cffunction name="runSpecFile" output="false">
     <cfargument name="specPath">
     <cfset var specFile = _fileUtils.relativePath(specPath)>
+    <cfset _report.setSpecFile(specFile)>
     <cfset resetCurrent()>
     <cfset _context.__cfspecRun(this, specFile)>
     <cfloop condition="nextTarget()">
@@ -58,11 +59,11 @@
         <cfset _context.__cfspecRun(this, specFile)>
         <cfset ensureNoDelayedMatchersArePending()>
         <cfcatch type="cfspec">
-          <cfset _report.addExample(listLast(cfcatch.type, '.'), "should #cfcatch.message#")>
+          <cfset _report.addExample(listLast(cfcatch.type, '.'), "should #_hint#", cfcatch)>
           <cfset recoverFromException(listLast(cfcatch.type, "."))>
         </cfcatch>
         <cfcatch type="any">
-          <cfset _report.addExample("fail", "should #_hint#", cfcatch)>
+          <cfset _report.addExample("error", "should #_hint#", cfcatch)>
           <cfset recoverFromException("fail")>
         </cfcatch>
       </cftry>
@@ -137,11 +138,6 @@
 
   <cffunction name="fail" output="false">
     <cfargument name="msg" default="">
-    <cfif msg eq "">
-      <cfset msg = _hint>
-    <cfelse>
-      <cfset msg = "#_hint#: #msg#">
-    </cfif>
     <cfthrow type="cfspec.fail" message="#msg#">
   </cffunction>
 
@@ -149,11 +145,6 @@
 
   <cffunction name="pend" output="false">
     <cfargument name="msg" default="">
-    <cfif msg eq "">
-      <cfset msg = _hint>
-    <cfelse>
-      <cfset msg = "#_hint#: #msg#">
-    </cfif>
     <cfthrow type="cfspec.pend" message="#msg#">
   </cffunction>
 

@@ -66,7 +66,7 @@ h2 {
   color: black;
   border-color: #FFFF00;
 }
-.it.fail {
+.it.fail, .it.error {
   background: #FFCCCC;
   color: #CC0000;
   border-color: #CC0000;

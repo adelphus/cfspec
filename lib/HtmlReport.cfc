@@ -28,6 +28,13 @@
 
 
 
+  <cffunction name="setSpecFile">
+    <cfargument name="specFile">
+    <!--- ignored --->
+  </cffunction>
+
+
+
   <cffunction name="getOutput" output="false">
     <cfset var head = "<head><title>cfSpec</title>#getStyle()##getScripts()#</head>">
     <cfset var body = "<body>#getSpecStatsSummary()##_block[1]#</body>">
@@ -53,7 +60,13 @@
       <cfset _blockStatus[1] = status>
     </cfif>
     <cfif not isSimpleValue(exception)>
-      <cfset s = s & '<br /><br />' & formatException(exception)>
+      <cfif findNoCase("cfspec", exception.type) eq 1>
+        <cfif exception.message neq "">
+          <cfset s = s & ": " & exception.message>
+        </cfif>
+      <cfelse>
+        <cfset s = s & '<br /><br />' & formatException(exception)>
+      </cfif>
     </cfif>
     <cfset s = s & '</div>'>
     <cfset _block[1] = _block[1] & s>

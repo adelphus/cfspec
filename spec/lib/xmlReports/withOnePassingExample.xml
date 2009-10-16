@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="0" hostname="localhost" name="spec/exampleSpec" tests="1" time="0.123" timestamp="2009-10-16T23:13:49">
+  <properties></properties>
+  <testcase classname="spec/exampleSpec" name="with one passing example: it should pass" time="0.007" />
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

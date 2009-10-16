@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="1" failures="0" hostname="localhost" name="spec/exampleSpec" tests="1" time="0.123" timestamp="2009-10-16T23:13:49">
+  <properties></properties>
+  <testcase classname="spec/exampleSpec" name="with one failing example: it should throw exception" time="0.007">
+    <error>
+      <small><u>MyException</u><br />Message: My message<br />Detail: My detail<br />Stack Trace:</small>
+    </error>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
