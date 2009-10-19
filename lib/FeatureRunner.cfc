@@ -80,6 +80,7 @@
     <cfset var story = structNew()>
     <cfset var lines = "">
     <cfset var i = "">
+    <cfset _report.setSpecFile(_fileUtils.relativePath(specPath))>
     <cffile action="read" file="#specPath#" variable="story.fullText">
     <cfset lines = story.fullText.split("\n")>
     <cfset story.lines = arrayNew(1)>
