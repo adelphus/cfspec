@@ -12,6 +12,10 @@
   </cfdefaultcase>
 </cfswitch>
 
+<cfif structKeyExists(url, "target")>
+  <cfset request.target = url.target>
+</cfif>
+
 <cfset request.singletons = createObject("component", "cfspec.lib.Singletons").init()>
 <cfset featureRunner = createObject("component", "cfspec.lib.FeatureRunner").init()>
 <cfset specStats = createObject("component", "cfspec.lib.SpecStats").init()>

@@ -62,7 +62,7 @@
       <cfif type eq "dir" and left(name, 1) neq ".">
         <cfset runFeatureSuite("#specPath#/#name#", false)>
       <cfelseif type eq "file" and reFindNoCase("\.feature$", name)>
-        <cfif cgi.query_string eq "" or listFirst(name, ".") eq cgi.query_string>
+        <cfif not structKeyExists(request, "target") or listFindNoCase(request.target, listFirst(name, "."))>
           <cfset _suiteNumber = _suiteNumber + 1>
           <cfset runFeature("#specPath#/#name#")>
         </cfif>
