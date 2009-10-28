@@ -9,6 +9,7 @@
     <cfset _fileUtils = request.singletons.getFileUtils()>
     <cfset _suiteNumber = 0>
     <cfset _steps = structNew()>
+    <cfset _stepsStack = arrayNew(1)>
     <cfset resetContext()>
     <cfreturn this>
   </cffunction>
@@ -56,13 +57,19 @@
         <cfset _context.__cfspecRun(this, _fileUtils.relativePath(specPath & '/support/env.cfm'))>
         <cfset _context.__cfspecSaveBindings()>
       </cfif>
+      <cfset _featurePath = "">
+    <cfelse>
+      <cfset arrayPrepend(_stepsStack, structCopy(_steps))>
+      <cfset loadStepDefinitions(specPath & "/stepDefinitions")>
     </cfif>
     <cfdirectory action="list" directory="#specPath#" name="files">
     <cfloop query="files">
       <cfif type eq "dir" and left(name, 1) neq ".">
+        <cfset _featurePath = listAppend(_featurePath, name, "/")>
         <cfset runFeatureSuite("#specPath#/#name#", false)>
+        <cfset _featurePath = reReplace(_featurePath, "(^|/)[^/]+$", "")>
       <cfelseif type eq "file" and reFindNoCase("\.feature$", name)>
-        <cfif not structKeyExists(request, "target") or listFindNoCase(request.target, listFirst(name, "."))>
+        <cfif not structKeyExists(request, "target") or listFindNoCase(request.target, listAppend(_featurePath, listFirst(name, "."), "/"))>
           <cfset _suiteNumber = _suiteNumber + 1>
           <cfset runFeature("#specPath#/#name#")>
         </cfif>
@@ -70,6 +77,9 @@
     </cfloop>
     <cfif isTopLevel>
       <cfset request.singletons.stopSelenium()>
+    <cfelse>
+      <cfset _steps = _stepsStack[1]>
+      <cfset arrayDeleteAt(_stepsStack, 1)>
     </cfif>
   </cffunction>
 
