@@ -41,6 +41,7 @@
       <cfif type eq "file" and reFindNoCase("steps\.cfm$", name)>
         <cfset _stepFile = _fileUtils.relativePath("#stepPath#/#name#")>
         <cfset resetCurrent()>
+        <cfset _target = "">
         <cfset _context.__cfspecRun(this, _stepFile)>
       </cfif>
     </cfloop>
