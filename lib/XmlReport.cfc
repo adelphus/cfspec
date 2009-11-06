@@ -68,11 +68,11 @@
     <cfargument name="status">
     <cfargument name="expectation">
     <cfargument name="exception" default="#structNew()#">
-    <cfset var s = '<testcase classname="#_specFile#" name="#arrayToList(_block, ' ')#: it #expectation##iif(status eq "pend", de(" (PENDING)"), de(""))#" time="#this.getTimer()#"'>
+    <cfset var s = '<testcase classname="#_specFile#" name="#arrayToList(_block, ' ')#: it #xmlFormat(expectation)##iif(status eq "pend", de(" (PENDING)"), de(""))#" time="#this.getTimer()#"'>
     <cfparam name="exception.message" default="">
     <cfif status eq "fail">
       <cfset _failureCount = _failureCount + 1>
-      <cfset s = s & '><failure>' & exception.message & '</failure></testcase>'>
+      <cfset s = s & '><failure>' & xmlFormat(exception.message) & '</failure></testcase>'>
     <cfelseif status eq "error">
       <cfset _errorCount = _errorCount + 1>
       <cfset s = s & '><error>' & formatException(exception) & '</error></testcase>'>
@@ -125,7 +125,7 @@
     <cfset var context = "">
     <cfset var s = "">
     <cfset var i = "">
-    <cfset s = "<u>#e.type#</u><br />Message: #e.message#<br />Detail: #e.detail#<br />Stack Trace:">
+    <cfset s = "<u>#e.type#</u><br />Message: #xmlFormat(e.message)#<br />Detail: #xmlFormat(e.detail)#<br />Stack Trace:">
     <cfloop index="i" from="1" to="#arrayLen(e.tagContext)#">
       <cfset context = e.tagContext[i]>
       <cfset s = s & "<pre>  ">
